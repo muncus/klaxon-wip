@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:key="klaxon_prefs" > 
+    <CheckBoxPreference android:key="is_oncall" 
+      android:title="On Call"
+      android:defaultValue="true"
+      android:summary="are you oncall?" />  
+    <RingtonePreference 
+      android:key="alert_sound"
+      android:defaultValue="content://media/internal/audio/media/43"
+      android:title="Alert Sound" />
+    <CheckBoxPreference android:key="use_alarm_stream" 
+      android:title="use Alarm Volume?"
+      android:defaultValue="false"
+      android:summary="use the alarm volume stream, instead of ringer volume" />  
+    <PreferenceScreen
+      android:key="message_prefs"
+      android:title="Sms Settings"
+      android:summary="Settings for pages received via sms" >
+        <EditTextPreference android:key="sender_match"
+          android:title="Sender"
+          android:defaultValue=""
+          android:summary="substring match on sender phone number or email" />
+        <CheckBoxPreference android:key="use_received_service_center" 
+          android:title="Use Received Service Center?"
+          android:defaultValue="true"
+          android:summary="use Service Center from received messages when replying" />  
+        </PreferenceScreen> 
+    <Preference
+      android:key="edit_replies"
+      android:title="Edit Replies"
+      android:summary="edit the text of replies"
+      />
+</PreferenceScreen>
+
