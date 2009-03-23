@@ -37,6 +37,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.R.drawable;
 
 import org.nerdcircus.android.klaxon.Pager;
 
@@ -117,6 +118,7 @@ public class KlaxonList extends ListActivity
         mi.setIntent(i);
 
         mi = menu.add(MENU_ALWAYS_GROUP, MENU_PREFS, Menu.NONE, "Settings");
+        mi.setIcon(android.R.drawable.ic_menu_preferences);
         i = new Intent(Intent.ACTION_MAIN);
         i.setClassName(this, "org.nerdcircus.android.klaxon.Preferences");
         mi.setIntent(i);
