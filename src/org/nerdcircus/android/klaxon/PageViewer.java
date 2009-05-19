@@ -115,11 +115,20 @@ public class PageViewer extends Activity
         return true;
     }
 
-    private Menu addReplyMenuItem(Menu menu, String label, String response, int status){
-        Intent i = new Intent(Pager.REPLY_ACTION, mContentURI);
-        i.putExtra("response", response);
-        i.putExtra("new_ack_status", status);
-        MenuItem m = menu.add(Menu.NONE, 0, 0, label).setIntent(i);
+    private Menu addReplyMenuItem(Menu menu, String label, final String response, final int status){
+        //NOTE: these cannot be done with MenuItem.setIntent(), because those
+        //intents are called with Context.startActivity()
+        menu.add(Menu.NONE, 0, 0, label).setOnMenuItemClickListener(
+            new MenuItem.OnMenuItemClickListener(){
+                public boolean onMenuItemClick(MenuItem item){
+                    Intent i = new Intent(Pager.REPLY_ACTION, mContentURI);
+                    i.putExtra("response", response);
+                    i.putExtra("new_ack_status", status);
+                    sendBroadcast(i);
+                    return true;
+                }
+            }
+        );
         return menu;
     }
 
@@ -134,17 +143,18 @@ public class PageViewer extends Activity
             mCursor = null;
             getContentResolver().delete(mContentURI, null, null);
             finish(); //finish the PageViewer if we've deleted our page.
+            return true; //consume this menu click.
         }
         else if( item.getTitle() == "Other" ){
             //respond with some other response.
             Intent i = new Intent(Intent.ACTION_PICK, Replies.CONTENT_URI);
             i.setType("vnd.android.cursor.item/reply");
             startActivityForResult(i, REQUEST_PICK_REPLY);
+            return true; //consume this menu click.
         }
         else {
-            return true;
+            return false;
         }
-        return true;
     }
 
      protected void onActivityResult(int requestCode, int resultCode, Intent data){
