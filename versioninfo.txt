@@ -1,3 +1,0 @@
-# properties for versioning.
-version-code = 1
-version-name = 0.7
