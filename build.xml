@@ -121,6 +121,14 @@
         <echo>Creating output directories if needed...</echo>
         <mkdir dir="${outdir}" />
         <mkdir dir="${outdir-classes}" />
+        <!-- also do version replacements in AndroidManifest.xml -->
+        <echo>Replacing version tokens in AndroidManifest.xml...</echo>
+        <replace file="AndroidManifest.xml" propertyFile="versioninfo.txt"
+            summary="true">
+          <replacefilter token="@@VERSION-CODE@@" property="version-code"/>
+          <replacefilter token="@@VERSION-NAME@@" property="version-name"/>
+        </replace>
+
     </target>
 
     <!-- Generate the R.java file for this project's resources. -->
