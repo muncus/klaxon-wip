@@ -124,6 +124,7 @@ public class PageViewer extends Activity
                     Intent i = new Intent(Pager.REPLY_ACTION, mContentURI);
                     i.putExtra("response", response);
                     i.putExtra("new_ack_status", status);
+                    Log.d(TAG, "ack status for "+response+"should be: "+status);
                     sendBroadcast(i);
                     return true;
                 }

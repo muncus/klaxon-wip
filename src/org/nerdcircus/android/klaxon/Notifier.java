@@ -22,6 +22,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,6 +33,7 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import org.nerdcircus.android.klaxon.Pager;
 
@@ -89,6 +91,19 @@ public class Notifier extends BroadcastReceiver
             Notification n = getNotification(context, intent.getStringExtra("notification_text"));
             nm.notify(R.string.notify_page, n);
         }
+        else if(intent.getAction().equals("org.nerdcircus.android.klaxon.REPLY_SENT")){
+            //a reply was sent. update state in the db.
+            if(Activity.RESULT_OK == getResultCode()){
+                Log.d(TAG, "reply successful. updating ack status..");
+                //result was sent. update state.
+                updateAckStatus(context, intent.getData(), intent.getIntExtra(Pager.EXTRA_NEW_ACK_STATUS, 0));
+                return;
+            }
+            else {
+                Log.e(TAG, "reply failed!!! doing nothing.");
+                return;
+            }
+        }
         else {
             Log.e(TAG, "Uncaught Action:" + intent.getAction());
         }
@@ -133,6 +148,18 @@ public class Notifier extends BroadcastReceiver
         }
 
         return n;
+    }
+
+    private void updateAckStatus(Context c, Uri data, int ack_status){
+        Log.d(TAG, "updating acks status for "+data.toString()+" to "+ ack_status);
+        Log.d(TAG, "int: "+ack_status);
+        Log.d(TAG, "Integer: "+new Integer(ack_status));
+        Log.d(TAG, "Integer.decode: "+Integer.decode(""+ack_status));
+        ContentValues cv = new ContentValues();
+        cv.put(Pager.Pages.ACK_STATUS, new Integer(ack_status));
+        int rows = c.getContentResolver().update(data, cv, null, null);
+        Log.d(TAG, "Updated rows: "+rows);
+        Toast.makeText(c, "Reply sent.", Toast.LENGTH_SHORT);
     }
 
 }

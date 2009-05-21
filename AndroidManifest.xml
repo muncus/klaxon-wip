@@ -68,6 +68,11 @@
                 <action android:name="org.nerdcircus.android.klaxon.PAGE_RECEIVED" />
                 <data android:mimeType="vnd.android.cursor.item/pages" />
             </intent-filter>
+            <intent-filter>
+                <!-- this action is called after a reply is sent, to update state -->
+                <action android:name="org.nerdcircus.android.klaxon.REPLY_SENT" />
+                <data android:mimeType="vnd.android.cursor.item/pages" />
+            </intent-filter>
         </receiver>
         <activity android:name=".Preferences"  >
             <intent-filter>

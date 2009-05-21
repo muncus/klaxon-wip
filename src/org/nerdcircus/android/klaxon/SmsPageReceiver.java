@@ -201,13 +201,13 @@ public class SmsPageReceiver extends BroadcastReceiver
         if ( ! prefs.getBoolean("use_received_service_center", true)){
             sc = null;
         }
-        Intent successIntent = new Intent("org.nerdcircus.android.klaxon.REPLY_OK", data);
-        successIntent.putExtra("new status", ack_status); //note what our new status should be set to.
+        Intent successIntent = new Intent("org.nerdcircus.android.klaxon.REPLY_SENT", data);
+        Log.d(TAG, "new ack status should be: "+ack_status);
+        successIntent.putExtra(Pager.EXTRA_NEW_ACK_STATUS, ack_status); //note what our new status should be set to.
         //TODO: make the null below use the failure intent, but it now has to check result code.
-        Intent failureIntent = new Intent("org.nerdcircus.android.klaxon.REPLY_FAILED", data);
         sm.sendTextMessage(dest, sc, reply,
-            null,
-            PendingIntent.getBroadcast(context, 0, successIntent, 0)
+            PendingIntent.getBroadcast(context, 0, successIntent, PendingIntent.FLAG_UPDATE_CURRENT),
+            null
         );
         Log.d(TAG, "Message sent.");
     }

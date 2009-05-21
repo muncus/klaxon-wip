@@ -40,6 +40,8 @@ public final class Pager
     public static final String ANNOY_ACTION = "org.nerdcircus.android.klaxon.ANNOY";
     public static final String SILENCE_ACTION = "org.nerdcircus.android.klaxon.PAGES_VIEWED";
 
+    public static final String EXTRA_NEW_ACK_STATUS = "org.nerdcircus.android.klaxon.NEW_ACK_STATUS";
+
     public static final int STATUS_NONE = 0;
     public static final int STATUS_ACK = 1;
     public static final int STATUS_NACK = 2;
