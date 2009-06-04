@@ -40,6 +40,7 @@ import android.content.SharedPreferences.Editor;
 import android.R.drawable;
 
 import org.nerdcircus.android.klaxon.Pager;
+import org.nerdcircus.android.klaxon.Pager.*;
 
 import android.util.Log;
 
@@ -50,10 +51,6 @@ public class KlaxonList extends ListActivity
     //menu constants.
     private int MENU_ACTIONS_GROUP = Menu.FIRST;
     private int MENU_ALWAYS_GROUP = Menu.FIRST + 1;
-    private int MENU_ACK = Menu.FIRST;
-    private int MENU_NACK = Menu.FIRST + 1;
-    private int MENU_DELETE = Menu.FIRST + 2;
-    private int MENU_PREFS = Menu.FIRST + 3;
 
     private Cursor mCursor;
 
@@ -98,26 +95,26 @@ public class KlaxonList extends ListActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        final Context appcontext = (Context)this;
-        MenuItem mi;
-        //TODO: this should come from prefs.
-        mi = menu.add(MENU_ACTIONS_GROUP, MENU_ACK, Menu.NONE, "Ack");
-        Intent i = new Intent(Pager.REPLY_ACTION,
-                    Uri.withAppendedPath(Pager.Pages.CONTENT_URI, ""+getSelectedItemId())
-        );
-        i.putExtra("response", "Ack");
-        i.putExtra("new_ack_status", 1);
-        mi.setIntent(i);
 
-        mi = menu.add(MENU_ACTIONS_GROUP, MENU_NACK, Menu.NONE, "Nack");
-        i = new Intent(Pager.REPLY_ACTION,
-                    Uri.withAppendedPath(Pager.Pages.CONTENT_URI, ""+getSelectedItemId())
-        );
-        i.putExtra("response", "Nack");
-        i.putExtra("new_ack_status", 1);
-        mi.setIntent(i);
+        Cursor c = managedQuery(Replies.CONTENT_URI,  
+                    new String[] {Replies._ID, Replies.NAME, Replies.BODY, Replies.ACK_STATUS},
+                    "show_in_menu == 1", null, null);
+        c.moveToFirst();
+        while ( ! c.isAfterLast() ){
+            addReplyMenuItem(menu,
+                             c.getString(c.getColumnIndex(Replies.NAME)),
+                             c.getString(c.getColumnIndex(Replies.BODY)),
+                             c.getInt(c.getColumnIndex(Replies.ACK_STATUS))
+                             );
+            c.moveToNext();
+        }
+        Intent i = new Intent(Intent.ACTION_PICK, Replies.CONTENT_URI);
+        menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, "Other").setIntent(i);
 
-        mi = menu.add(MENU_ALWAYS_GROUP, MENU_PREFS, Menu.NONE, "Settings");
+        //make delete be last
+        //MenuItem delete_item = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Delete");
+
+        MenuItem mi = menu.add(MENU_ALWAYS_GROUP, Menu.NONE, Menu.NONE, "Settings");
         mi.setIcon(android.R.drawable.ic_menu_preferences);
         i = new Intent(Intent.ACTION_MAIN);
         i.setClassName(this, "org.nerdcircus.android.klaxon.Preferences");
@@ -135,6 +132,24 @@ public class KlaxonList extends ListActivity
         menu.setGroupVisible(MENU_ACTIONS_GROUP, haveItems);
         menu.setGroupVisible(MENU_ALWAYS_GROUP, true);
         return true;
+    }
+
+    private Menu addReplyMenuItem(Menu menu, String label, final String response, final int status){
+        //NOTE: these cannot be done with MenuItem.setIntent(), because those
+        //intents are called with Context.startActivity()
+        menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, label).setOnMenuItemClickListener(
+            new MenuItem.OnMenuItemClickListener(){
+                public boolean onMenuItemClick(MenuItem item){
+                    Intent i = new Intent(Pager.REPLY_ACTION);
+                    i.setData(Uri.withAppendedPath(Pages.CONTENT_URI, ""+getSelectedItemId()));
+                    i.putExtra("response", response);
+                    i.putExtra("new_ack_status", status);
+                    sendBroadcast(i);
+                    return true;
+                }
+            }
+        );
+        return menu;
     }
 
     /** Create default preferences..

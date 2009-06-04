@@ -159,7 +159,7 @@ public class Notifier extends BroadcastReceiver
         cv.put(Pager.Pages.ACK_STATUS, new Integer(ack_status));
         int rows = c.getContentResolver().update(data, cv, null, null);
         Log.d(TAG, "Updated rows: "+rows);
-        Toast.makeText(c, "Reply sent.", Toast.LENGTH_SHORT);
+        Toast.makeText(c, "Reply sent.", Toast.LENGTH_LONG);
     }
 
 }
