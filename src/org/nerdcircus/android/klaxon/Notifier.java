@@ -125,7 +125,7 @@ public class Notifier extends BroadcastReceiver
 
         Notification n = new Notification(
             R.drawable.bar_icon,
-            "you have been paged", //TODO: make this be "n pages waiting"
+            "You have been paged!", //TODO: make this be "n pages waiting"
             System.currentTimeMillis()
         );
         n.ledARGB=R.color.red;
@@ -154,9 +154,6 @@ public class Notifier extends BroadcastReceiver
 
     private void updateAckStatus(Context c, Uri data, int ack_status){
         Log.d(TAG, "updating acks status for "+data.toString()+" to "+ ack_status);
-        Log.d(TAG, "int: "+ack_status);
-        Log.d(TAG, "Integer: "+new Integer(ack_status));
-        Log.d(TAG, "Integer.decode: "+Integer.decode(""+ack_status));
         ContentValues cv = new ContentValues();
         cv.put(Pager.Pages.ACK_STATUS, new Integer(ack_status));
         int rows = c.getContentResolver().update(data, cv, null, null);
