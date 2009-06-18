@@ -59,6 +59,7 @@ public class Notifier extends BroadcastReceiver
             String page_subj = cursor.getString(cursor.getColumnIndex(Pager.Pages.SUBJECT));
 
             Notification n = getNotification(context, page_subj);
+            n.sound = null; //no noise initially. wait for the delayed ANNOY action below.
             nm.notify(R.string.notify_page, n);
 
             Intent i = new Intent(Pager.ANNOY_ACTION);
@@ -71,7 +72,8 @@ public class Notifier extends BroadcastReceiver
                                           PendingIntent.FLAG_CANCEL_CURRENT
                                         );
 
-            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+20000, 20000, annoyintent);
+            // 500 ms delay, to prevent the regular text message noise from stomping on us.
+            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+500, 20000, annoyintent);
         }
         else if(intent.getAction().equals(Pager.SILENCE_ACTION)){
             Log.d(TAG, "cancelling the notification...");
