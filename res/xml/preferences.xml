@@ -33,5 +33,11 @@
       android:title="Edit Replies"
       android:summary="edit the text of replies"
       />
+    <ListPreference android:key="notification_interval" 
+      android:title="Notification Interval"
+      android:summary="how long to wait between notifications"
+      android:defaultValue="20000"
+      android:entries="@array/intervals"
+      android:entryValues="@array/intervals_in_ms"/>
 </PreferenceScreen>
 

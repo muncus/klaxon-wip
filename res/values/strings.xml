@@ -21,7 +21,10 @@
      them to be changed based on the locale and options. -->
 
 <resources>
+    <!-- window and activity names -->
     <string name="app_name">Klaxon</string>
+    <string name="prefs_activity">Klaxon Preferences</string>
+    <string name="replylist_activity">Reply Listing</string>
     <!-- menu items -->
     <string name="notify_page">You have been paged</string>
     <string name="sms_ok">Response Sent.</string>

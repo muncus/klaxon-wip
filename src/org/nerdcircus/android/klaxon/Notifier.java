@@ -71,9 +71,16 @@ public class Notifier extends BroadcastReceiver
                                           i,
                                           PendingIntent.FLAG_CANCEL_CURRENT
                                         );
+            
+            //TODO: is this the right way to get a PreferenceManager?
+            SharedPreferences prefs = context.getSharedPreferences("org.nerdcircus.android.klaxon_preferences", 0);
+
+            Log.d(TAG, "notifcation interval: " + prefs.getString("notification_interval", "unknown"));
+            long repeat_interval_ms = new Integer(prefs.getString("notification_interval", "20000")).longValue();
+            Log.d(TAG, "notifcation interval: " + repeat_interval_ms);
 
             // 500 ms delay, to prevent the regular text message noise from stomping on us.
-            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+500, 20000, annoyintent);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+500, repeat_interval_ms, annoyintent);
         }
         else if(intent.getAction().equals(Pager.SILENCE_ACTION)){
             Log.d(TAG, "cancelling the notification...");
@@ -134,7 +141,6 @@ public class Notifier extends BroadcastReceiver
         n.vibrate = new long[] {0, 800, 500, 800};
         n.sound = alertsound;
         n.flags = Notification.FLAG_AUTO_CANCEL | 
-                  Notification.FLAG_INSISTENT |
                   Notification.FLAG_SHOW_LIGHTS;
         n.contentIntent = PendingIntent.getActivity(context, 0, listIntent, 0);
         n.deleteIntent = PendingIntent.getBroadcast(context, 0, cancelIntent, 0);

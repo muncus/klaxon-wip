@@ -64,7 +64,7 @@ public class PageViewer extends Activity
         setContentView(R.layout.escview);
 
         mSubjectView = (TextView) findViewById(R.id.view_subject);
-        mSubjectView.setTypeface(Typeface.DEFAULT_BOLD);
+        mSubjectView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         mSubjectView.setTextSize((float)(mSubjectView.getTextSize() * 1.25));
 
         mBodyView = (TextView) findViewById(R.id.view_body);
