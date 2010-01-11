@@ -31,9 +31,7 @@ public class PageViewerTest extends ActivityInstrumentationTestCase2 {
         cv.put(Pages.BODY, "the body of a message that is very important!");
         cv.put(Pages.TRANSPORT, "nonexistant");
         Log.d("KlaxonTest", "trying to insert some data...");
-        //FIXME: no good. getActivity() starts the activity. this causes the NPEs i'm seeing.
         this.testpageUri = getInstrumentation().getTargetContext().getContentResolver().insert(Pages.CONTENT_URI, cv);
-        //this.testpageUri = PagerProvider.insert(Pages.CONTENT_URI, cv);
         Log.d("KlaxonTest", "inserted: " + this.testpageUri.toString() );
         Intent i = new Intent(Intent.ACTION_VIEW, this.testpageUri);
         setActivityIntent(i);
@@ -49,7 +47,7 @@ public class PageViewerTest extends ActivityInstrumentationTestCase2 {
         
     public void testLaunchWithViewAction(){
         Log.d("XXXX", "attempting to launch with: " + this.testpageUri.toString());
-        //launchActivityWithIntent("org.nerdcircus.android.klaxon", PageViewer.class, i);
+        getActivity();
         assertTrue(true);
     }
 
