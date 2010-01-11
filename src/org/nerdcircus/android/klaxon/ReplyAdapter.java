@@ -40,7 +40,7 @@ public class ReplyAdapter extends ResourceCursorAdapter
         ImageView icon = (ImageView) view.findViewById(R.id.icon);
         TextView subject = (TextView) view.findViewById(R.id.subject);
         TextView body = (TextView) view.findViewById(R.id.body);
-        subject.setTypeface(Typeface.DEFAULT_BOLD);
+        subject.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
         subject.setText(cursor.getString(cursor.getColumnIndex(Pager.Replies.NAME)));
         body.setText(cursor.getString(cursor.getColumnIndex(Pager.Replies.BODY)));
