@@ -163,6 +163,7 @@ public class SmsPageReceiver extends BroadcastReceiver
     /** check if we can reply to this page.
      */
     boolean canReply(Context context, Uri data){
+        Log.d(TAG, "attempting to reply to: " + data);
         Cursor cursor = context.getContentResolver().query(data,
                 new String[] {Pager.Pages.TRANSPORT, Pager.Pages._ID},
                 null,

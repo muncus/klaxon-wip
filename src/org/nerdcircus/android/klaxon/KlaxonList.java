@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -103,6 +104,7 @@ public class KlaxonList extends ListActivity
         Log.d(TAG, "adapter created.");
         setListAdapter(adapter);
         Log.d(TAG, "oncreate done.");
+        registerForContextMenu(getListView());
     }
 
 
@@ -169,10 +171,34 @@ public class KlaxonList extends ListActivity
     public boolean onPrepareOptionsMenu(Menu menu){
         Log.d(TAG, "preparing options menu");
         super.onPrepareOptionsMenu(menu);
-        final boolean haveItems = mCursor.getCount() > 0;
+        final boolean haveItems = getSelectedItemId() >= 0;
         menu.setGroupVisible(MENU_ACTIONS_GROUP, haveItems);
         menu.setGroupVisible(MENU_ALWAYS_GROUP, true);
         return true;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        Log.d(TAG, "Menu info position: " + ((AdapterView.AdapterContextMenuInfo)menuInfo).position);
+
+        Cursor c = managedQuery(Replies.CONTENT_URI,  
+                    new String[] {Replies._ID, Replies.NAME, Replies.BODY, Replies.ACK_STATUS},
+                    "show_in_menu == 1", null, null);
+        c.moveToFirst();
+        while ( ! c.isAfterLast() ){
+            MenuItem mi = addContextMenuItem(menu,
+                             c.getString(c.getColumnIndex(Replies.NAME)),
+                             c.getString(c.getColumnIndex(Replies.BODY)),
+                             c.getInt(c.getColumnIndex(Replies.ACK_STATUS)),
+                             getListAdapter().getItemId(((AdapterView.AdapterContextMenuInfo)menuInfo).position)
+                             );
+            c.moveToNext();
+        }
+        Intent i = new Intent(Intent.ACTION_PICK, Replies.CONTENT_URI);
+        menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, "Other").setIntent(i);
+
+        //make delete be last
+        //MenuItem delete_item = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Delete");
     }
 
     private Menu addReplyMenuItem(Menu menu, String label, final String response, final int status){
@@ -191,6 +217,25 @@ public class KlaxonList extends ListActivity
             }
         );
         return menu;
+    }
+
+    private MenuItem addContextMenuItem(Menu menu, String label, final String response, final int status, final long itemId){
+        //NOTE: these cannot be done with MenuItem.setIntent(), because those
+        //intents are called with Context.startActivity()
+        MenuItem mi = menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, label);
+        mi.setOnMenuItemClickListener(
+            new MenuItem.OnMenuItemClickListener(){
+                public boolean onMenuItemClick(MenuItem item){
+                    Intent i = new Intent(Pager.REPLY_ACTION);
+                    i.setData(Uri.withAppendedPath(Pages.CONTENT_URI, ""+itemId));
+                    i.putExtra("response", response);
+                    i.putExtra("new_ack_status", status);
+                    sendBroadcast(i);
+                    return true;
+                }
+            }
+        );
+        return mi;
     }
 
     /** Create default preferences..
