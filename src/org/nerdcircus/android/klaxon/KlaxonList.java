@@ -17,10 +17,13 @@
 package org.nerdcircus.android.klaxon;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -52,7 +55,32 @@ public class KlaxonList extends ListActivity
     private int MENU_ACTIONS_GROUP = Menu.FIRST;
     private int MENU_ALWAYS_GROUP = Menu.FIRST + 1;
 
+    private int DIALOG_DELETE_ALL_CONFIRMATION = 1
+
     private Cursor mCursor;
+
+    protected Dialog onCreateDialog(int id){
+        if(id == DIALOG_DELETE_ALL_CONFIRMATION){
+            //Confirm deletion.
+            AlertDialog.OnClickListener delete_all_confirm_listener =
+                new AlertDialog.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int which){
+                        if(which == AlertDialog.BUTTON_POSITIVE){
+                            getContentResolver().delete(Pages.CONTENT_URI, null, null);
+                        }	
+                        else {
+                            dialog.dismiss();
+                        }
+                    }
+                };
+            AlertDialog.Builder confirm_dialog = new AlertDialog.Builder((Context)this); 
+            confirm_dialog.setMessage("Delete all pages?");
+            confirm_dialog.setNegativeButton("No", delete_all_confirm_listener );
+            confirm_dialog.setPositiveButton("Yes", delete_all_confirm_listener );
+            return confirm_dialog.create();
+        }
+        return null;
+    }
 
     @Override
     public void onCreate(Bundle icicle)
@@ -123,8 +151,15 @@ public class KlaxonList extends ListActivity
         mi = menu.add((MENU_ALWAYS_GROUP|Menu.CATEGORY_SECONDARY), Menu.NONE, Menu.NONE, "Delete All");
         mi.setIcon(android.R.drawable.ic_menu_delete);
         //TODO: make this prompt with a dialog or something first.
-        getContentResolver().delete(Pages.CONTENT_URI, null, null);
-
+        mi.setOnMenuItemClickListener(
+            new MenuItem.OnMenuItemClickListener(){
+                public boolean onMenuItemClick(MenuItem item){
+                    showDialog(DIALOG_DELETE_ALL_CONFIRMATION);
+                    return true;
+                }
+            }
+        );
+                    
 
         return true;
     }
@@ -168,7 +203,7 @@ public class KlaxonList extends ListActivity
         SharedPreferences prefs = getSharedPreferences("alertprefs", 0);
         if( prefs.getAll().isEmpty() ){
             Log.d(TAG, "creating alertprefs");
-            prefs.edit().putString("alert_sound", "content://media/internal/audio/media/2").commit();
+            //prefs.edit().putString("alert_sound", "content://media/internal/audio/media/2").commit();
         }
 
         //preload some default responses
