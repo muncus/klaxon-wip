@@ -120,6 +120,12 @@ public class KlaxonList extends ListActivity
         i.setClassName(this, "org.nerdcircus.android.klaxon.Preferences");
         mi.setIntent(i);
 
+        mi = menu.add((MENU_ALWAYS_GROUP|Menu.CATEGORY_SECONDARY), Menu.NONE, Menu.NONE, "Delete All");
+        mi.setIcon(android.R.drawable.ic_menu_delete);
+        //TODO: make this prompt with a dialog or something first.
+        getContentResolver().delete(Pages.CONTENT_URI, null, null);
+
+
         return true;
     }
 
