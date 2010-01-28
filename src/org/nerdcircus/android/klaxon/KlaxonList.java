@@ -55,7 +55,7 @@ public class KlaxonList extends ListActivity
     private int MENU_ACTIONS_GROUP = Menu.FIRST;
     private int MENU_ALWAYS_GROUP = Menu.FIRST + 1;
 
-    private int DIALOG_DELETE_ALL_CONFIRMATION = 1
+    private int DIALOG_DELETE_ALL_CONFIRMATION = 1;
 
     private Cursor mCursor;
 
