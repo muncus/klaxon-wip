@@ -140,9 +140,8 @@ public class SmsPageReceiver extends BroadcastReceiver
         annoy.setData(newpage);
         context.sendBroadcast(annoy);
         Log.d(TAG, "sent intent " + annoy.toString() );
-        //FIXME: this is an unordered broadcast, and cannot be aborted.
-        // this means that all sms-received pages will also appear in the sms app.
-        //abortBroadcast();
+        //NOTE: as of 1.6, this broadcast can be aborted.
+        abortBroadcast();
         Log.d(TAG, "sms broadcast aborted.");
 
         
