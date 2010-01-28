@@ -9,7 +9,6 @@
       android:summary="are you oncall?" />  
     <RingtonePreference 
       android:key="alert_sound"
-      android:defaultValue="content://media/internal/audio/media/43"
       android:title="Alert Sound" />
     <CheckBoxPreference android:key="use_alarm_stream" 
       android:title="use Alarm Volume?"
@@ -25,7 +24,7 @@
           android:summary="substring match on sender phone number or email" />
         <CheckBoxPreference android:key="use_received_service_center" 
           android:title="Use Received Service Center?"
-          android:defaultValue="true"
+          android:defaultValue="false"
           android:summary="use Service Center from received messages when replying" />  
         </PreferenceScreen> 
     <Preference
