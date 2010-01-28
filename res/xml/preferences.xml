@@ -9,6 +9,9 @@
       android:summary="are you oncall?" />  
     <RingtonePreference 
       android:key="alert_sound"
+      android:ringtoneType="all"
+      android:showDefault="true"
+      android:showSilent="true"
       android:title="Alert Sound" />
     <CheckBoxPreference android:key="use_alarm_stream" 
       android:title="use Alarm Volume?"
