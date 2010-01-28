@@ -1,4 +1,4 @@
 #!/bin/bash
-ant reinstall
-cd tests && ant reinstall
+ant install
+cd tests && ant install
 adb shell am instrument -w org.nerdcircus.android.klaxon.tests/android.test.InstrumentationTestRunner
