@@ -151,7 +151,7 @@ public class Notifier extends BroadcastReceiver
         n.contentView.setTextViewText(R.id.text, subject);
 
         // default is RING. this will override.
-        if (prefs.getBoolean("use_alert_stream", false)){
+        if (prefs.getBoolean("use_alarm_stream", false)){
             n.audioStreamType = AudioManager.STREAM_ALARM;
         }
 
