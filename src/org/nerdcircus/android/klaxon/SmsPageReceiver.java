@@ -141,7 +141,7 @@ public class SmsPageReceiver extends BroadcastReceiver
         context.sendBroadcast(annoy);
         Log.d(TAG, "sent intent " + annoy.toString() );
         //NOTE: as of 1.6, this broadcast can be aborted.
-        if ( ! prefs.getBoolean("consume_sms_message", false)){
+        if (prefs.getBoolean("consume_sms_message", false)){
             abortBroadcast();
             Log.d(TAG, "sms broadcast aborted.");
         }
