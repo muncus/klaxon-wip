@@ -58,6 +58,8 @@ public class KlaxonList extends ListActivity
 
     private int DIALOG_DELETE_ALL_CONFIRMATION = 1;
 
+    private int REQUEST_PICK_REPLY = 1;
+
     private Cursor mCursor;
 
     protected Dialog onCreateDialog(int id){
@@ -139,6 +141,7 @@ public class KlaxonList extends ListActivity
             c.moveToNext();
         }
         Intent i = new Intent(Intent.ACTION_PICK, Replies.CONTENT_URI);
+        i.setType("vnd.android.cursor.item/reply");
         menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, "Other").setIntent(i);
 
         //make delete be last
@@ -194,11 +197,43 @@ public class KlaxonList extends ListActivity
                              );
             c.moveToNext();
         }
-        Intent i = new Intent(Intent.ACTION_PICK, Replies.CONTENT_URI);
-        menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, "Other").setIntent(i);
+        menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, "Other").setOnMenuItemClickListener(
+            new MenuItem.OnMenuItemClickListener(){
+                public boolean onMenuItemClick(MenuItem item){
+                    //XXX: need to insert the page url in here somewhere.
+                    Intent i = new Intent(Intent.ACTION_PICK, Replies.CONTENT_URI);
+                    i.setType("vnd.android.cursor.item/reply");
+                    long itemId = getListAdapter().getItemId(((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).position);
+                    i.putExtra("page_uri", Uri.withAppendedPath(Pages.CONTENT_URI, ""+itemId).toString() );
+                    startActivityForResult(i, REQUEST_PICK_REPLY);
+                    //menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, "Other").setIntent(i);
+                    return true;
+                }
+            }
+        );
 
         //make delete be last
         //MenuItem delete_item = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Delete");
+    }
+
+    //XXX: this is copied from PageViewer. factor it out.
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if( requestCode == REQUEST_PICK_REPLY ){
+           if(resultCode == RESULT_OK){
+               //send a reply.
+               Cursor c = managedQuery(data.getData(),  
+                           new String[] {Replies._ID, Replies.BODY, Replies.ACK_STATUS},
+                           null, null, null);
+               c.moveToFirst();
+               Intent i = new Intent(Pager.REPLY_ACTION);
+               i.setData(Uri.parse(data.getStringExtra("page_uri")));
+               i.putExtra("response", c.getString(c.getColumnIndex(Replies.BODY)));
+               i.putExtra("new_ack_status", c.getInt(c.getColumnIndex(Replies.ACK_STATUS)));
+               sendBroadcast(i);
+               return;
+           }
+           else { return; }
+        }
     }
 
     private Menu addReplyMenuItem(Menu menu, String label, final String response, final int status){

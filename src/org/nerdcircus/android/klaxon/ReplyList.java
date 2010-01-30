@@ -74,7 +74,8 @@ public class ReplyList extends ListActivity
         if( this.getIntent().getAction().equals(Intent.ACTION_PICK) ){
             //we're picking responses, not editing them.
             Log.d(TAG, "pick action. returning result.");
-            setResult(RESULT_OK, new Intent().setData(uri));
+            //Note: this reuses the sent Intent, so we dont lose the 'page_uri' data, if included.
+            setResult(RESULT_OK, new Intent(this.getIntent()).setData(uri));
             finish();
         }
         else {
