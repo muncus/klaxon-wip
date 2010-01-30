@@ -29,6 +29,10 @@
           android:title="Use Received Service Center?"
           android:defaultValue="false"
           android:summary="use Service Center from received messages when replying" />  
+        <CheckBoxPreference android:key="consume_sms_message" 
+          android:title="Consume Sms message"
+          android:defaultValue="false"
+          android:summary="prevent the Sms from being delivered to other apps" />  
         </PreferenceScreen> 
     <Preference
       android:key="edit_replies"
