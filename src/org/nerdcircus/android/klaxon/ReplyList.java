@@ -90,7 +90,7 @@ public class ReplyList extends ListActivity
         super.onCreateOptionsMenu(menu);
         final Context appcontext = (Context)this;
         MenuItem mi;
-        mi = menu.add(MENU_ACTIONS_GROUP, MENU_ADD, Menu.NONE, "Add a reply");
+        mi = menu.add(MENU_ACTIONS_GROUP, MENU_ADD, Menu.NONE, R.string.add_reply);
         Intent i = new Intent(Intent.ACTION_INSERT,
                               Replies.CONTENT_URI);
         mi.setIntent(i);

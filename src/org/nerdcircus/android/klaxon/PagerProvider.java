@@ -114,6 +114,7 @@ public class PagerProvider extends ContentProvider {
                     + "body TEXT, " 
                     + "ack_status INTEGER" //indicates positive/negative reply.
                     + ");");
+            //FIXME: use resources for these values.
             db.execSQL("insert into replies(name, body, ack_status)"
                     + "values(\"Yes\", \"Yes\", " + Pager.STATUS_ACK + ");");
             db.execSQL("insert into replies(name, body, ack_status)"
@@ -129,6 +130,7 @@ public class PagerProvider extends ContentProvider {
             Log.d(TAG, "adding shortlist column to reply table");
             //the cursor interface doesnt do booleans...
             db.execSQL("ALTER TABLE replies ADD COLUMN show_in_menu INT default 0;");
+            ////FIXME: use resources for these values.
             db.execSQL("update replies set show_in_menu = 1 where name == \"Yes\";");
             db.execSQL("update replies set show_in_menu = 1 where name == \"No\";");
         }

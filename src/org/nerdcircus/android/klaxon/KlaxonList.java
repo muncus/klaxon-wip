@@ -25,6 +25,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -77,9 +78,9 @@ public class KlaxonList extends ListActivity
                     }
                 };
             AlertDialog.Builder confirm_dialog = new AlertDialog.Builder((Context)this); 
-            confirm_dialog.setMessage("Delete all pages?");
-            confirm_dialog.setNegativeButton("No", delete_all_confirm_listener );
-            confirm_dialog.setPositiveButton("Yes", delete_all_confirm_listener );
+            confirm_dialog.setMessage(R.string.confirm_delete);
+            confirm_dialog.setNegativeButton(R.string.no, delete_all_confirm_listener );
+            confirm_dialog.setPositiveButton(R.string.yes, delete_all_confirm_listener );
             return confirm_dialog.create();
         }
         return null;
@@ -142,20 +143,19 @@ public class KlaxonList extends ListActivity
         }
         Intent i = new Intent(Intent.ACTION_PICK, Replies.CONTENT_URI);
         i.setType("vnd.android.cursor.item/reply");
-        menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, "Other").setIntent(i);
+        menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, R.string.other).setIntent(i);
 
         //make delete be last
         //MenuItem delete_item = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Delete");
 
-        MenuItem mi = menu.add(MENU_ALWAYS_GROUP, Menu.NONE, Menu.NONE, "Settings");
+        MenuItem mi = menu.add(MENU_ALWAYS_GROUP, Menu.NONE, Menu.NONE, R.string.prefs_activity);
         mi.setIcon(android.R.drawable.ic_menu_preferences);
         i = new Intent(Intent.ACTION_MAIN);
         i.setClassName(this, "org.nerdcircus.android.klaxon.Preferences");
         mi.setIntent(i);
 
-        mi = menu.add((MENU_ALWAYS_GROUP|Menu.CATEGORY_SECONDARY), Menu.NONE, Menu.NONE, "Delete All");
+        mi = menu.add((MENU_ALWAYS_GROUP|Menu.CATEGORY_SECONDARY), Menu.NONE, Menu.NONE, R.string.delete_all);
         mi.setIcon(android.R.drawable.ic_menu_delete);
-        //TODO: make this prompt with a dialog or something first.
         mi.setOnMenuItemClickListener(
             new MenuItem.OnMenuItemClickListener(){
                 public boolean onMenuItemClick(MenuItem item){
@@ -197,7 +197,7 @@ public class KlaxonList extends ListActivity
                              );
             c.moveToNext();
         }
-        menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, "Other").setOnMenuItemClickListener(
+        menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, R.string.other).setOnMenuItemClickListener(
             new MenuItem.OnMenuItemClickListener(){
                 public boolean onMenuItemClick(MenuItem item){
                     //XXX: need to insert the page url in here somewhere.
@@ -291,8 +291,9 @@ public class KlaxonList extends ListActivity
         Editor e = prefs.edit();
         if( prefs.getAll().isEmpty() ){
             Log.d(TAG, "creating initial responses");
-            e.putString("Yes", "Yes");
-            e.putString("No", "No");
+            //FIXME: these should be taken from resources.
+            e.putString(this.getString(R.string.yes), this.getString(R.string.yes));
+            e.putString(this.getString(R.string.no), this.getString(R.string.no));
             e.commit();
         }
 

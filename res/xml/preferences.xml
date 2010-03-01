@@ -4,44 +4,44 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:key="klaxon_prefs" > 
     <CheckBoxPreference android:key="is_oncall" 
-      android:title="On Call"
+      android:title="@string/pref_oncall"
       android:defaultValue="true"
-      android:summary="are you oncall?" />  
+      android:summary="@string/pref_oncall_summary" />  
     <RingtonePreference 
       android:key="alert_sound"
       android:ringtoneType="all"
       android:showDefault="true"
       android:showSilent="true"
-      android:title="Alert Sound" />
+      android:title="@string/pref_alertsound" />
     <CheckBoxPreference android:key="use_alarm_stream" 
-      android:title="use Alarm Volume?"
+      android:title="@string/pref_alarmstream"
       android:defaultValue="false"
-      android:summary="use the alarm volume stream, instead of ringer volume" />  
+      android:summary="@string/pref_alarmstream_summary" />  
     <PreferenceScreen
       android:key="message_prefs"
-      android:title="Sms Settings"
-      android:summary="Settings for pages received via sms" >
+      android:title="@string/pref_smssettings"
+      android:summary="@string/pref_smssettings_summary" >
         <EditTextPreference android:key="sender_match"
-          android:title="Sender"
+          android:title="@string/pref_sms_sender"
           android:defaultValue=""
-          android:summary="substring match on sender phone number or email" />
+          android:summary="@string/pref_sms_sender_summary" />
         <CheckBoxPreference android:key="use_received_service_center" 
-          android:title="Use Received Service Center?"
+          android:title="@string/pref_sms_servicecenter"
           android:defaultValue="false"
-          android:summary="use Service Center from received messages when replying" />  
+          android:summary="@string/pref_sms_servicecenter_summary" />  
         <CheckBoxPreference android:key="consume_sms_message" 
-          android:title="Consume Sms message"
+          android:title="@string/pref_sms_consumesms"
           android:defaultValue="false"
-          android:summary="prevent the Sms from being delivered to other apps" />  
+          android:summary="@string/pref_sms_consumesms" />  
         </PreferenceScreen> 
     <Preference
       android:key="edit_replies"
-      android:title="Edit Replies"
-      android:summary="edit the text of replies"
+      android:title="@string/pref_editreplies"
+      android:summary="@string/pref_editreplies_summary"
       />
     <ListPreference android:key="notification_interval" 
-      android:title="Notification Interval"
-      android:summary="how long to wait between notifications"
+      android:title="@string/pref_notificationtime"
+      android:summary="@string/pref_notificationtime"
       android:defaultValue="20000"
       android:entries="@array/intervals"
       android:entryValues="@array/intervals_in_ms"/>

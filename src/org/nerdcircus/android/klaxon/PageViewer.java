@@ -85,6 +85,7 @@ public class PageViewer extends Activity
         //make a pretty date stamp.
         Date d = new Date(mCursor.getLong(mCursor.getColumnIndex(Pager.Pages.CREATED_DATE)));
         SimpleDateFormat df = new SimpleDateFormat();
+        //FIXME: use a resource for this..
         mDateView.setText("Received: " + df.format(d));
 
         int status = mCursor.getInt(mCursor.getColumnIndex(Pager.Pages.ACK_STATUS));
@@ -108,9 +109,9 @@ public class PageViewer extends Activity
                              );
             c.moveToNext();
         }
-        menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Other");
+        menu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.other);
         //make delete be last
-        MenuItem delete_item = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Delete");
+        MenuItem delete_item = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.delete);
 
         return true;
     }
@@ -137,7 +138,7 @@ public class PageViewer extends Activity
     public boolean onOptionsItemSelected(MenuItem item){
         //hook called on item click.
 
-        if( item.getTitle() == "Delete" ){
+        if( item.getTitle() == this.getString(R.string.delete) ){
             //this is the only one that's not a reply...
             Log.d(TAG, "Deleting row.");
             mCursor.close();
@@ -146,7 +147,7 @@ public class PageViewer extends Activity
             finish(); //finish the PageViewer if we've deleted our page.
             return true; //consume this menu click.
         }
-        else if( item.getTitle() == "Other" ){
+        else if( item.getTitle() == this.getString(R.string.other)){
             //respond with some other response.
             Intent i = new Intent(Intent.ACTION_PICK, Replies.CONTENT_URI);
             i.setType("vnd.android.cursor.item/reply");

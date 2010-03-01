@@ -132,7 +132,7 @@ public class Notifier extends BroadcastReceiver
 
         Notification n = new Notification(
             R.drawable.bar_icon,
-            "You have been paged!", //TODO: make this be "n pages waiting"
+            "This will be overridden below.", //TODO: make this be "n pages waiting"
             System.currentTimeMillis()
         );
         n.ledARGB=R.color.red;
@@ -164,7 +164,7 @@ public class Notifier extends BroadcastReceiver
         cv.put(Pager.Pages.ACK_STATUS, new Integer(ack_status));
         int rows = c.getContentResolver().update(data, cv, null, null);
         Log.d(TAG, "Updated rows: "+rows);
-        Toast.makeText(c, "Reply sent.", Toast.LENGTH_LONG);
+        Toast.makeText(c, R.string.reply_ok, Toast.LENGTH_LONG);
     }
 
 }
