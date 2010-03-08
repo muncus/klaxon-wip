@@ -19,6 +19,7 @@ package org.nerdcircus.android.klaxon;
 import android.content.SharedPreferences;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.os.Build;
@@ -45,8 +46,9 @@ public class Preferences extends PreferenceActivity {
         //NB: there's no code to act on this, since the abortBroadcast() 
         // call will not break anything when called in < 1.6
         Log.d("BUILDVERSION", Build.VERSION.SDK);
-        if(Integer.valueOf(Build.VERSION.SDK) == Integer.valueOf(3)){
-            Preference csp = this.findPreference("consume_sms_message");
+        if(Integer.valueOf(Build.VERSION.SDK) <= Integer.valueOf(3)){
+            CheckBoxPreference csp = (CheckBoxPreference) this.findPreference("consume_sms_message");
+            csp.setChecked(false);
             csp.setEnabled(false);
         }
         
