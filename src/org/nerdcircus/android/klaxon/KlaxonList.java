@@ -146,7 +146,16 @@ public class KlaxonList extends ListActivity
         menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, R.string.other).setIntent(i);
 
         //make delete be last
-        //MenuItem delete_item = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Delete");
+        menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, R.string.delete).setOnMenuItemClickListener(
+            new MenuItem.OnMenuItemClickListener(){
+                public boolean onMenuItemClick(MenuItem item){
+                    //delete.
+                    Uri itemurl = Uri.withAppendedPath(Pages.CONTENT_URI, ""+getSelectedItemId());
+                    getContentResolver().delete(itemurl, null, null);
+                    return true;
+                }
+            }
+        );
 
         MenuItem mi = menu.add(MENU_ALWAYS_GROUP, Menu.NONE, Menu.NONE, R.string.prefs_activity);
         mi.setIcon(android.R.drawable.ic_menu_preferences);
@@ -197,23 +206,32 @@ public class KlaxonList extends ListActivity
                              );
             c.moveToNext();
         }
+        // Add the "Other" menu option.
         menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, R.string.other).setOnMenuItemClickListener(
             new MenuItem.OnMenuItemClickListener(){
                 public boolean onMenuItemClick(MenuItem item){
-                    //XXX: need to insert the page url in here somewhere.
                     Intent i = new Intent(Intent.ACTION_PICK, Replies.CONTENT_URI);
                     i.setType("vnd.android.cursor.item/reply");
                     long itemId = getListAdapter().getItemId(((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).position);
                     i.putExtra("page_uri", Uri.withAppendedPath(Pages.CONTENT_URI, ""+itemId).toString() );
                     startActivityForResult(i, REQUEST_PICK_REPLY);
-                    //menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, "Other").setIntent(i);
+                    return true;
+                }
+            }
+        );
+        // Add the "delete" option.
+        menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, R.string.delete).setOnMenuItemClickListener(
+            new MenuItem.OnMenuItemClickListener(){
+                public boolean onMenuItemClick(MenuItem item){
+                    long itemId = getListAdapter().getItemId(((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).position);
+                    //delete.
+                    Uri itemurl = Uri.withAppendedPath(Pages.CONTENT_URI, ""+itemId);
+                    getContentResolver().delete(itemurl, null, null);
                     return true;
                 }
             }
         );
 
-        //make delete be last
-        //MenuItem delete_item = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Delete");
     }
 
     //XXX: this is copied from PageViewer. factor it out.
