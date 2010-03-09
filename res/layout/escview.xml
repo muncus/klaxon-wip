@@ -29,6 +29,11 @@
             android:layout_toRightOf="@id/view_icon"
             />
     </RelativeLayout>
+    <TextView android:id="@+id/sender"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Sender: unknown"
+        />
     <TextView android:id="@+id/datestamp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

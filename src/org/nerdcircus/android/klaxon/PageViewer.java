@@ -53,6 +53,7 @@ public class PageViewer extends Activity
     private TextView mSubjectView;
     private TextView mBodyView;
     private TextView mDateView;
+    private TextView mSenderView;
     private ImageView mIconView;
 
     @Override
@@ -70,12 +71,13 @@ public class PageViewer extends Activity
         mBodyView = (TextView) findViewById(R.id.view_body);
         mIconView = (ImageView) findViewById(R.id.view_icon);
         mDateView = (TextView) findViewById(R.id.datestamp);
+        mSenderView = (TextView) findViewById(R.id.sender);
 
         Intent i = getIntent();
         mContentURI = i.getData();
         Log.d(TAG, "displaying: "+mContentURI.toString());
         mCursor = managedQuery(mContentURI,  
-                    new String[] {Pager.Pages._ID, Pager.Pages.SUBJECT, Pager.Pages.BODY, Pager.Pages.ACK_STATUS, Pager.Pages.CREATED_DATE},
+                    new String[] {Pager.Pages._ID, Pager.Pages.SUBJECT, Pager.Pages.BODY, Pager.Pages.ACK_STATUS, Pager.Pages.CREATED_DATE, Pager.Pages.SENDER},
                     null, null, null);
         
         mCursor.moveToNext();
@@ -87,6 +89,7 @@ public class PageViewer extends Activity
         SimpleDateFormat df = new SimpleDateFormat();
         //FIXME: use a resource for this..
         mDateView.setText("Received: " + df.format(d));
+        mSenderView.setText("Sender: "+ mCursor.getString(mCursor.getColumnIndex(Pager.Pages.SENDER)));
 
         int status = mCursor.getInt(mCursor.getColumnIndex(Pager.Pages.ACK_STATUS));
         mIconView.setImageResource(Pager.getStatusResId(status));
