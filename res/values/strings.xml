@@ -59,6 +59,7 @@
     <string name="pref_editreplies_summary">edit the text of quick responses</string>
     <string name="pref_notificationtime">Notification Interval</string>
     <string name="pref_notificationtime_summary">length of time between notifications</string>
+    <string name="pref_vibrate">Vibrate?</string>
 
 </resources>
 

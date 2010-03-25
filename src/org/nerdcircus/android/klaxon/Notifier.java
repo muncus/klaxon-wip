@@ -138,7 +138,6 @@ public class Notifier extends BroadcastReceiver
         n.ledARGB=R.color.red;
         n.ledOnMS=1000;
         n.ledOffMS=100;
-        n.vibrate = new long[] {0, 800, 500, 800};
         n.sound = alertsound;
         n.flags = Notification.FLAG_AUTO_CANCEL | 
                   Notification.FLAG_SHOW_LIGHTS;
@@ -149,6 +148,11 @@ public class Notifier extends BroadcastReceiver
         n.contentView = new RemoteViews(context.getPackageName(), R.layout.notification);
 
         n.contentView.setTextViewText(R.id.text, subject);
+
+        //vibrate!
+        if (prefs.getBoolean("vibrate", true)){
+            n.vibrate = new long[] {0, 800, 500, 800};
+        }
 
         // default is RING. this will override.
         if (prefs.getBoolean("use_alarm_stream", false)){

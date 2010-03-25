@@ -17,6 +17,9 @@
       android:title="@string/pref_alarmstream"
       android:defaultValue="false"
       android:summary="@string/pref_alarmstream_summary" />  
+    <CheckBoxPreference android:key="vibrate" 
+      android:title="@string/pref_vibrate"
+      android:defaultValue="true" />  
     <PreferenceScreen
       android:key="message_prefs"
       android:title="@string/pref_smssettings"
