@@ -36,6 +36,10 @@
           android:title="@string/pref_sms_consumesms"
           android:defaultValue="false"
           android:summary="@string/pref_sms_consumesms" />  
+        <CheckBoxPreference android:key="also_match_body" 
+          android:title="Also Match Message Body"
+          android:defaultValue="false"
+          android:summary="Match sender pattern against the body of the message" />  
         </PreferenceScreen> 
     <Preference
       android:key="edit_replies"

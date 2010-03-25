@@ -158,6 +158,10 @@ public class SmsPageReceiver extends BroadcastReceiver
             return true;
         if( cv.getAsString(Pages.FROM_ADDR).contains(trigger_string) )
             return true;
+        if ( prefs.getBoolean("also_match_body", false) ){
+            if( cv.getAsString(Pages.BODY).contains(trigger_string) )
+                return true;
+        }
         return false;
     }
 
