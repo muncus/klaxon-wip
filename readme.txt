@@ -5,14 +5,13 @@
 Klaxon is an oncall pager app for android. It allows you to easily respond to
 important messages with canned responses.
 
-More documentation is forthcoming, but for now, its just a todo list.
+More documentation is available on the wiki:
+http://code.google.com/p/klaxon/w/list
 
 TODO:
-* remove ack/nack actions.
 * per-receiver settings that dont have to be in preferences.xml
 * email page receiver
 * xmpp page receiver.
-* add generic sanity checks (like the subject check from SmsPageReceiver) in PagerProvider.
 * refactor out PageReceiver as an interface / base class.
 
 
