@@ -1,0 +1,6 @@
+.*.swp
+/*.apk
+/bin
+/gen
+/default.properties
+/local.properties
