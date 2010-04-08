@@ -121,6 +121,8 @@ public class SmsPageReceiver extends BroadcastReceiver
          * clean up after them.
          */
         cv = cleanupAttMessage(cv);
+        if( prefs.getBoolean("parse_alternate_line_endings", false) )
+            cv = cleanupLineEndings(cv);
 
         Log.d(TAG, "service center: " + msgs[0].getServiceCenterAddress());
         Log.d(TAG, "email from: " + msgs[0].getEmailFrom());
@@ -250,6 +252,17 @@ public class SmsPageReceiver extends BroadcastReceiver
             cv.put(Pages.BODY, mail_fields[3].trim());
         }
 
+        return cv;
+    }
+
+    //some providers use characters other than \n to end a line.
+    //fix them, so we can tell the parts of the message apart.
+    ContentValues cleanupLineEndings(ContentValues cv){
+        String body = cv.getAsString(Pages.BODY);
+        String[] fields = body.split(":", 3);
+        cv.put(Pages.FROM_ADDR, fields[0].trim());
+        cv.put(Pages.SUBJECT, fields[1].trim());
+        cv.put(Pages.BODY, fields[2].trim());
         return cv;
     }
 

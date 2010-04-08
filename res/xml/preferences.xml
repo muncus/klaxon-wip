@@ -40,6 +40,10 @@
           android:title="Also Match Message Body"
           android:defaultValue="false"
           android:summary="Match sender pattern against the body of the message" />  
+        <CheckBoxPreference android:key="parse_alternate_line_endings" 
+          android:title="alternate line endings"
+          android:defaultValue="false"
+          />  
         </PreferenceScreen> 
     <Preference
       android:key="edit_replies"
