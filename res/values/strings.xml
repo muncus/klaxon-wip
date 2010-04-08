@@ -60,6 +60,10 @@
     <string name="pref_notificationtime">Notification Interval</string>
     <string name="pref_notificationtime_summary">length of time between notifications</string>
     <string name="pref_vibrate">Vibrate?</string>
+    <string name="pref_match_message_body">Also Match Message Body</string>
+    <string name="pref_match_message_body_summary">match sender pattern against the body of the message</string>
+    <string name="pref_alternate_lineendings">Use alternate separator</string>
+    <string name="pref_alternate_lineendings_summary">Parse : as a replacement separator between sender, subject, and body</string>
 
 </resources>
 

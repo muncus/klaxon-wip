@@ -37,12 +37,13 @@
           android:defaultValue="false"
           android:summary="@string/pref_sms_consumesms" />  
         <CheckBoxPreference android:key="also_match_body" 
-          android:title="Also Match Message Body"
+          android:title="@string/pref_match_message_body"
           android:defaultValue="false"
-          android:summary="Match sender pattern against the body of the message" />  
+          android:summary="@string/pref_match_message_body_summary" />  
         <CheckBoxPreference android:key="parse_alternate_line_endings" 
-          android:title="alternate line endings"
+          android:title="@string/pref_alternate_lineendings"
           android:defaultValue="false"
+          android:summary="@string/pref_alternate_lineendings_summary"
           />  
         </PreferenceScreen> 
     <Preference
