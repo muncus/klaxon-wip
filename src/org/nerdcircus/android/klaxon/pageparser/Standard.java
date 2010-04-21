@@ -27,6 +27,8 @@ public class Standard {
         cv.put(Pages.FROM_ADDR, msgs[0].getDisplayOriginatingAddress());
         cv.put(Pages.BODY, msgs[0].getDisplayMessageBody());
 
+        cv = doCleanup(cv);
+
         return new Alert(cv);
     }
 
@@ -39,10 +41,25 @@ public class Standard {
         // sane defaults needed because i'm doing it wrong.
         cv.put(Pages.ACK_STATUS, 0);
 
+        cv = doCleanup(cv);
         return new Alert(cv);
     }
 
-    private ContentValues fixLineEndings(ContentValues cv){
+    private static ContentValues doCleanup(ContentValues cv){
+        //this is a list of Alert Cleanups to be done
+        cv = fixLineEndings(cv);
+        cv = addSubject(cv);
+
+        return cv;
+    }
+
+    /*
+     * Message Cleanup Functions
+     * functions below are intended to "clean up" messages that may not parse correctly.
+     * they should be called in the doCleanup() function above
+     */
+
+    private static ContentValues fixLineEndings(ContentValues cv){
         String body = cv.getAsString(Pages.BODY);
         // fix stupid line-endings.
         if(body.contains("\r")){
@@ -50,6 +67,19 @@ public class Standard {
             body = body.replaceAll("\r", "");
         }
         cv.put(Pages.BODY, body);
+        return cv;
+    }
+
+    private static ContentValues addSubject(ContentValues cv){
+        if(cv.get(Pages.SUBJECT).toString().trim().length() == 0){
+            String body = cv.get(Pages.BODY).toString();
+            if(body.length() > 21){
+                cv.put(Pages.SUBJECT, cv.get(Pages.BODY).toString().substring(0,20));
+            }
+            else {
+                cv.put(Pages.SUBJECT, cv.get(Pages.BODY).toString());
+            }
+        }
         return cv;
     }
 }
