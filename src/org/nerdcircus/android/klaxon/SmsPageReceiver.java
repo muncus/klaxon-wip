@@ -111,7 +111,7 @@ public class SmsPageReceiver extends BroadcastReceiver
             incoming = (new LabeledFields()).parse(msgs);
         }
         else {
-            Log.f(TAG, "unknown page parser:" + parser);
+            Log.e(TAG, "unknown page parser:" + parser);
         }
 
         // note that this page was received via sms.
