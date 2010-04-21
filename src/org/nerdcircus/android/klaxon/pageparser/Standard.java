@@ -47,7 +47,7 @@ public class Standard {
         return new Alert(cv);
     }
 
-    private static ContentValues doCleanup(ContentValues cv){
+    protected static ContentValues doCleanup(ContentValues cv){
         //this is a list of Alert Cleanups to be done
         cv = fixLineEndings(cv);
         cv = addSubject(cv);

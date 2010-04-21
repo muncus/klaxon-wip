@@ -35,7 +35,7 @@ import org.nerdcircus.android.klaxon.Alert;
 import org.nerdcircus.android.klaxon.Pager;
 import org.nerdcircus.android.klaxon.Pager.Pages;
 import org.nerdcircus.android.klaxon.PagerProvider;
-import org.nerdcircus.android.klaxon.pageparser.Standard;
+import org.nerdcircus.android.klaxon.pageparser.*;
 
 import java.util.Map;
 
@@ -97,10 +97,16 @@ public class SmsPageReceiver extends BroadcastReceiver
         }
 
         Alert incoming = null;
-        if(prefs.getString("pageparser", "Standard").equals("Standard")){
+        String parser = prefs.getString("pageparser", "Standard");
+        if(parser.equals("Standard")){
             Log.d(TAG, "using Standard pageparser");
             incoming = Standard.parse(msgs);
         }
+        else if (parser.equals("Go2Mobile")){
+            Log.d(TAG, "using go2mobile pageparser");
+            incoming = Go2Mobile.parse(msgs);
+        }
+
         // note that this page was received via sms.
         incoming.setTransport(MY_TRANSPORT);
 
