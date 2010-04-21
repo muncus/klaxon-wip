@@ -10,6 +10,11 @@ public class Alert {
         cv = new ContentValues();
     }
 
+    //clone contentvalues, so we can start passing around Alerts instead.
+    public Alert(ContentValues v){
+        cv = v;
+    }
+
     // "raw" from address, for use in replying.
     public void setFrom(String from){
         cv.put(Pages.FROM, from);
