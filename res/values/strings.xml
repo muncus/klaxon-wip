@@ -64,6 +64,8 @@
     <string name="pref_match_message_body_summary">match sender pattern against the body of the message</string>
     <string name="pref_alternate_lineendings">Use alternate separator</string>
     <string name="pref_alternate_lineendings_summary">Parse : as a replacement separator between sender, subject, and body</string>
+    <string name="pref_changelog">Changelog</string>
+    <string name="pref_changelog_summary">notable changes between releases</string>
 
 </resources>
 

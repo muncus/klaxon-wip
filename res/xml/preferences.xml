@@ -46,11 +46,6 @@
           android:title="@string/pref_match_message_body"
           android:defaultValue="false"
           android:summary="@string/pref_match_message_body_summary" />  
-        <CheckBoxPreference android:key="parse_alternate_line_endings" 
-          android:title="@string/pref_alternate_lineendings"
-          android:defaultValue="false"
-          android:summary="@string/pref_alternate_lineendings_summary"
-          />  
         </PreferenceScreen> 
     <Preference
       android:key="edit_replies"
@@ -63,5 +58,10 @@
       android:defaultValue="20000"
       android:entries="@array/intervals"
       android:entryValues="@array/intervals_in_ms"/>
+    <Preference
+      android:key="changelog"
+      android:title="@string/pref_changelog"
+      android:summary="@string/pref_changelog_summary"
+      />
 </PreferenceScreen>
 

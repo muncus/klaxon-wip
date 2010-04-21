@@ -18,6 +18,7 @@ package org.nerdcircus.android.klaxon;
 
 import android.content.SharedPreferences;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -29,6 +30,8 @@ import android.util.Log;
 import org.nerdcircus.android.klaxon.ReplyList;
 
 public class Preferences extends PreferenceActivity {
+    
+    private static final Uri CHANGELOG_URI = Uri.parse("http://code.google.com/p/klaxon/wiki/ChangeLog");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,11 @@ public class Preferences extends PreferenceActivity {
         Preference replylist = this.findPreference("edit_replies");
         Intent i = new Intent(Intent.ACTION_MAIN);
         i.setClass(this, ReplyList.class);
+        replylist.setIntent(i);
+
+        // rig up the Changelog
+        replylist = this.findPreference("changelog");
+        i = new Intent(Intent.ACTION_VIEW, CHANGELOG_URI);
         replylist.setIntent(i);
 
         //disable the "Consume SMS" option if the build is too low
