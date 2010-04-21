@@ -27,6 +27,7 @@ import android.os.Build;
 
 import android.util.Log;
 
+import org.nerdcircus.android.klaxon.Changelog;
 import org.nerdcircus.android.klaxon.ReplyList;
 
 public class Preferences extends PreferenceActivity {
@@ -47,7 +48,8 @@ public class Preferences extends PreferenceActivity {
 
         // rig up the Changelog
         replylist = this.findPreference("changelog");
-        i = new Intent(Intent.ACTION_VIEW, CHANGELOG_URI);
+        i = new Intent(Intent.ACTION_MAIN);
+        i.setClass(this, Changelog.class);
         replylist.setIntent(i);
 
         //disable the "Consume SMS" option if the build is too low

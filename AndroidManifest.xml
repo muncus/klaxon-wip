@@ -82,6 +82,11 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity android:name=".Changelog" android:label="Changelog">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ReplyList" android:label="@string/replylist_activity">
             <intent-filter>
                 <action android:name="android.intent.action.PICK" />
