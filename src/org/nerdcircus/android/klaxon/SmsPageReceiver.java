@@ -106,6 +106,13 @@ public class SmsPageReceiver extends BroadcastReceiver
             Log.d(TAG, "using go2mobile pageparser");
             incoming = (new Go2Mobile()).parse(msgs);
         }
+        else if (parser.equals("Labeled Fields")){
+            Log.d(TAG, "using labeled pageparser");
+            incoming = (new LabeledFields()).parse(msgs);
+        }
+        else {
+            Log.f(TAG, "unknown page parser:" + parser);
+        }
 
         // note that this page was received via sms.
         incoming.setTransport(MY_TRANSPORT);

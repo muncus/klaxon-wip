@@ -18,6 +18,7 @@
     <string-array name="pageparser">
         <item>Standard</item>
         <item>Go2Mobile</item>
+        <item>Labeled Fields</item>
     </string-array>
 </resources>
 
