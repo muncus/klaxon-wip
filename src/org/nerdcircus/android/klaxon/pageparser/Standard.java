@@ -27,6 +27,8 @@ public class Standard {
         cv.put(Pages.FROM_ADDR, msgs[0].getDisplayOriginatingAddress());
         cv.put(Pages.BODY, msgs[0].getDisplayMessageBody());
 
+        Log.d(TAG, "in cv, fromaddr: " + msgs[0].getDisplayOriginatingAddress());
+
         cv = doCleanup(cv);
 
         return new Alert(cv);
@@ -73,8 +75,8 @@ public class Standard {
     private static ContentValues addSubject(ContentValues cv){
         if(cv.get(Pages.SUBJECT).toString().trim().length() == 0){
             String body = cv.get(Pages.BODY).toString();
-            if(body.length() > 21){
-                cv.put(Pages.SUBJECT, cv.get(Pages.BODY).toString().substring(0,20));
+            if(body.length() > 41){
+                cv.put(Pages.SUBJECT, cv.get(Pages.BODY).toString().substring(0,40));
             }
             else {
                 cv.put(Pages.SUBJECT, cv.get(Pages.BODY).toString());

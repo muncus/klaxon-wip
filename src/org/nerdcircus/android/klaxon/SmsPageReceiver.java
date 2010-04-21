@@ -31,9 +31,11 @@ import android.telephony.gsm.SmsManager;
 import android.telephony.gsm.SmsMessage;
 import android.util.Log;
 
+import org.nerdcircus.android.klaxon.Alert;
 import org.nerdcircus.android.klaxon.Pager;
 import org.nerdcircus.android.klaxon.Pager.Pages;
 import org.nerdcircus.android.klaxon.PagerProvider;
+import org.nerdcircus.android.klaxon.pageparser.Standard;
 
 import java.util.Map;
 
@@ -94,49 +96,26 @@ public class SmsPageReceiver extends BroadcastReceiver
             Log.e(TAG, "No data associated with new sms intent!");
         }
 
-        ContentValues cv = new ContentValues();
-        cv.put(Pages.SERVICE_CENTER, msgs[0].getServiceCenterAddress());
-        cv.put(Pages.SENDER, msgs[0].getOriginatingAddress());
-        cv.put(Pages.SUBJECT, msgs[0].getPseudoSubject());
-        cv.put(Pages.ACK_STATUS, 0);
-        // FROM_ADDR will be either the email sender, or the same as SENDER above.
-        cv.put(Pages.FROM_ADDR, msgs[0].getDisplayOriginatingAddress());
-        cv.put(Pages.BODY, msgs[0].getDisplayMessageBody());
-        // note that this page was received via sms.
-        cv.put(Pages.TRANSPORT, MY_TRANSPORT);
-
-        // if there's no subject, grab the start of the message.
-        if(cv.get(Pages.SUBJECT).toString().trim().length() == 0){
-            String body = cv.get(Pages.BODY).toString();
-            if(body.length() > 41){
-                cv.put(Pages.SUBJECT, cv.get(Pages.BODY).toString().substring(0,40));
-            }
-            else {
-                cv.put(Pages.SUBJECT, cv.get(Pages.BODY).toString());
-            }
+        Alert incoming = null;
+        if(prefs.getString("pageparser", "Standard").equals("Standard")){
+            Log.d(TAG, "using Standard pageparser");
+            incoming = Standard.parse(msgs);
         }
+        // note that this page was received via sms.
+        incoming.setTransport(MY_TRANSPORT);
 
-        /* Message cleanups.
-         * some carriers add noise to sms contents when gatewaying an email.
-         * clean up after them.
-         */
-        cv = cleanupAttMessage(cv);
-        if( prefs.getBoolean("parse_alternate_line_endings", false) )
-            cv = cleanupLineEndings(cv);
+        //Log some bits.
+        Log.d(TAG, "from: " + incoming.getFrom());
+        Log.d(TAG, "display from: " + incoming.getDisplayFrom());
+        Log.d(TAG, "subject: " + incoming.getSubject());
+        Log.d(TAG, "body: " + incoming.getBody());
 
-        Log.d(TAG, "service center: " + msgs[0].getServiceCenterAddress());
-        Log.d(TAG, "email from: " + msgs[0].getEmailFrom());
-        Log.d(TAG, "originating addr: " + msgs[0].getOriginatingAddress());
-        Log.d(TAG, "message body: " + msgs[0].getMessageBody());
-        Log.d(TAG, "email body: " + msgs[0].getEmailBody());
-
-
-        if( ! isPage(cv, context) ) {
+        if( ! isPage(incoming.asContentValues(), context) ) {
             Log.d(TAG, "message doesnt appear to be a page. skipping");
             return;
         }
 
-        Uri newpage = context.getContentResolver().insert(Pages.CONTENT_URI, cv);
+        Uri newpage = context.getContentResolver().insert(Pages.CONTENT_URI, incoming.asContentValues());
         Log.d(TAG, "new message inserted.");
         Intent annoy = new Intent(Pager.PAGE_RECEIVED);
         annoy.setData(newpage);
@@ -147,6 +126,23 @@ public class SmsPageReceiver extends BroadcastReceiver
             abortBroadcast();
             Log.d(TAG, "sms broadcast aborted.");
         }
+
+        /* Message cleanups.
+         * some carriers add noise to sms contents when gatewaying an email.
+         * clean up after them.
+         */
+        /*
+        cv = cleanupAttMessage(cv);
+        if( prefs.getBoolean("parse_alternate_line_endings", false) )
+            cv = cleanupLineEndings(cv);
+
+        Log.d(TAG, "service center: " + msgs[0].getServiceCenterAddress());
+        Log.d(TAG, "email from: " + msgs[0].getEmailFrom());
+        Log.d(TAG, "originating addr: " + msgs[0].getOriginatingAddress());
+        Log.d(TAG, "message body: " + msgs[0].getMessageBody());
+        Log.d(TAG, "email body: " + msgs[0].getEmailBody());
+        */
+
 
         
     }
@@ -190,7 +186,6 @@ public class SmsPageReceiver extends BroadcastReceiver
     /** replyTo: Uri, string, int
      * replies to a particular message, specified by Uri.
      */
-    //TODO: is this going to work with xmpp? do they have content uris? YES!
     void replyTo(Context context, Uri data, String reply, int ack_status){
         Log.d(TAG, "replying from smspagereceiver!");
         SmsManager sm = SmsManager.getDefault();
@@ -203,17 +198,11 @@ public class SmsPageReceiver extends BroadcastReceiver
         cursor.moveToFirst();
 
         String dest = cursor.getString(cursor.getColumnIndex(Pager.Pages.SENDER));
-        String sc = cursor.getString(cursor.getColumnIndex(Pager.Pages.SERVICE_CENTER));
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if ( ! prefs.getBoolean("use_received_service_center", true)){
-            sc = null;
-        }
         Intent successIntent = new Intent("org.nerdcircus.android.klaxon.REPLY_SENT", data);
         Log.d(TAG, "new ack status should be: "+ack_status);
         successIntent.putExtra(Pager.EXTRA_NEW_ACK_STATUS, ack_status); //note what our new status should be set to.
         //TODO: make the null below use the failure intent, but it now has to check result code.
-        sm.sendTextMessage(dest, sc, reply,
+        sm.sendTextMessage(dest, null, reply,
             PendingIntent.getBroadcast(context, 0, successIntent, PendingIntent.FLAG_UPDATE_CURRENT),
             null
         );
@@ -255,7 +244,7 @@ public class SmsPageReceiver extends BroadcastReceiver
         return cv;
     }
 
-    //some providers use characters other than \n to end a line.
+    //some providers (go2mobile) use characters other than \n to end a line.
     //fix them, so we can tell the parts of the message apart.
     ContentValues cleanupLineEndings(ContentValues cv){
         String body = cv.getAsString(Pages.BODY);

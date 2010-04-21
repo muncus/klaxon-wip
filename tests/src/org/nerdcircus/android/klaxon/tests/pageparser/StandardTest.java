@@ -30,11 +30,11 @@ public class StandardTest extends TestCase {
     }
 
     public void testSubjectSnippet(){
-        String message = "alert body with no alert subject.";
+        String message = "alert body with no alert subject. it has a large body so we only pull the beginning.";
         Alert expected = new Alert();
         expected.setFrom("1234");
         expected.setDisplayFrom("test@example.com");
-        expected.setSubject(message.substring(0,20));
+        expected.setSubject(message.substring(0,40));
         Alert observed = Standard.parse("1234", "", message);
         assertEquals(expected.getFrom(), observed.getFrom());
         assertEquals(expected.getSubject(), observed.getSubject());

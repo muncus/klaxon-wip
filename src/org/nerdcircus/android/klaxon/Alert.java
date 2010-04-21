@@ -11,6 +11,8 @@ public class Alert {
 
     public Alert(){
         cv = new ContentValues();
+        if( ! cv.containsKey(Pages.ACK_STATUS))
+            cv.put(Pages.ACK_STATUS, 0); //default to no response.
     }
 
     //clone contentvalues, so we can start passing around Alerts instead.
@@ -48,6 +50,10 @@ public class Alert {
     }
     public String getBody(){
         return cv.getAsString(Pages.BODY);
+    }
+
+    public void setTransport(String t){
+        cv.put(Pages.TRANSPORT, t);
     }
 
     // used for inserting this alert into our contentprovider

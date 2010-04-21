@@ -17,7 +17,6 @@
     <!-- Page Parser Types -->
     <string-array name="pageparser">
         <item>Standard</item>
-        <item>Go2Mobile</item>
     </string-array>
 </resources>
 
