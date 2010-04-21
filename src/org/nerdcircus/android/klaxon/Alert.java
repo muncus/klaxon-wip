@@ -1,5 +1,8 @@
 package org.nerdcircus.android.klaxon;
 
+import android.content.ContentValues;
+import org.nerdcircus.android.klaxon.Pager.Pages;
+
 /** Class representing an Alert Object
  * abstraction used to get from a received message to an item in PagerProvider
  */
@@ -17,10 +20,10 @@ public class Alert {
 
     // "raw" from address, for use in replying.
     public void setFrom(String from){
-        cv.put(Pages.FROM, from);
+        cv.put(Pages.SENDER, from);
     }
     public String getFrom(){
-        return cv.getString(Pages.FROM);
+        return cv.getAsString(Pages.SENDER);
     }
 
     // "DisplayName" analog - phone number, or email addr.
@@ -28,7 +31,7 @@ public class Alert {
         cv.put(Pages.FROM_ADDR, from);
     }
     public String getDisplayFrom(){
-        return cv.getString(Pages.FROM_ADDR);
+        return cv.getAsString(Pages.FROM_ADDR);
     }
 
     // subject line of the alert
@@ -36,7 +39,7 @@ public class Alert {
         cv.put(Pages.SUBJECT, from);
     }
     public String getSubject(){
-        return cv.getString(Pages.SUBJECT);
+        return cv.getAsString(Pages.SUBJECT);
     }
 
     // body of the alert.
@@ -44,7 +47,7 @@ public class Alert {
         cv.put(Pages.BODY, body);
     }
     public String getBody(){
-        return cv.getString(Pages.BODY);
+        return cv.getAsString(Pages.BODY);
     }
 
     // used for inserting this alert into our contentprovider
