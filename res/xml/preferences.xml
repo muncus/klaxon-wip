@@ -40,6 +40,11 @@
           android:title="@string/pref_match_message_body"
           android:defaultValue="false"
           android:summary="@string/pref_match_message_body_summary" />  
+        <CheckBoxPreference android:key="parse_alternate_line_endings" 
+          android:title="@string/pref_alternate_lineendings"
+          android:defaultValue="false"
+          android:summary="@string/pref_alternate_lineendings_summary"
+          />  
         </PreferenceScreen> 
     <Preference
       android:key="edit_replies"
