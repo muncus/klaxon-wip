@@ -28,6 +28,12 @@
           android:title="@string/pref_sms_sender"
           android:defaultValue=""
           android:summary="@string/pref_sms_sender_summary" />
+        <ListPreference android:key="pageparser"
+          android:title="Page Parser Type"
+          android:entries="@array/pageparser"
+          android:entryValues="@array/pageparser"
+          android:defaultValue="Standard"
+          />
         <CheckBoxPreference android:key="use_received_service_center" 
           android:title="@string/pref_sms_servicecenter"
           android:defaultValue="false"

@@ -14,5 +14,10 @@
         <item>60000</item>
         <item>120000</item>
     </string-array>
+    <!-- Page Parser Types -->
+    <string-array name="pageparser">
+        <item>Standard</item>
+        <item>Go2Mobile</item>
+    </string-array>
 </resources>
 
