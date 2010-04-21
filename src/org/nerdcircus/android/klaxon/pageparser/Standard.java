@@ -17,7 +17,7 @@ public class Standard {
 
     public static String TAG = "PageParser-Standard";
 
-    public static Alert parse(SmsMessage[] msgs){
+    public Alert parse(SmsMessage[] msgs){
         ContentValues cv = new ContentValues();
         cv.put(Pages.SERVICE_CENTER, msgs[0].getServiceCenterAddress());
         cv.put(Pages.SENDER, msgs[0].getOriginatingAddress());
@@ -27,14 +27,12 @@ public class Standard {
         cv.put(Pages.FROM_ADDR, msgs[0].getDisplayOriginatingAddress());
         cv.put(Pages.BODY, msgs[0].getDisplayMessageBody());
 
-        Log.d(TAG, "in cv, fromaddr: " + msgs[0].getDisplayOriginatingAddress());
-
         cv = doCleanup(cv);
 
         return new Alert(cv);
     }
 
-    public static Alert parse(String from, String subj, String message_text){
+    public Alert parse(String from, String subj, String message_text){
         ContentValues cv = new ContentValues();
         cv.put(Pages.SENDER, from);
         cv.put(Pages.FROM_ADDR, from);
@@ -47,7 +45,7 @@ public class Standard {
         return new Alert(cv);
     }
 
-    protected static ContentValues doCleanup(ContentValues cv){
+    protected ContentValues doCleanup(ContentValues cv){
         //this is a list of Alert Cleanups to be done
         cv = fixLineEndings(cv);
         cv = addSubject(cv);
@@ -61,7 +59,7 @@ public class Standard {
      * they should be called in the doCleanup() function above
      */
 
-    private static ContentValues fixLineEndings(ContentValues cv){
+    private ContentValues fixLineEndings(ContentValues cv){
         String body = cv.getAsString(Pages.BODY);
         // fix stupid line-endings.
         if(body.contains("\r")){
@@ -72,7 +70,7 @@ public class Standard {
         return cv;
     }
 
-    private static ContentValues addSubject(ContentValues cv){
+    private ContentValues addSubject(ContentValues cv){
         if(cv.get(Pages.SUBJECT).toString().trim().length() == 0){
             String body = cv.get(Pages.BODY).toString();
             if(body.length() > 41){

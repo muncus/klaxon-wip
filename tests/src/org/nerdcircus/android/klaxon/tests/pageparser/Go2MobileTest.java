@@ -19,7 +19,7 @@ public class Go2MobileTest extends TestCase {
         expected.setDisplayFrom("test@example.com");
         expected.setSubject("subject");
         expected.setBody("alert body");
-        Alert observed = Go2Mobile.parse("1234", "", message);
+        Alert observed = (new Go2Mobile()).parse("1234", "", message);
         assertEquals(expected.getFrom(), observed.getFrom());
         assertEquals(expected.getSubject(), observed.getSubject());
         assertEquals(expected.getBody(), observed.getBody());
@@ -31,7 +31,7 @@ public class Go2MobileTest extends TestCase {
         expected.setFrom("1234");
         expected.setDisplayFrom("test@example.com");
         expected.setSubject("alert body with no alert subject. it has a large body so we only pull the beginning.".substring(0,40));
-        Alert observed = Go2Mobile.parse("1234", "", message);
+        Alert observed = (new Go2Mobile()).parse("1234", "", message);
         assertEquals(expected.getFrom(), observed.getFrom());
         assertEquals(expected.getSubject(), observed.getSubject());
     }
@@ -45,7 +45,7 @@ public class Go2MobileTest extends TestCase {
         expected.setDisplayFrom("someone@example.com");
         expected.setSubject("alert subject");
         expected.setBody("alert body");
-        Alert observed = Go2Mobile.parse("1234", "", message);
+        Alert observed = (new Go2Mobile()).parse("1234", "", message);
         assertEquals(expected.getFrom(), observed.getFrom());
         assertEquals(expected.getDisplayFrom(), observed.getDisplayFrom());
         assertEquals(expected.getSubject(), observed.getSubject());

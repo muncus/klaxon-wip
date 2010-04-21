@@ -23,7 +23,7 @@ public class StandardTest extends TestCase {
         expected.setDisplayFrom("test@example.com");
         expected.setSubject("subject");
         expected.setBody("alert body");
-        Alert observed = Standard.parse("1234", "subject", message);
+        Alert observed = (new Standard()).parse("1234", "subject", message);
         assertEquals(expected.getFrom(), observed.getFrom());
         assertEquals(expected.getSubject(), observed.getSubject());
         assertEquals(expected.getBody(), observed.getBody());
@@ -35,7 +35,7 @@ public class StandardTest extends TestCase {
         expected.setFrom("1234");
         expected.setDisplayFrom("test@example.com");
         expected.setSubject(message.substring(0,40));
-        Alert observed = Standard.parse("1234", "", message);
+        Alert observed = (new Standard()).parse("1234", "", message);
         assertEquals(expected.getFrom(), observed.getFrom());
         assertEquals(expected.getSubject(), observed.getSubject());
     }

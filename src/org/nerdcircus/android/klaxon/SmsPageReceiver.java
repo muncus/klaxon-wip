@@ -100,11 +100,11 @@ public class SmsPageReceiver extends BroadcastReceiver
         String parser = prefs.getString("pageparser", "Standard");
         if(parser.equals("Standard")){
             Log.d(TAG, "using Standard pageparser");
-            incoming = Standard.parse(msgs);
+            incoming = (new Standard()).parse(msgs);
         }
         else if (parser.equals("Go2Mobile")){
             Log.d(TAG, "using go2mobile pageparser");
-            incoming = Go2Mobile.parse(msgs);
+            incoming = (new Go2Mobile()).parse(msgs);
         }
 
         // note that this page was received via sms.
