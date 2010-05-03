@@ -17,22 +17,17 @@ public class Go2Mobile extends Standard {
 
     public static String TAG = "PageParser-Go2Mobile";
 
-    public Alert parse(SmsMessage[] msgs){
-        Alert a = super.parse(msgs);
-        //XXX: this should probably just use the Alert
-        return new Alert(doCleanup(a.asContentValues()));
-    }
-
-    public Alert parse(String from, String subj, String message_text){
-        Alert a = super.parse(from, subj, message_text);
-        return new Alert(doCleanup(a.asContentValues()));
-    }
-
-
     protected ContentValues doCleanup(ContentValues cv){
-        Log.d("G2M", "doing the Right Thing");
-        cv = super.doCleanup(cv);
         cv = parseColonLineEndings(cv);
+        Log.d(TAG, "after go2mobile parsing:");
+        Log.d(TAG, "From: " + cv.getAsString(Pages.FROM_ADDR));
+        Log.d(TAG, "subj: " + cv.getAsString(Pages.SUBJECT));
+        Log.d(TAG, "body: " + cv.getAsString(Pages.BODY));
+        cv = super.doCleanup(cv);
+        Log.d(TAG, "after super.doCleanup():");
+        Log.d(TAG, "From: " + cv.getAsString(Pages.FROM_ADDR));
+        Log.d(TAG, "subj: " + cv.getAsString(Pages.SUBJECT));
+        Log.d(TAG, "body: " + cv.getAsString(Pages.BODY));
         return cv;
     }
 
@@ -45,8 +40,9 @@ public class Go2Mobile extends Standard {
     private ContentValues parseColonLineEndings(ContentValues cv){
         String body = cv.getAsString(Pages.BODY);
         String[] fields = body.split(":", 3);
-        if(fields.length < 3){
-            return cv; //not enough fields. abort.
+        if(fields.length != 3){
+            Log.d(TAG, "wrong number of colon-splits!");
+            return cv; //wrong number of splits. 
         }
         cv.put(Pages.FROM_ADDR, fields[0]);
         cv.put(Pages.SUBJECT, fields[1]);

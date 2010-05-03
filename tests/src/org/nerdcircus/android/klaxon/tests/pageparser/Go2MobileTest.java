@@ -52,4 +52,17 @@ public class Go2MobileTest extends TestCase {
         assertEquals(expected.getBody(), observed.getBody());
     }
 
+    public void testTooManyColons(){
+        String message = "test@example.com:some subject:alert:body with :colons";
+        Alert expected = new Alert();
+        expected.setFrom("1234");
+        expected.setDisplayFrom("test@example.com");
+        expected.setSubject("some subject");
+        expected.setBody("alert:body with :colons");
+        Alert observed = (new Go2Mobile()).parse("1234", "", message);
+        assertEquals(expected.getFrom(), observed.getFrom());
+        assertEquals(expected.getSubject(), observed.getSubject());
+        assertEquals(expected.getBody(), observed.getBody());
+    }
+
 }
