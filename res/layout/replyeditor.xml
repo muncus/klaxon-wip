@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:text="reply title"
         android:textSize="20px"
+        android:textStyle="bold"
         android:layout_toRightOf="@id/icon"
         />
     <EditText android:id="@+id/body"

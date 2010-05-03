@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:text="no subject"
         android:textSize="20px"
+        android:textStyle="bold"
         android:layout_toRightOf="@id/icon"
         />
     <TextView android:id="@+id/body"
