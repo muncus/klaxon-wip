@@ -16,19 +16,23 @@
 
 package org.nerdcircus.android.klaxon;
 
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,6 +56,7 @@ import android.util.Log;
 public class KlaxonList extends ListActivity
 {
     private String TAG = "KlaxonList";
+    public static final String AUTH_PERMISSION_ACTION = "org.nerdcircus.android.klaxon.AUTH_PERMISSION";
 
     //menu constants.
     private int MENU_ACTIONS_GROUP = Menu.FIRST;
@@ -62,6 +67,7 @@ public class KlaxonList extends ListActivity
     private int REQUEST_PICK_REPLY = 1;
 
     private Cursor mCursor;
+    private Boolean mPendingAuth = false;
 
     protected Dialog onCreateDialog(int id){
         if(id == DIALOG_DELETE_ALL_CONFIRMATION){
@@ -106,16 +112,27 @@ public class KlaxonList extends ListActivity
                                              mCursor);
         Log.d(TAG, "adapter created.");
         setListAdapter(adapter);
+
+        registerReceiver(mAuthPermissionReceiver, new IntentFilter(AUTH_PERMISSION_ACTION));
+
         Log.d(TAG, "oncreate done.");
         registerForContextMenu(getListView());
     }
-
 
     public void onResume(){
         super.onResume();
         //if they're active, cancel any alarms and notifications.
         Intent i = new Intent(Pager.SILENCE_ACTION);
         sendBroadcast(i);
+
+	if (mPendingAuth) {
+	    mPendingAuth = false;
+	    String token = PreferenceManager
+		.getDefaultSharedPreferences(this)
+		.getString("c2dm_token", "");
+	    if (!token.equals(""))
+                DeviceRegistrar.registerWithServer(this, token);
+        }
     }
 
     public void onListItemClick(ListView parent, View v, int position, long id){
@@ -316,5 +333,19 @@ public class KlaxonList extends ListActivity
         }
 
     }
+
+    private final BroadcastReceiver mAuthPermissionReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getBundleExtra("AccountManagerBundle");
+            if (extras != null) {
+                Intent authIntent = (Intent) extras.get(AccountManager.KEY_INTENT);
+                if (authIntent != null) {
+                    mPendingAuth = true;
+                    startActivity(authIntent);
+                }
+            }
+        }
+    };
 }
 

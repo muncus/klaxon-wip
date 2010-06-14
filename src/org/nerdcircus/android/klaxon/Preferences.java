@@ -16,23 +16,42 @@
 
 package org.nerdcircus.android.klaxon;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.os.Build;
+import android.app.PendingIntent;
+import android.view.View;
+import android.widget.Toast;
 
 import android.util.Log;
+
+import java.util.Vector;
 
 import org.nerdcircus.android.klaxon.Changelog;
 import org.nerdcircus.android.klaxon.ReplyList;
 
-public class Preferences extends PreferenceActivity {
+public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
     
     private static final Uri CHANGELOG_URI = Uri.parse("http://code.google.com/p/klaxon/wiki/ChangeLog");
+    final Handler mHandler = new Handler();
+
+    // Create runnable for posting
+    final Runnable mUpdateC2dmPrefs = new Runnable() {
+        public void run() {
+	      updateC2dmPrefs();
+	}
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +80,94 @@ public class Preferences extends PreferenceActivity {
             csp.setChecked(false);
             csp.setEnabled(false);
         }
-        
+
+	ListPreference c2dm_accounts = (ListPreference) this.findPreference("c2dm_register_account");
+	Account[] accounts = AccountManager.get(getApplicationContext()).getAccounts();
+	Vector<CharSequence> accountNames = new Vector<CharSequence>();
+	for (Account account : accounts) {
+	   accountNames.add(account.name);
+	}
+	CharSequence[] accountNamesArray = new CharSequence[accountNames.size()];
+	accountNames.toArray(accountNamesArray);
+	c2dm_accounts.setEntries(accountNamesArray);
+	c2dm_accounts.setEntryValues(accountNamesArray);
+
+	mHandler.post(mUpdateC2dmPrefs);
     }
 
+    @Override
+    protected void onPause() {
+	    super.onPause();
+	    getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    void updateC2dmPrefs() {
+	String token = PreferenceManager
+		.getDefaultSharedPreferences(this)
+		.getString("c2dm_token", "");
+	getPreferenceScreen()
+		.findPreference("c2dm_register")
+		.setEnabled(token.equals(""));
+	getPreferenceScreen()
+		.findPreference("c2dm_unregister")
+		.setEnabled(!token.equals(""));
+	getPreferenceScreen()
+		.findPreference("c2dm_token")
+		.setSummary(token);
+    }
+
+    @Override
+    protected void onResume() {
+	super.onResume();
+	// Setup the initial values
+	// Set up a listener whenever a key changes            
+	getPreferenceScreen()
+		.getSharedPreferences()
+		.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+	if (key.equals("c2dm_token"))
+	    mHandler.post(mUpdateC2dmPrefs);
+    }
+
+
+    public void c2dmRegister(View v) {
+      Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
+      registrationIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0)); // boilerplate
+      SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+      String c2dmSender = settings.getString("c2dm_sender", "");
+      if (c2dmSender.equals("")) {
+	    CharSequence text = "Set sender email address first.";
+	    int duration = Toast.LENGTH_LONG;
+	    Toast toast = Toast.makeText(getApplicationContext(), text,
+			    duration);
+	    toast.show();
+	    return;
+      }
+      registrationIntent.putExtra("sender", c2dmSender);
+      startService(registrationIntent);
+    }
+
+    public void c2dmUnregister(View v) {
+	Intent unregIntent = new Intent("com.google.android.c2dm.intent.UNREGISTER");
+	unregIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0));
+	startService(unregIntent);
+    }
+
+    public void c2dmSendToken(View v) {
+	final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+      	
+	SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+      	String c2dmToken = settings.getString("c2dm_token", "");
+	Account[] accounts = AccountManager.get(this).getAccounts();
+	if (accounts.length > 0 && c2dmToken != "") {
+		emailIntent .setType("plain/text");
+		emailIntent .putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{accounts[0].name});
+		emailIntent .putExtra(android.content.Intent.EXTRA_SUBJECT, "My C2DM token");
+		emailIntent .putExtra(android.content.Intent.EXTRA_TEXT, c2dmToken);
+		this.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+	}
+    }
 }
 
