@@ -2,24 +2,29 @@
 
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:key="klaxon_prefs" > 
+  android:key="klaxon_prefs"
+  >
     <CheckBoxPreference android:key="is_oncall" 
       android:title="@string/pref_oncall"
       android:defaultValue="true"
-      android:summary="@string/pref_oncall_summary" />  
+      android:summary="@string/pref_oncall_summary"
+      />
     <RingtonePreference 
       android:key="alert_sound"
       android:ringtoneType="all"
       android:showDefault="true"
       android:showSilent="true"
-      android:title="@string/pref_alertsound" />
+      android:title="@string/pref_alertsound"
+      />
     <CheckBoxPreference android:key="use_alarm_stream" 
       android:title="@string/pref_alarmstream"
       android:defaultValue="false"
-      android:summary="@string/pref_alarmstream_summary" />  
+      android:summary="@string/pref_alarmstream_summary"
+      />
     <CheckBoxPreference android:key="vibrate" 
       android:title="@string/pref_vibrate"
-      android:defaultValue="true" />  
+      android:defaultValue="true"
+      />  
     <PreferenceScreen
       android:key="message_prefs"
       android:title="@string/pref_smssettings"
@@ -27,7 +32,8 @@
         <EditTextPreference android:key="sender_match"
           android:title="@string/pref_sms_sender"
           android:defaultValue=""
-          android:summary="@string/pref_sms_sender_summary" />
+          android:summary="@string/pref_sms_sender_summary"
+          />
         <ListPreference android:key="pageparser"
           android:title="Page Parser Type"
           android:entries="@array/pageparser"
@@ -36,16 +42,24 @@
           />
         <CheckBoxPreference android:key="use_received_service_center" 
           android:title="@string/pref_sms_servicecenter"
+          android:summary="@string/pref_sms_servicecenter_summary"
           android:defaultValue="false"
-          android:summary="@string/pref_sms_servicecenter_summary" />  
+          />
+        <CheckBoxPreference android:key="include_dest_address" 
+          android:title="@string/pref_sms_send_dest"
+          android:summary="@string/pref_sms_send_dest_summary"
+          android:defaultValue="false"
+          />
         <CheckBoxPreference android:key="consume_sms_message" 
           android:title="@string/pref_sms_consumesms"
+          android:summary="@string/pref_sms_consumesms_summary"
           android:defaultValue="false"
-          android:summary="@string/pref_sms_consumesms" />  
+          />
         <CheckBoxPreference android:key="also_match_body" 
           android:title="@string/pref_match_message_body"
+          android:summary="@string/pref_match_message_body_summary"
           android:defaultValue="false"
-          android:summary="@string/pref_match_message_body_summary" />  
+          />
         </PreferenceScreen> 
     <Preference
       android:key="edit_replies"
@@ -57,7 +71,8 @@
       android:summary="@string/pref_notificationtime"
       android:defaultValue="20000"
       android:entries="@array/intervals"
-      android:entryValues="@array/intervals_in_ms"/>
+      android:entryValues="@array/intervals_in_ms"
+      />
     <Preference
       android:key="changelog"
       android:title="@string/pref_changelog"

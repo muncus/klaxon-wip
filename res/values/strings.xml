@@ -55,6 +55,8 @@
     <string name="pref_sms_servicecenter_summary">use the SMS Service Center from the received message?</string>
     <string name="pref_sms_consumesms">Consume SMS Message</string>
     <string name="pref_sms_consumesms_summary">prevent the SMS from being delivered to other apps</string>
+    <string name="pref_sms_send_dest">Send Destination</string>
+    <string name="pref_sms_send_dest_summary">Some SMS gateways require that the destination address be specified</string>
     <string name="pref_editreplies">Edit Replies</string>
     <string name="pref_editreplies_summary">edit the text of quick responses</string>
     <string name="pref_notificationtime">Notification Interval</string>
