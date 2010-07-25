@@ -29,37 +29,45 @@
       android:key="message_prefs"
       android:title="@string/pref_smssettings"
       android:summary="@string/pref_smssettings_summary" >
-        <EditTextPreference android:key="sender_match"
-          android:title="@string/pref_sms_sender"
-          android:defaultValue=""
-          android:summary="@string/pref_sms_sender_summary"
-          />
-        <ListPreference android:key="pageparser"
-          android:title="Page Parser Type"
-          android:entries="@array/pageparser"
-          android:entryValues="@array/pageparser"
-          android:defaultValue="Standard"
-          />
-        <CheckBoxPreference android:key="use_received_service_center" 
-          android:title="@string/pref_sms_servicecenter"
-          android:summary="@string/pref_sms_servicecenter_summary"
-          android:defaultValue="false"
-          />
-        <CheckBoxPreference android:key="include_dest_address" 
-          android:title="@string/pref_sms_send_dest"
-          android:summary="@string/pref_sms_send_dest_summary"
-          android:defaultValue="false"
-          />
-        <CheckBoxPreference android:key="consume_sms_message" 
-          android:title="@string/pref_sms_consumesms"
-          android:summary="@string/pref_sms_consumesms_summary"
-          android:defaultValue="false"
-          />
-        <CheckBoxPreference android:key="also_match_body" 
-          android:title="@string/pref_match_message_body"
-          android:summary="@string/pref_match_message_body_summary"
-          android:defaultValue="false"
-          />
+        <PreferenceCategory android:key="receive settings"
+          android:title="Incoming Message Settings"
+          >
+            <EditTextPreference android:key="sender_match"
+              android:title="@string/pref_sms_sender"
+              android:defaultValue=""
+              android:summary="@string/pref_sms_sender_summary"
+              />
+            <ListPreference android:key="pageparser"
+              android:title="Page Parser Type"
+              android:entries="@array/pageparser"
+              android:entryValues="@array/pageparser"
+              android:defaultValue="Standard"
+              />
+            <CheckBoxPreference android:key="consume_sms_message" 
+              android:title="@string/pref_sms_consumesms"
+              android:summary="@string/pref_sms_consumesms_summary"
+              android:defaultValue="false"
+              />
+            <CheckBoxPreference android:key="also_match_body" 
+              android:title="@string/pref_match_message_body"
+              android:summary="@string/pref_match_message_body_summary"
+              android:defaultValue="false"
+              />
+        </PreferenceCategory>
+        <PreferenceCategory android:key="reply settings"
+          android:title="Reply Settings"
+          >
+            <CheckBoxPreference android:key="use_received_service_center" 
+              android:title="@string/pref_sms_servicecenter"
+              android:summary="@string/pref_sms_servicecenter_summary"
+              android:defaultValue="false"
+              />
+            <CheckBoxPreference android:key="include_dest_address" 
+              android:title="@string/pref_sms_send_dest"
+              android:summary="@string/pref_sms_send_dest_summary"
+              android:defaultValue="false"
+              />
+        </PreferenceCategory>
         </PreferenceScreen> 
     <Preference
       android:key="edit_replies"
