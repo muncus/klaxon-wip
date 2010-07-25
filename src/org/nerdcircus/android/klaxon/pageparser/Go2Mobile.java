@@ -1,7 +1,7 @@
 package org.nerdcircus.android.klaxon.pageparser;
 
 import android.content.ContentValues;
-import android.telephony.gsm.SmsMessage;
+import android.telephony.SmsMessage;
 import android.util.Log;
 
 import org.nerdcircus.android.klaxon.Alert;
