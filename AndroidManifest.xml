@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.nerdcircus.android.klaxon"
-    android:versionCode="20"
-    android:versionName="0.20">
+    android:versionCode="21"
+    android:versionName="0.21">
     <uses-sdk
-        android:minSdkVersion="3"
+        android:minSdkVersion="4"
     />
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="android.permission.RECEIVE_MMS"/>
