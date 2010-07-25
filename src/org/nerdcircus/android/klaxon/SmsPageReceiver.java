@@ -184,6 +184,7 @@ public class SmsPageReceiver extends BroadcastReceiver
      */
     void replyTo(Context context, Uri data, String reply, int ack_status){
         Log.d(TAG, "replying from smspagereceiver!");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SmsManager sm = SmsManager.getDefault();
     
         Cursor cursor = context.getContentResolver().query(data,
@@ -194,8 +195,8 @@ public class SmsPageReceiver extends BroadcastReceiver
         cursor.moveToFirst();
 
         String sc = null;
-        if(prefs.getBoolean("use_received_service_center")){
-            sc = cursor.getString(cursor.getColumnIndex(Pager.Pages.SERVICE_CENTER);
+        if(prefs.getBoolean("use_received_service_center", false)){
+            sc = cursor.getString(cursor.getColumnIndex(Pager.Pages.SERVICE_CENTER));
         }
         String dest = cursor.getString(cursor.getColumnIndex(Pager.Pages.SENDER));
         Intent successIntent = new Intent("org.nerdcircus.android.klaxon.REPLY_SENT", data);
