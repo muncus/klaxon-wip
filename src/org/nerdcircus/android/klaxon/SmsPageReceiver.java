@@ -140,23 +140,6 @@ public class SmsPageReceiver extends BroadcastReceiver
             Log.d(TAG, "sms broadcast aborted.");
         }
 
-        /* Message cleanups.
-         * some carriers add noise to sms contents when gatewaying an email.
-         * clean up after them.
-         */
-        /*
-        cv = cleanupAttMessage(cv);
-        if( prefs.getBoolean("parse_alternate_line_endings", false) )
-            cv = cleanupLineEndings(cv);
-
-        Log.d(TAG, "service center: " + msgs[0].getServiceCenterAddress());
-        Log.d(TAG, "email from: " + msgs[0].getEmailFrom());
-        Log.d(TAG, "originating addr: " + msgs[0].getOriginatingAddress());
-        Log.d(TAG, "message body: " + msgs[0].getMessageBody());
-        Log.d(TAG, "email body: " + msgs[0].getEmailBody());
-        */
-
-
         
     }
 
