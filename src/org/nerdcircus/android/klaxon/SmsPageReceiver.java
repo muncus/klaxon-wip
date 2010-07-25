@@ -215,52 +215,6 @@ public class SmsPageReceiver extends BroadcastReceiver
         Log.d(TAG, "Message sent.");
     }
 
-    /** Clean up some stupid issues with AT&T
-     * Messages from att's sms gateways do some crazy things:
-     * * dumb line endings (\r\n)
-     * * "(Cont'd)" tags on followup messages
-     * * "2 of 5" messages on followup messages.
-     * * android doesnt currently recognize these messages as emails.
-     */
-    ContentValues cleanupAttMessage(ContentValues cv){
-        String fullbody = "";
-        String body = cv.getAsString(Pages.BODY);
-        // clean up "continued" messages.
-        if(body.endsWith("\n(Con't)")){
-            body = body.substring(0, body.lastIndexOf("\n(Con't)"));
-        }
-        // fix stupid line-endings.
-        if(body.contains("\r")){
-            Log.d(TAG, "Message contains \\r. fixing.");
-            body = body.replaceAll("\r", "");
-        }
-        //eat the "m of n" messages at the beginning of the message.
-        fullbody += body.replaceFirst(" ?[0-9]+ of [0-9]+\n", "");
-
-        cv.put(Pages.BODY, fullbody);
-
-        //the sms gateway for at&t is not recognized by android's sms parsing
-        //slice up their gateway'd messages, and do the Right Thing.
-        if( fullbody.length() > 3 && fullbody.substring(0,4).equals("FRM:")){
-            String[] mail_fields = fullbody.split("(FRM|SUBJ|MSG):", 4);
-            cv.put(Pages.SUBJECT, mail_fields[2].trim());
-            cv.put(Pages.BODY, mail_fields[3].trim());
-        }
-
-        return cv;
-    }
-
-    //some providers (go2mobile) use characters other than \n to end a line.
-    //fix them, so we can tell the parts of the message apart.
-    ContentValues cleanupLineEndings(ContentValues cv){
-        String body = cv.getAsString(Pages.BODY);
-        String[] fields = body.split(":", 3);
-        cv.put(Pages.FROM_ADDR, fields[0].trim());
-        cv.put(Pages.SUBJECT, fields[1].trim());
-        cv.put(Pages.BODY, fields[2].trim());
-        return cv;
-    }
-
 }
 
 
