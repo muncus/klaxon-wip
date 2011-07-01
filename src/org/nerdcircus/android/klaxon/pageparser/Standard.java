@@ -25,7 +25,11 @@ public class Standard {
         cv.put(Pages.ACK_STATUS, 0);
         // FROM_ADDR will be either the email sender, or the same as SENDER above.
         cv.put(Pages.FROM_ADDR, msgs[0].getDisplayOriginatingAddress());
-        cv.put(Pages.BODY, msgs[0].getDisplayMessageBody());
+        String body = '';
+        for (SmsMessage m : msgs){
+          body += m.getDisplayMessageBody();
+        }
+        cv.put(Pages.BODY, body);
 
         cv = doCleanup(cv);
 
