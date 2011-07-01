@@ -25,7 +25,8 @@
             android:layout_height="wrap_content"
             android:text="no subject"
             android:textStyle="bold"
-            android:lines="1"
+            android:textSize="25sp"
+            android:lines="2"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@id/view_icon"
             />
@@ -34,17 +35,20 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Sender: unknown"
+        android:textSize="15sp"
         />
     <TextView android:id="@+id/datestamp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Recieived: unknown"
+        android:textSize="15sp"
         />
     <TextView android:id="@+id/view_body"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="no data"
         android:autoLink="all"
+        android:textSize="20sp"
         />
 </LinearLayout>
 </ScrollView>
