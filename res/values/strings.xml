@@ -69,5 +69,9 @@
     <string name="pref_changelog">Changelog</string>
     <string name="pref_changelog_summary">notable changes between releases</string>
 
+    <!-- Alert contents -->
+    <string name="alert_no_subject">Subject not specified</string>
+    <string name="alert_no_body">Body not specified</string>
+
 </resources>
 
