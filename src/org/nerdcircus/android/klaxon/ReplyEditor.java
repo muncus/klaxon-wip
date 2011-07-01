@@ -74,8 +74,8 @@ public class ReplyEditor extends Activity
         mAckStatusList.add(new Integer(2));
 
         mSubjectView = (EditText) findViewById(R.id.subject);
-        mSubjectView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-        mSubjectView.setTextSize((float)(mSubjectView.getTextSize() * 1.25));
+        //mSubjectView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        //mSubjectView.setTextSize((float)(mSubjectView.getTextSize() * 1.25));
 
         mBodyView = (EditText) findViewById(R.id.body);
         mIconView = (ImageView) findViewById(R.id.icon);
