@@ -4,7 +4,6 @@ set -e #exit on error.
 
 #AVDS="1.5 1.6 nexus"
 AVDS="1.6 2.1 2.2 2.3.3 4.0"
-AVDS="2.1 2.2 3.1"
 PIDFILE=`mktemp -t androidtests.XXXXXXX`
 EMULATOR_BIN=`which emulator`
 
