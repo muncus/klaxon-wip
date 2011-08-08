@@ -2,7 +2,8 @@
 
 set -e #exit on error.
 
-AVDS="1.5 1.6 nexus"
+#AVDS="1.5 1.6 nexus"
+AVDS="2.1 2.2 3.1"
 PIDFILE=`mktemp -t androidtests.XXXXXXX`
 EMULATOR_BIN=`which emulator`
 
@@ -12,7 +13,7 @@ for avd in $AVDS; do
       -avd ${avd} -sdcard ~/.android/avd/${avd}.avd/sdcard.img -no-boot-anim
 
     adb wait-for-device
-    sleep 10
+    sleep 30
     echo "installing...."
     ant install >/dev/null
     cd tests && ant install >/dev/null
