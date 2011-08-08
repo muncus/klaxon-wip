@@ -147,8 +147,8 @@ public class SmsPageReceiver extends BroadcastReceiver
      */
     boolean isPage(ContentValues cv, Context context){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String trigger_string = prefs.getString("sender_match", "");
-        if( cv.getAsString(Pages.SENDER).contains(trigger_string) )
+        String trigger_string = prefs.getString("sender_match", "").toLowerCase();
+        if( cv.getAsString(Pages.SENDER).toLowerCase().contains(trigger_string) )
             return true;
         if( cv.getAsString(Pages.FROM_ADDR).contains(trigger_string) )
             return true;
