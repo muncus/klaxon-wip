@@ -152,13 +152,15 @@ public class SmsPageReceiver extends BroadcastReceiver
         Log.d(TAG, "sender: " + cv.getAsString(Pages.SENDER).toLowerCase());
         Log.d(TAG, "from_addr: " + cv.getAsString(Pages.FROM_ADDR).toLowerCase());
 
-        if( cv.getAsString(Pages.SENDER).toLowerCase().contains(trigger_string) )
-            return true;
-        if( cv.getAsString(Pages.FROM_ADDR).toLowerCase().contains(trigger_string) )
-            return true;
-        if ( prefs.getBoolean("also_match_body", false) ){
-            if( cv.getAsString(Pages.BODY).toLowerCase().contains(trigger_string) )
-                return true;
+        for( String trigger : trigger_string.split(",")){
+          if( cv.getAsString(Pages.SENDER).toLowerCase().contains(trigger) )
+              return true;
+          if( cv.getAsString(Pages.FROM_ADDR).toLowerCase().contains(trigger) )
+              return true;
+          if ( prefs.getBoolean("also_match_body", false) ){
+              if( cv.getAsString(Pages.BODY).toLowerCase().contains(trigger) )
+                  return true;
+          }
         }
         return false;
     }
