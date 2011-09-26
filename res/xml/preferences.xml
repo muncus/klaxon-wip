@@ -57,7 +57,7 @@
         <PreferenceCategory android:key="reply settings"
           android:title="Reply Settings"
           >
-            <CheckBoxPreference android:key="include subject" 
+            <CheckBoxPreference android:key="include_subject" 
               android:title="@string/pref_sms_subject"
               android:summary="@string/pref_sms_subject_summary"
               android:defaultValue="false"
