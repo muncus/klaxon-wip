@@ -51,6 +51,8 @@
     <string name="pref_smssettings_summary">preferences for pages received by SMS</string>
     <string name="pref_sms_sender">Sender</string>
     <string name="pref_sms_sender_summary">substring match on sender phone number or email</string>
+    <string name="pref_sms_subject">Include Subject Line</string>
+    <string name="pref_sms_subject_summary">include the subject line in parenthesis in reply.</string>
     <string name="pref_sms_servicecenter">Use Received Service Center</string>
     <string name="pref_sms_servicecenter_summary">use the SMS Service Center from the received message?</string>
     <string name="pref_sms_consumesms">Consume SMS Message</string>
@@ -68,6 +70,7 @@
     <string name="pref_alternate_lineendings_summary">Parse : as a replacement separator between sender, subject, and body</string>
     <string name="pref_changelog">Changelog</string>
     <string name="pref_changelog_summary">notable changes between releases</string>
+    <string name="pref_version">Version</string>
 
     <!-- Alert contents -->
     <string name="alert_no_subject">Subject not specified</string>

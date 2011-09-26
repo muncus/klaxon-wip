@@ -192,7 +192,7 @@ public class SmsPageReceiver extends BroadcastReceiver
         SmsManager sm = SmsManager.getDefault();
     
         Cursor cursor = context.getContentResolver().query(data,
-                new String[] {Pager.Pages.SENDER, Pager.Pages.SERVICE_CENTER, Pager.Pages._ID, Pager.Pages.FROM_ADDR},
+                new String[] {Pager.Pages.SENDER, Pager.Pages.SERVICE_CENTER, Pager.Pages._ID, Pager.Pages.FROM_ADDR, Pager.Pages.SUBJECT},
                 null,
                 null,
                 null);
@@ -201,6 +201,9 @@ public class SmsPageReceiver extends BroadcastReceiver
         String sc = null;
         if(prefs.getBoolean("use_received_service_center", false)){
             sc = cursor.getString(cursor.getColumnIndex(Pager.Pages.SERVICE_CENTER));
+        }
+        if(prefs.getBoolean("include_subject", false)){
+            reply = "(" + cursor.getString(cursor.getColumnIndex(Pager.Pages.SUBJECT)) + ") " + reply;
         }
         if(prefs.getBoolean("include_dest_address", false)){
             //send the destination address, and subject, with the reply.

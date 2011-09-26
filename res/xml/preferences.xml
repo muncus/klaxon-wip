@@ -57,6 +57,11 @@
         <PreferenceCategory android:key="reply settings"
           android:title="Reply Settings"
           >
+            <CheckBoxPreference android:key="include subject" 
+              android:title="@string/pref_sms_subject"
+              android:summary="@string/pref_sms_subject_summary"
+              android:defaultValue="false"
+              />
             <CheckBoxPreference android:key="use_received_service_center" 
               android:title="@string/pref_sms_servicecenter"
               android:summary="@string/pref_sms_servicecenter_summary"
@@ -85,6 +90,10 @@
       android:key="changelog"
       android:title="@string/pref_changelog"
       android:summary="@string/pref_changelog_summary"
+      />
+    <Preference
+      android:key="version"
+      android:title="@string/pref_version"
       />
 </PreferenceScreen>
 
