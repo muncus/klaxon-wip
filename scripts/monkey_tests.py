@@ -19,13 +19,13 @@ print test_dict['stream']
 
 # try to send some smses through adb.
 
-import socket
-sock = socket.socket()
-sock.connect(('localhost', 5554))
-sock.recv(300) # eat the banner.
+#import socket
+#sock = socket.socket()
+#sock.connect(('localhost', 5554))
+#sock.recv(300) # eat the banner.
 
-pattern = "sms send 424242 %(msg)s\n"
+#pattern = "sms send 424242 %(msg)s\n"
 
-for m in ['foo', 'Foo', 'FOO']:
-  sock.send(pattern % {'msg': m})
-  assert 'OK' in sock.recv(10)
+#for m in ['foo', 'Foo', 'FOO']:
+#  sock.send(pattern % {'msg': m})
+#  assert 'OK' in sock.recv(10)
