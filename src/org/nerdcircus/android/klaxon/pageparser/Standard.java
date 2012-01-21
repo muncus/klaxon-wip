@@ -77,11 +77,15 @@ public class Standard {
     private ContentValues addSubject(ContentValues cv){
         if(cv.get(Pages.SUBJECT).toString().trim().length() == 0){
             String body = cv.get(Pages.BODY).toString();
-            if(body.length() > 41){
-                cv.put(Pages.SUBJECT, cv.get(Pages.BODY).toString().substring(0,40));
+            int firstnewline = body.indexOf('\n');
+            if(firstnewline > 0 && firstnewline < 40){
+                cv.put(Pages.SUBJECT, body.substring(0, firstnewline));
+            }
+            else if(body.length() > 41){
+                cv.put(Pages.SUBJECT, body.substring(0,40));
             }
             else {
-                cv.put(Pages.SUBJECT, cv.get(Pages.BODY).toString());
+                cv.put(Pages.SUBJECT, body);
             }
         }
         return cv;
