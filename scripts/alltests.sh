@@ -15,8 +15,8 @@ for avd in $AVDS; do
     adb wait-for-device
     sleep 30
     echo "installing...."
-    ant install >/dev/null
-    cd tests && ant install >/dev/null
+    ant debug install >/dev/null
+    cd tests && ant debug install >/dev/null
     cd ..
     adb shell am instrument -w org.nerdcircus.android.klaxon.tests/android.test.InstrumentationTestRunner
 
