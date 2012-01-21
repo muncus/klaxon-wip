@@ -15,6 +15,7 @@
       android:showDefault="true"
       android:showSilent="true"
       android:title="@string/pref_alertsound"
+      android:defaultValue="content://settings/system/notification_sound"
       />
     <CheckBoxPreference android:key="use_alarm_stream" 
       android:title="@string/pref_alarmstream"
