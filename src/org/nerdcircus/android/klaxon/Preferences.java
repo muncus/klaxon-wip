@@ -21,6 +21,7 @@ import android.accounts.AccountManager;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.Intent;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -70,6 +71,13 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         i = new Intent(Intent.ACTION_MAIN);
         i.setClass(this, Changelog.class);
         replylist.setIntent(i);
+
+        replylist = this.findPreference("sendfeedback");
+        replylist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference p){
+                    Preferences.sendDebugEmail(p.getContext());
+                    return true;
+                }});
 
         //disable the "Consume SMS" option if the build is too low
         //NB: there's no code to act on this, since the abortBroadcast() 
@@ -169,5 +177,30 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 		this.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
 	}
     }
+
+    /** Fires the intent to send an email with some debugging info.
+     */
+    public static void sendDebugEmail(Context context){
+        Intent send = new Intent(Intent.ACTION_SEND);
+        send.setType("text/plain");
+        send.putExtra(Intent.EXTRA_EMAIL, new String[] {"klaxon-users@googlegroups.com"});
+        send.putExtra(Intent.EXTRA_SUBJECT, "Debug Email Report");
+        send.putExtra(Intent.EXTRA_TEXT, "this should have some useful information!");
+        context.startActivity(Intent.createChooser(send, "Send Debugging Email"));
+    }
+    private String getDebugMessageBody(){
+        //Put some useful debug data in here.
+        String body = "";
+
+        body.concat("** System Info:\n");
+        body.concat("Android Version: " + Build.VERSION.RELEASE + "\n");
+        body.concat("Device: " + Build.MODEL + "\n");
+        body.concat("Build Info: " + Build.FINGERPRINT + "\n");
+        body.concat("** App Info:\n");
+        body.concat("App Version: " + Build.DISPLAY + "\n");
+
+        return body;
+    }
+
 }
 

@@ -120,5 +120,9 @@
       android:key="version"
       android:title="@string/pref_version"
       />
+    <Preference
+      android:key="sendfeedback"
+      android:title="@string/pref_feedback"
+      />
 </PreferenceScreen>
 
