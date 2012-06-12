@@ -75,30 +75,6 @@
               />
         </PreferenceCategory>
         </PreferenceScreen> 
-    <PreferenceScreen
-      android:key="c2dm_prefs"
-      android:title="@string/pref_c2dmsettings"
-      android:summary="@string/pref_c2dmsettings_summary" >
-        <EditTextPreference android:key="c2dm_sender"
-          android:title="@string/pref_c2dm_sender"
-          android:defaultValue="" />
-	<EditTextPreference android:key="c2dm_register_url"
-	  android:title="@string/pref_c2dm_register_url"
-	  android:defaultValue="http://klaxon-c2dm.appspot.com" />
-        <ListPreference android:key="c2dm_register_account"
-	  android:title="@string/pref_c2dm_register_account"
-	  android:defaultValue="" />
-	<Preference
-	  android:key="c2dm_register"
-          android:layout="@layout/c2dm_register_widget"
-	  android:enabled="false" />
-	<EditTextPreference android:key="c2dm_token"
-	  android:title="Token" />
-	<Preference
-	  android:key="c2dm_unregister"
-          android:layout="@layout/c2dm_unregister_widget"
-	  android:enabled="false" />
-        </PreferenceScreen>
     <Preference
       android:key="edit_replies"
       android:title="@string/pref_editreplies"
@@ -124,5 +100,33 @@
       android:key="sendfeedback"
       android:title="@string/pref_feedback"
       />
+    <PreferenceCategory android:key="experimental"
+      android:title="Experimental Settings"
+      >
+      <PreferenceScreen
+        android:key="c2dm_prefs"
+        android:title="@string/pref_c2dmsettings"
+        android:summary="@string/pref_c2dmsettings_summary" >
+          <EditTextPreference android:key="c2dm_sender"
+            android:title="@string/pref_c2dm_sender"
+            android:defaultValue="" />
+          <EditTextPreference android:key="c2dm_register_url"
+            android:title="@string/pref_c2dm_register_url"
+            android:defaultValue="http://klaxon-c2dm.appspot.com" />
+          <ListPreference android:key="c2dm_register_account"
+            android:title="@string/pref_c2dm_register_account"
+            android:defaultValue="" />
+          <Preference
+            android:key="c2dm_register"
+                  android:layout="@layout/c2dm_register_widget"
+            android:enabled="false" />
+          <EditTextPreference android:key="c2dm_token"
+            android:title="Token" />
+          <Preference
+            android:key="c2dm_unregister"
+                  android:layout="@layout/c2dm_unregister_widget"
+            android:enabled="false" />
+       </PreferenceScreen>
+    </PreferenceCategory>
 </PreferenceScreen>
 
