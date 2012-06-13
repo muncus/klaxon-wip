@@ -4,28 +4,19 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:key="klaxon_prefs"
   >
+  <PreferenceCategory android:key="alert settings"
+    android:title="Alert Settings"
+    >
     <CheckBoxPreference android:key="is_oncall" 
       android:title="@string/pref_oncall"
       android:defaultValue="true"
       android:summary="@string/pref_oncall_summary"
       />
-    <RingtonePreference 
-      android:key="alert_sound"
-      android:ringtoneType="all"
-      android:showDefault="true"
-      android:showSilent="true"
-      android:title="@string/pref_alertsound"
-      android:defaultValue="content://settings/system/notification_sound"
+    <EditTextPreference android:key="sender_match"
+      android:title="@string/pref_sms_sender"
+      android:defaultValue=""
+      android:summary="@string/pref_sms_sender_summary"
       />
-    <CheckBoxPreference android:key="use_alarm_stream" 
-      android:title="@string/pref_alarmstream"
-      android:defaultValue="false"
-      android:summary="@string/pref_alarmstream_summary"
-      />
-    <CheckBoxPreference android:key="vibrate" 
-      android:title="@string/pref_vibrate"
-      android:defaultValue="true"
-      />  
     <PreferenceScreen
       android:key="message_prefs"
       android:title="@string/pref_smssettings"
@@ -33,11 +24,6 @@
         <PreferenceCategory android:key="receive settings"
           android:title="Incoming Message Settings"
           >
-            <EditTextPreference android:key="sender_match"
-              android:title="@string/pref_sms_sender"
-              android:defaultValue=""
-              android:summary="@string/pref_sms_sender_summary"
-              />
             <ListPreference android:key="pageparser"
               android:title="Page Parser Type"
               android:entries="@array/pageparser"
@@ -52,7 +38,7 @@
             <CheckBoxPreference android:key="also_match_body" 
               android:title="@string/pref_match_message_body"
               android:summary="@string/pref_match_message_body_summary"
-              android:defaultValue="false"
+              android:defaultValue="true"
               />
         </PreferenceCategory>
         <PreferenceCategory android:key="reply settings"
@@ -74,19 +60,44 @@
               android:defaultValue="false"
               />
         </PreferenceCategory>
-        </PreferenceScreen> 
+      </PreferenceScreen> 
     <Preference
       android:key="edit_replies"
       android:title="@string/pref_editreplies"
       android:summary="@string/pref_editreplies_summary"
       />
-    <ListPreference android:key="notification_interval" 
-      android:title="@string/pref_notificationtime"
-      android:summary="@string/pref_notificationtime"
-      android:defaultValue="20000"
-      android:entries="@array/intervals"
-      android:entryValues="@array/intervals_in_ms"
-      />
+    </PreferenceCategory>
+    <PreferenceCategory android:key="notification settings"
+      android:title="Notification Settings"
+      >
+      <RingtonePreference 
+        android:key="alert_sound"
+        android:ringtoneType="all"
+        android:showDefault="true"
+        android:showSilent="true"
+        android:title="@string/pref_alertsound"
+        android:defaultValue="content://settings/system/notification_sound"
+        />
+      <CheckBoxPreference android:key="use_alarm_stream" 
+        android:title="@string/pref_alarmstream"
+        android:defaultValue="false"
+        android:summary="@string/pref_alarmstream_summary"
+        />
+      <CheckBoxPreference android:key="vibrate" 
+        android:title="@string/pref_vibrate"
+        android:defaultValue="true"
+        />  
+      <ListPreference android:key="notification_interval" 
+        android:title="@string/pref_notificationtime"
+        android:summary="@string/pref_notificationtime"
+        android:defaultValue="20000"
+        android:entries="@array/intervals"
+        android:entryValues="@array/intervals_in_ms"
+        />
+    </PreferenceCategory>
+    <PreferenceCategory
+      android:key="other prefs"
+      android:title="Other">
     <Preference
       android:key="changelog"
       android:title="@string/pref_changelog"
@@ -129,5 +140,6 @@
             android:enabled="false" />
       </PreferenceCategory>
      </PreferenceScreen>
+    </PreferenceCategory>
 </PreferenceScreen>
 
