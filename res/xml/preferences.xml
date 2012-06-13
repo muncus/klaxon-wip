@@ -100,10 +100,11 @@
       android:key="sendfeedback"
       android:title="@string/pref_feedback"
       />
-    <PreferenceCategory android:key="experimental"
+    <PreferenceScreen android:key="experimental"
       android:title="Experimental Settings"
+      android:summary="Unfinished features, potentially dangerous."
       >
-      <PreferenceScreen
+      <PreferenceCategory
         android:key="c2dm_prefs"
         android:title="@string/pref_c2dmsettings"
         android:summary="@string/pref_c2dmsettings_summary" >
@@ -112,7 +113,7 @@
             android:defaultValue="" />
           <EditTextPreference android:key="c2dm_register_url"
             android:title="@string/pref_c2dm_register_url"
-            android:defaultValue="http://klaxon-c2dm.appspot.com" />
+            android:defaultValue="" />
           <ListPreference android:key="c2dm_register_account"
             android:title="@string/pref_c2dm_register_account"
             android:defaultValue="" />
@@ -126,7 +127,7 @@
             android:key="c2dm_unregister"
                   android:layout="@layout/c2dm_unregister_widget"
             android:enabled="false" />
-       </PreferenceScreen>
-    </PreferenceCategory>
+      </PreferenceCategory>
+     </PreferenceScreen>
 </PreferenceScreen>
 
