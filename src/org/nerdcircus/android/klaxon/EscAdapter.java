@@ -19,6 +19,7 @@ package org.nerdcircus.android.klaxon;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ResourceCursorAdapter;
@@ -36,13 +37,21 @@ public class EscAdapter extends ResourceCursorAdapter
         super(context, layout, c);
     }
 
+    /**
+     * Display a textview with the page's content.  Use a compound drawable to
+     * display an indicator to the left of the textview as to whether or not the
+     * page has been responded to.
+     */
     public void bindView(View view, Context context, Cursor cursor){
-        ImageView icon = (ImageView) view.findViewById(R.id.icon);
         TextView subject = (TextView) view.findViewById(R.id.subject);
 
         subject.setText(cursor.getString(cursor.getColumnIndex(Pager.Pages.SUBJECT)));
+
         int status = cursor.getInt(cursor.getColumnIndex(Pager.Pages.ACK_STATUS));
-        icon.setImageResource(Pager.getStatusResId(status));
+
+        Drawable icon = context.getResources().getDrawable(Pager.getStatusResId(status));
+        subject.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+
     }
 
     

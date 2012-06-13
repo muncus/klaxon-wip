@@ -20,6 +20,7 @@ import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -31,15 +32,17 @@ import org.nerdcircus.android.klaxon.Pager;
 public class AckStatusAdapter extends ArrayAdapter {
 
     private static int ICON_RESOURCE_ID = R.id.icon;
-
+    private Context mContext;
 
     public AckStatusAdapter(Context context, int textViewResourceId, List<Integer> items){
         super(context, textViewResourceId, items);
+        mContext = context;
     }
 
     public ImageView getView(int position, View convertView, ViewGroup parent){
         if(convertView == null){
-            convertView = new ImageView(getContext());
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.ackstatusspinner, parent, false);
         }
         ((ImageView)convertView).setImageResource(Pager.getStatusResId(position));
         return (ImageView)convertView;
@@ -47,7 +50,8 @@ public class AckStatusAdapter extends ArrayAdapter {
 
     public ImageView getDropDownView(int position, View convertView, ViewGroup parent){
         if(convertView == null){
-            convertView = new ImageView(getContext());
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.ackstatusspinner, parent, false);
         }
         ((ImageView)convertView).setImageResource(Pager.getStatusResId(position));
         return (ImageView)convertView;

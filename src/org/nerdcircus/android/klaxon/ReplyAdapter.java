@@ -19,6 +19,7 @@ package org.nerdcircus.android.klaxon;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ResourceCursorAdapter;
@@ -37,18 +38,15 @@ public class ReplyAdapter extends ResourceCursorAdapter
     }
 
     public void bindView(View view, Context context, Cursor cursor){
-        ImageView icon = (ImageView) view.findViewById(R.id.icon);
         TextView subject = (TextView) view.findViewById(R.id.subject);
         TextView body = (TextView) view.findViewById(R.id.body);
-        subject.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
         subject.setText(cursor.getString(cursor.getColumnIndex(Pager.Replies.NAME)));
         body.setText(cursor.getString(cursor.getColumnIndex(Pager.Replies.BODY)));
         int status = cursor.getInt(cursor.getColumnIndex(Pager.Replies.ACK_STATUS));
-        icon.setImageResource(Pager.getStatusResId(status));
+      
+        Drawable icon = context.getResources().getDrawable(Pager.getStatusResId(status));
+        subject.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
     }
-
-    
-
 }
 

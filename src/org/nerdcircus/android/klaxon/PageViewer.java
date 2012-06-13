@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -69,7 +70,6 @@ public class PageViewer extends Activity
         //mSubjectView.setTextSize((float)(mSubjectView.getTextSize() * 1.25));
 
         mBodyView = (TextView) findViewById(R.id.view_body);
-        mIconView = (ImageView) findViewById(R.id.view_icon);
         mDateView = (TextView) findViewById(R.id.datestamp);
         mSenderView = (TextView) findViewById(R.id.sender);
 
@@ -92,8 +92,8 @@ public class PageViewer extends Activity
         mSenderView.setText("Sender: "+ mCursor.getString(mCursor.getColumnIndex(Pager.Pages.SENDER)));
 
         int status = mCursor.getInt(mCursor.getColumnIndex(Pager.Pages.ACK_STATUS));
-        mIconView.setImageResource(Pager.getStatusResId(status));
-
+        Drawable icon = getResources().getDrawable(Pager.getStatusResId(status));
+        mSubjectView.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
     }
 
     @Override

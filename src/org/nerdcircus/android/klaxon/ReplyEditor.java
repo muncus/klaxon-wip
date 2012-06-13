@@ -67,18 +67,14 @@ public class ReplyEditor extends Activity
         super.onCreate(icicle);
         setContentView(R.layout.replyeditor);
 
-
         /* stash our statuses in the ack status list*/
         mAckStatusList.add(new Integer(0));
         mAckStatusList.add(new Integer(1));
         mAckStatusList.add(new Integer(2));
 
         mSubjectView = (EditText) findViewById(R.id.subject);
-        //mSubjectView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-        //mSubjectView.setTextSize((float)(mSubjectView.getTextSize() * 1.25));
 
         mBodyView = (EditText) findViewById(R.id.body);
-        mIconView = (ImageView) findViewById(R.id.icon);
         mCheckBox = (CheckBox) findViewById(R.id.show_in_menu);
         mAckStatusSpinner = (Spinner) findViewById(R.id.ack_status_spinner);
         mAckStatusSpinner.setAdapter(new AckStatusAdapter(this, R.layout.ackstatusspinner, mAckStatusList));
@@ -142,9 +138,7 @@ public class ReplyEditor extends Activity
             int status = mCursor.getInt(mCursor.getColumnIndex(Replies.ACK_STATUS));
             mAckStatusSpinner.setSelection(status);
             mIconView.setImageResource(Pager.getStatusResId(status));
-
         }
-
     }
 
     @Override
