@@ -22,6 +22,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.Intent;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -185,19 +187,26 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         send.setType("text/plain");
         send.putExtra(Intent.EXTRA_EMAIL, new String[] {"klaxon-users@googlegroups.com"});
         send.putExtra(Intent.EXTRA_SUBJECT, "Debug Email Report");
-        send.putExtra(Intent.EXTRA_TEXT, "this should have some useful information!");
+        send.putExtra(Intent.EXTRA_TEXT, getDebugMessageBody(context));
         context.startActivity(Intent.createChooser(send, "Send Debugging Email"));
     }
-    private String getDebugMessageBody(){
+    public static String getDebugMessageBody(Context context){
         //Put some useful debug data in here.
-        String body = "";
-
-        body.concat("** System Info:\n");
-        body.concat("Android Version: " + Build.VERSION.RELEASE + "\n");
-        body.concat("Device: " + Build.MODEL + "\n");
-        body.concat("Build Info: " + Build.FINGERPRINT + "\n");
-        body.concat("** App Info:\n");
-        body.concat("App Version: " + Build.DISPLAY + "\n");
+        String version = "unknown";
+        try {
+            PackageManager manager = context.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(
+                context.getPackageName(), 0);
+            version = info.versionName;
+        }
+        catch(Exception e){};
+        String body = "\n" + 
+            "** System Info:\n" + 
+            "Android Version: " + Build.VERSION.RELEASE + "\n" + 
+            "Device: " + Build.MODEL + "\n" + 
+            "Build Info: " + Build.FINGERPRINT + "\n" + 
+            "** App Info:\n" + 
+            "App Version: " + version + "\n";
 
         return body;
     }
