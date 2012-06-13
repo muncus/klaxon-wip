@@ -74,6 +74,9 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         i.setClass(this, Changelog.class);
         replylist.setIntent(i);
 
+        replylist = this.findPreference("version");
+        replylist.setSummary(getAppVersion(this));
+
         replylist = this.findPreference("sendfeedback");
         replylist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference p){
@@ -190,8 +193,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         send.putExtra(Intent.EXTRA_TEXT, getDebugMessageBody(context));
         context.startActivity(Intent.createChooser(send, "Send Debugging Email"));
     }
-    public static String getDebugMessageBody(Context context){
-        //Put some useful debug data in here.
+    public static String getAppVersion(Context context){
         String version = "unknown";
         try {
             PackageManager manager = context.getPackageManager();
@@ -200,13 +202,17 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
             version = info.versionName;
         }
         catch(Exception e){};
+        return version;
+    }
+    public static String getDebugMessageBody(Context context){
+        //Put some useful debug data in here.
         String body = "\n" + 
             "** System Info:\n" + 
             "Android Version: " + Build.VERSION.RELEASE + "\n" + 
             "Device: " + Build.MODEL + "\n" + 
             "Build Info: " + Build.FINGERPRINT + "\n" + 
             "** App Info:\n" + 
-            "App Version: " + version + "\n";
+            "App Version: " + getAppVersion(context) + "\n";
 
         return body;
     }
