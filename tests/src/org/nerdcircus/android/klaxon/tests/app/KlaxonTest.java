@@ -15,5 +15,5 @@ public class KlaxonTest extends ActivityInstrumentationTestCase2 {
         launchActivity("org.nerdcircus.android.klaxon", KlaxonList.class, new Bundle());
         assertTrue(true);
     }
-
+    
 }

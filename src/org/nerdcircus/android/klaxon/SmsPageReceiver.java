@@ -151,13 +151,20 @@ public class SmsPageReceiver extends BroadcastReceiver
         Log.d(TAG, "Trigger: " + trigger_string);
         Log.d(TAG, "sender: " + cv.getAsString(Pages.SENDER).toLowerCase());
         Log.d(TAG, "from_addr: " + cv.getAsString(Pages.FROM_ADDR).toLowerCase());
+        return matchesPageCriteria(cv, trigger_string, prefs.getBoolean("also_match_body", false));
+    }
 
+    /* For testing. */
+    public static boolean matchesPageCriteria(ContentValues cv, String trigger_string, boolean match_body){
+        //split on commas, with optional spaces.
         for( String trigger : trigger_string.split(",")){
           if( cv.getAsString(Pages.SENDER).toLowerCase().contains(trigger) )
               return true;
           if( cv.getAsString(Pages.FROM_ADDR).toLowerCase().contains(trigger) )
               return true;
-          if ( prefs.getBoolean("also_match_body", false) ){
+          if ( match_body ){
+              if( cv.getAsString(Pages.SUBJECT).toLowerCase().contains(trigger) )
+                  return true;
               if( cv.getAsString(Pages.BODY).toLowerCase().contains(trigger) )
                   return true;
           }
@@ -223,6 +230,12 @@ public class SmsPageReceiver extends BroadcastReceiver
         );
         Log.d(TAG, "Message sent.");
     }
+
+    /* Exposed for testing only. */
+    public static boolean testIsPage(Alert alert, String trigger){
+        return matchesPageCriteria(alert.asContentValues(), trigger, false);
+    }
+      
 
 }
 

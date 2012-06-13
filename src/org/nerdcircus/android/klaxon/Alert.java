@@ -20,6 +20,14 @@ public class Alert {
         cv = v;
     }
 
+    public Alert(String from, String subj, String body){
+        setFrom(from);
+        setDisplayFrom(from);
+        setSubject(subj);
+        setBody(body);
+        setTransport("sms");
+    }
+
     // "raw" from address, for use in replying.
     public void setFrom(String from){
         cv.put(Pages.SENDER, from);
