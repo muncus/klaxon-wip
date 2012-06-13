@@ -23,9 +23,16 @@ public class SmsPageReceiverTest extends AndroidTestCase {
         a.setDisplayFrom("1234");
         a.setSubject("subj");
         a.setBody("body");
+        // Match sender, with and without spaces.
         assertTrue(SmsPageReceiver.matchesPageCriteria(a.asContentValues(), "1234,foo,bar", false));
+        assertTrue(SmsPageReceiver.matchesPageCriteria(a.asContentValues(), "1234, foo, bar", false));
+        // Match body/subject, with and without spaces.
         assertTrue(SmsPageReceiver.matchesPageCriteria(a.asContentValues(), "subj,foo,bar", true));
         assertTrue(SmsPageReceiver.matchesPageCriteria(a.asContentValues(), "subj, foo, bar", true));
+        assertTrue(SmsPageReceiver.matchesPageCriteria(a.asContentValues(), "foo,body,bar", true));
+        assertTrue(SmsPageReceiver.matchesPageCriteria(a.asContentValues(), "body, foo, bar", true));
+        // With trailing whitespace.
+        assertTrue(SmsPageReceiver.matchesPageCriteria(a.asContentValues(), "foo, bar, body ", true));
     }
     
 }

@@ -147,7 +147,7 @@ public class SmsPageReceiver extends BroadcastReceiver
      */
     boolean isPage(ContentValues cv, Context context){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String trigger_string = prefs.getString("sender_match", "").toLowerCase();
+        String trigger_string = prefs.getString("sender_match", "").toLowerCase().trim();
         Log.d(TAG, "Trigger: " + trigger_string);
         Log.d(TAG, "sender: " + cv.getAsString(Pages.SENDER).toLowerCase());
         Log.d(TAG, "from_addr: " + cv.getAsString(Pages.FROM_ADDR).toLowerCase());
@@ -157,7 +157,7 @@ public class SmsPageReceiver extends BroadcastReceiver
     /* For testing. */
     public static boolean matchesPageCriteria(ContentValues cv, String trigger_string, boolean match_body){
         //split on commas, with optional spaces.
-        for( String trigger : trigger_string.split(",")){
+        for( String trigger : trigger_string.split("[ ]*,[ ]*")){
           if( cv.getAsString(Pages.SENDER).toLowerCase().contains(trigger) )
               return true;
           if( cv.getAsString(Pages.FROM_ADDR).toLowerCase().contains(trigger) )
