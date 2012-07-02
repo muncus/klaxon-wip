@@ -3,11 +3,13 @@
 set -e #exit on error.
 
 #AVDS="1.5 1.6 nexus"
-AVDS="1.6 2.1 2.2 2.3.3 4.0"
+#AVDS="1.6 2.1 2.2 2.3.3 4.0"
+AVDS="2.1 2.2 2.3.3 4.0"
 PIDFILE=`mktemp -t androidtests.XXXXXXX`
 EMULATOR_BIN=`which emulator`
 
 for avd in $AVDS; do
+    adb start-server
     echo "starting avd: ${avd}"
     start-stop-daemon -p ${PIDFILE} -S --exec ${EMULATOR_BIN} -m -b -- \
       -avd ${avd} -sdcard ~/.android/avd/${avd}.avd/sdcard.img -no-boot-anim
@@ -23,5 +25,6 @@ for avd in $AVDS; do
     #spin down the emulator.
     start-stop-daemon -K -p ${PIDFILE}
     rm ${PIDFILE}
+    adb kill-server
     sleep 5
 done

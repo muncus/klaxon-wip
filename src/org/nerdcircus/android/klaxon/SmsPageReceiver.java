@@ -158,6 +158,7 @@ public class SmsPageReceiver extends BroadcastReceiver
     public static boolean matchesPageCriteria(ContentValues cv, String trigger_string, boolean match_body){
         //split on commas, with optional spaces.
         for( String trigger : trigger_string.split("[ ]*,[ ]*")){
+          trigger = trigger.trim(); // Remove leading/trailing whitespace.
           if( cv.getAsString(Pages.SENDER).toLowerCase().contains(trigger) )
               return true;
           if( cv.getAsString(Pages.FROM_ADDR).toLowerCase().contains(trigger) )
