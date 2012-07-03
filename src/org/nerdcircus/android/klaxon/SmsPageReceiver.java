@@ -76,6 +76,7 @@ public class SmsPageReceiver extends BroadcastReceiver
             }
             else {
                 Log.d(TAG, "cannot reply to this message.");
+                return;
             }
         }
 
