@@ -193,7 +193,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
      */
     public static void sendDebugEmail(Context context){
         Intent send = new Intent(Intent.ACTION_SEND);
-        send.setType("text/plain");
+        send.setType("message/rfc822");
         send.putExtra(Intent.EXTRA_EMAIL, new String[] {"klaxon-users@googlegroups.com"});
         send.putExtra(Intent.EXTRA_SUBJECT, "Debug Email Report");
         send.putExtra(Intent.EXTRA_TEXT, getDebugMessageBody(context));
