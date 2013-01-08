@@ -139,7 +139,8 @@
             android:layout="@layout/c2dm_unregister_widget"
             android:enabled="false" />
           <Preference
-            android:key="Test C2DM delivery."
+            android:key="send_test_message"
+            android:title="Test C2DM delivery."
             android:summary="Tests the sending of a push message, if supported by c2dm server."
             />
       </PreferenceCategory>

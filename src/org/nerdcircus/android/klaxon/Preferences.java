@@ -84,6 +84,11 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
                     return true;
                 }});
 
+        replylist = this.findPreference("send_test_message");
+        i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse("https://pagepusher.appspot.com/test"));
+        replylist.setIntent(i);
+
         //disable the "Consume SMS" option if the build is too low
         //NB: there's no code to act on this, since the abortBroadcast() 
         // call will not break anything when called in < 1.6
