@@ -85,17 +85,27 @@ public class GCMIntentService extends GCMBaseIntentService {
       if (extras == null)
         return;
 
-      String from = extras.getString("frm");
-      if (from == null)
-        from = extras.getString("from");
-      String subject = extras.getString("subject");
-      if (subject == null)
-        subject = "subject not specified";
-      String body = extras.getString("body");
-      if (body == null)
-        body = "body not specifed";
+//      String from = extras.getString("from");
+//      if (from == null)
+//        from = "Unknown Sender";
+//
+//      String subject = extras.getString("subject");
+//      if (subject == null)
+//        subject = "subject not specified";
+//
+//      String body = extras.getString("body");
+//      if (body == null)
+//        body = "body not specifed";
 
-      Alert incoming = new Alert(from, subject, body);
+//      Log.d(TAG, "From: " + from);
+      //Alert incoming = new Alert(from, subject, body);
+      Alert incoming = new Alert();
+      if(extras.containsKey("from"))
+        incoming.setFrom(extras.getString("from"));
+      if(extras.containsKey("subject"))
+        incoming.setSubject(extras.getString("subject"));
+      if(extras.containsKey("body"))
+        incoming.setBody(extras.getString("body"));
       incoming.setTransport(MY_TRANSPORT);
 
       Uri newpage = context.getContentResolver().insert(Pages.CONTENT_URI, incoming.asContentValues());
@@ -175,8 +185,10 @@ public class GCMIntentService extends GCMBaseIntentService {
     // Used to make a general HTTP request, and auth as needed.
     private static HttpResponse makeHttpRequest(Context context, HttpGet req){
         try {
+          Log.d(TAG, "Attempting to fetch: " + req.getURI().toString());
           HttpResponse res = makeAuthenticatedRequest(context, req);
           if(res.getStatusLine().getStatusCode() == 500){
+          Log.d(TAG, res.getStatusLine().toString());
               return makeAuthenticatedRequest(context, req, true);
           }
           return res;
@@ -199,14 +211,14 @@ public class GCMIntentService extends GCMBaseIntentService {
         if (accountName == null) throw new Exception("No account");
 
         // Get auth token for account
-        Account account = new Account(accountName, "com.google");
-        String authToken = getAuthToken(context, account);
+        String authToken = getAuthToken(context, accountName);
         if (invalidateToken) {
             Log.w(TAG, "****TOKEN INVALIDATION REQUESTED. INVESTIGATE WHY****");
             // Invalidate the cached token
             AccountManager accountManager = AccountManager.get(context);
+            Account account = new Account(accountName, "com.google");
             accountManager.invalidateAuthToken(account.type, authToken);
-            authToken = getAuthToken(context, account);
+            authToken = getAuthToken(context, accountName);
         }
         DefaultHttpClient client = new DefaultHttpClient();
         HttpResponse res = client.execute(req);
@@ -232,30 +244,35 @@ public class GCMIntentService extends GCMBaseIntentService {
         if (accountName == null) throw new Exception("No account");
 
         // Get auth token for account
-        Account account = new Account(accountName, "com.google");
-        String authToken = getAuthToken(context, account);
+        String authToken = getAuthToken(context, accountName);
 
         String sender = settings.getString("c2dm_sender", null);
         String base_url = settings.getString("c2dm_register_url", null);
 
         if (sender != null && base_url != null) {
             DefaultHttpClient client = new DefaultHttpClient();
+
             String continueURL = base_url + url + "?token=" +
                     deviceRegistrationID + "&sender=" + sender;
+
             URI uri = new URI(base_url + AUTH_URL + "?continue=" +
                     URLEncoder.encode(continueURL, "UTF-8") +
                     "&auth=" + authToken);
+
             HttpGet method = new HttpGet(uri);
             return makeHttpRequest(context, method);
         }
         return null;
     }
 
-    private static String getAuthToken(Context context, Account account) {
+    private static String getAuthToken(Context context, String accountName) {
+        //TODO: validate that the account still appears in GetAccountsByType().
+        Account account = new Account(accountName, "com.google");
+
         String authToken = null;
         AccountManager accountManager = AccountManager.get(context);
         try {
-            authToken = accountManager.blockingGetAuthToken(account, AUTH_TOKEN_TYPE, false);
+            authToken = accountManager.blockingGetAuthToken(account, AUTH_TOKEN_TYPE, true);
         } catch (OperationCanceledException e) {
             Log.w(TAG, e.getMessage());
         } catch (AuthenticatorException e) {

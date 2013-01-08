@@ -8,6 +8,9 @@ import org.nerdcircus.android.klaxon.Pager.Pages;
  */
 public class Alert {
     private ContentValues cv;
+    String DEFAULT_FROM = "Unknown Sender";
+    String DEFAULT_SUBJECT = "Subject not specified";
+    String DEFAULT_BODY = "Body not specified";
 
     public Alert(){
         cv = new ContentValues();
