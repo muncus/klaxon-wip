@@ -86,7 +86,8 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 
         replylist = this.findPreference("send_test_message");
         i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse("https://pagepusher.appspot.com/test"));
+        String base_url = PreferenceManager.getDefaultSharedPreferences(this).getString("c2dm_register_url", "");
+        i.setData(Uri.parse(base_url + "/test"));
         replylist.setIntent(i);
 
         //disable the "Consume SMS" option if the build is too low
