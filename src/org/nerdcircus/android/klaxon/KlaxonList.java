@@ -113,8 +113,6 @@ public class KlaxonList extends ListActivity
         Log.d(TAG, "adapter created.");
         setListAdapter(adapter);
 
-        registerReceiver(mAuthPermissionReceiver, new IntentFilter(AUTH_PERMISSION_ACTION));
-
         Log.d(TAG, "oncreate done.");
         registerForContextMenu(getListView());
     }
@@ -125,14 +123,6 @@ public class KlaxonList extends ListActivity
         Intent i = new Intent(Pager.SILENCE_ACTION);
         sendBroadcast(i);
 
-	if (mPendingAuth) {
-	    mPendingAuth = false;
-	    String token = PreferenceManager
-		.getDefaultSharedPreferences(this)
-		.getString("c2dm_token", "");
-	    if (!token.equals(""))
-                DeviceRegistrar.registerWithServer(this, token);
-        }
     }
 
     public void onListItemClick(ListView parent, View v, int position, long id){
@@ -300,7 +290,7 @@ public class KlaxonList extends ListActivity
                     i.setData(Uri.withAppendedPath(Pages.CONTENT_URI, ""+itemId));
                     i.putExtra("response", response);
                     i.putExtra("new_ack_status", status);
-                    sendBroadcast(i);
+                    sendOrderedBroadcast(i, null);
                     return true;
                 }
             }
@@ -333,19 +323,5 @@ public class KlaxonList extends ListActivity
         }
 
     }
-
-    private final BroadcastReceiver mAuthPermissionReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle extras = intent.getBundleExtra("AccountManagerBundle");
-            if (extras != null) {
-                Intent authIntent = (Intent) extras.get(AccountManager.KEY_INTENT);
-                if (authIntent != null) {
-                    mPendingAuth = true;
-                    startActivity(authIntent);
-                }
-            }
-        }
-    };
 }
 

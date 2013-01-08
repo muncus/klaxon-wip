@@ -95,7 +95,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         }
 
 	ListPreference c2dm_accounts = (ListPreference) this.findPreference("c2dm_register_account");
-	Account[] accounts = AccountManager.get(getApplicationContext()).getAccounts();
+	Account[] accounts = AccountManager.get(getApplicationContext()).getAccountsByType("com.google");
 	Vector<CharSequence> accountNames = new Vector<CharSequence>();
 	for (Account account : accounts) {
 	   accountNames.add(account.name);

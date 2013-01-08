@@ -51,68 +51,14 @@ public class C2dmPageReceiver extends BroadcastReceiver
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(
                 "com.google.android.c2dm.intent.REGISTRATION")) {
-            handleRegistration(context, intent);
+            return;
         } else if (intent.getAction().equals(
                 "com.google.android.c2dm.intent.RECEIVE")) {
-            handleMessage(context, intent);
-        }
-    }
-
-    private void handleRegistration(Context context, Intent intent) {
-        String registration = intent.getStringExtra("registration_id"); 
-        if (intent.getStringExtra("error") != null) {
-	    CharSequence text = "Registration error. Try again. " + intent.getStringExtra("error");
-	    int duration = Toast.LENGTH_LONG;
-	    Toast toast = Toast.makeText(context, text, duration);
-	    toast.show();
-
-            // Registration failed, should try again later.
-        } else if (intent.getStringExtra("unregistered") != null) {
-            // unregistration done, new messages from the authorized sender will be rejected
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-	    String token = prefs.getString("c2dm_token", "");
-	    DeviceRegistrar.unregisterWithServer(context, token);
-        } else if (registration != null) {
-            // Send the registration ID to the 3rd party site that is sending the messages.
-	    DeviceRegistrar.registerWithServer(context, registration);
-        }
-    }
-
-    public void handleMessage(Context context, Intent intent)
-    {
-
-        //check to see if we want to intercept.
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if( ! prefs.getBoolean("is_oncall", true) ){
-            Log.d(TAG, "not oncall. not bothering with incoming c2dm push.");
             return;
+           // handleMessage(context, intent);
         }
-
-	Bundle extras = intent.getExtras();
-	if (extras == null)
-		return;
-
-	String from = extras.getString("frm");
-	if (from == null)
-		from = extras.getString("from");
-	String subject = extras.getString("subject");
-	if (subject == null)
-		subject = "subject not specified";
-	String body = extras.getString("body");
-	if (body == null)
-		body = "body not speicifed";
-
-       	Alert incoming = (new Standard()).parse(from, subject, body);
-        // note that this page was received via sms.
-       	incoming.setTransport(MY_TRANSPORT);
-
-        Uri newpage = context.getContentResolver().insert(Pages.CONTENT_URI, incoming.asContentValues());
-        Log.d(TAG, "new message inserted.");
-        Intent annoy = new Intent(Pager.PAGE_RECEIVED);
-        annoy.setData(newpage);
-        context.sendBroadcast(annoy);
-        Log.d(TAG, "sent intent " + annoy.toString() );
     }
+
 }
 
 
