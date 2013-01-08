@@ -14,6 +14,10 @@ public class Alert {
 
     public Alert(){
         cv = new ContentValues();
+        setFrom(DEFAULT_FROM);
+        setDisplayFrom(DEFAULT_FROM);
+        setSubject(DEFAULT_SUBJECT);
+        setBody(DEFAULT_BODY);
         if( ! cv.containsKey(Pages.ACK_STATUS))
             cv.put(Pages.ACK_STATUS, 0); //default to no response.
     }
