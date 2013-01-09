@@ -38,16 +38,6 @@ public class GCMIntentService extends GCMBaseIntentService {
     public static String GCM_SENDER_ID = "100533447903";
     public static String MY_TRANSPORT = "gcm";
 
-    // Appengine authentication
-    private static final String AUTH_URL = "/_ah/login";
-    private static final String AUTH_TOKEN_TYPE = "ah";
-
-    // GCM gateway urls.
-    private static final String REGISTER_URL = "/register";
-    private static final String UNREGISTER_URL = "/unregister";
-    private static final String REPLY_URL = "/reply";
-
-
     public GCMIntentService(){
       super(GCM_SENDER_ID); //my project id.
     }
@@ -80,7 +70,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
       if( intent.getAction().equals(Pager.REPLY_ACTION)){
         Log.d(TAG, "Replying!");
-        //TODO: actually reply.
+        //TODO: actually reply. in the short term, an email to the DisplayFrom might work.
         return;
       }
 
@@ -96,8 +86,14 @@ public class GCMIntentService extends GCMBaseIntentService {
         return;
 
       Alert incoming = new Alert();
+      if(extras.containsKey("url"))
+        incoming.setFrom(extras.getString("url"));
+
+      if(extras.containsKey("frm"))
+        incoming.setDisplayFrom(extras.getString("frm"));
       if(extras.containsKey("from"))
-        incoming.setFrom(extras.getString("from"));
+        incoming.setDisplayFrom(extras.getString("from"));
+
       if(extras.containsKey("subject"))
         incoming.setSubject(extras.getString("subject"));
       if(extras.containsKey("body"))

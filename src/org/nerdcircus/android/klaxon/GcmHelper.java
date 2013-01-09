@@ -124,11 +124,17 @@ public class GcmHelper {
         }
     }
 
+    //TODO: implement.
+    public boolean reply(String url, String reply_text){
+      Log.d(TAG, "Url: " + url);
+      Log.d(TAG, "NOT IMPLEMENTED");
+      return false;
+    }
+
     private HttpResponse makeHttpRequest(HttpGet req){
       return makeHttpRequest(req, true);
     }
     // Used to make a general HTTP request, and auth as needed.
-    // FIXME: finish the logic here, and convert to it.
     private HttpResponse makeHttpRequest(HttpGet req, boolean retry_auth){
         try {
           Log.d(TAG, "Attempting to fetch: " + req.getURI().toString());

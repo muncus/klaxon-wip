@@ -46,15 +46,64 @@ import java.lang.StringBuffer;
 public class C2dmPageReceiver extends BroadcastReceiver
 {
     public static String TAG = "C2dmPageReceiver";
-    private static String MY_TRANSPORT = "c2dm";
+    private static String MY_TRANSPORT = "gcm";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Pager.REPLY_ACTION)){
           Log.d(TAG, "REPLYING!");
-          //GCMIntentService.onMessage(context, intent);
-          return;
+
+          //replying to a received page.
+          Uri data = intent.getData();
+          Bundle extras = intent.getExtras();
+          String response = extras.getString("response");
+          Integer new_ack_status = extras.getInt("new_ack_status");
+          if( canReply(context, data)){
+              replyTo(context, data, response, new_ack_status);
+              return;
+          }
+          else {
+              Log.d(TAG, "cannot reply to this message.");
+              return;
+          }
+
         }
+    }
+
+    boolean canReply(Context context, Uri data){
+        Cursor cursor = context.getContentResolver().query(data,
+                new String[] {Pager.Pages.TRANSPORT, Pager.Pages._ID},
+                null,
+                null,
+                null);
+        cursor.moveToFirst();
+        String transport = cursor.getString(cursor.getColumnIndex(Pager.Pages.TRANSPORT));
+        if (transport.equals(MY_TRANSPORT)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /** replyTo: Uri, string, int
+     * replies to a particular message, specified by Uri.
+     */
+    void replyTo(Context context, Uri data, String reply, int ack_status){
+        Log.d(TAG, "replying from C2dmPageReceiver!");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Cursor cursor = context.getContentResolver().query(data,
+                new String[] {Pager.Pages.SENDER, Pager.Pages.SERVICE_CENTER, Pager.Pages._ID, Pager.Pages.FROM_ADDR, Pager.Pages.SUBJECT},
+                null,
+                null,
+                null);
+        cursor.moveToFirst();
+
+        Intent successIntent = new Intent("org.nerdcircus.android.klaxon.REPLY_SENT", data);
+        successIntent.putExtra(Pager.EXTRA_NEW_ACK_STATUS, ack_status);
+        GcmHelper gh = new GcmHelper(context);
+        if( gh.reply(cursor.getString(cursor.getColumnIndex(Pager.Pages.FROM_ADDR)), reply))
+          context.sendBroadcast(successIntent);
     }
 
 }
