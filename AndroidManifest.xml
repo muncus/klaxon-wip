@@ -20,7 +20,9 @@
 
     <uses-permission android:name="org.nerdcircus.android.klaxon.permission.C2D_MESSAGE"/>
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+
     <application android:icon="@drawable/app_icon"
+        android:label="@string/app_name"
         android:theme="@style/SelectorTheme">
         <activity android:name=".KlaxonList" android:label="@string/app_name" 
             android:launchMode="singleTop" >
@@ -59,12 +61,9 @@
               <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
               <category android:name="org.nerdcircus.android.klaxon" />
             </intent-filter>
-            <intent-filter>
-              <data android:mimeType="vnd.android.cursor.item/pages" />
-              <action android:name="org.nerdcircus.android.klaxon.REPLY" />
-            </intent-filter>
         </receiver>
-        <service android:name=".GCMIntentService"/>
+        <service android:name=".GCMIntentService">
+        </service>
         <!--
         <receiver android:name=".MmsPageReceiver" >
             <intent-filter>
@@ -86,14 +85,10 @@
             </intent-filter>
         </receiver>
         -->
-        <receiver android:name=".C2dmPageReceiver" android:permission="com.google.android.c2dm.permission.SEND">
+        <receiver android:name=".C2dmPageReceiver">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="org.nerdcircus.android.klaxon" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-                <category android:name="org.nerdcircus.android.klaxon" />
+              <data android:mimeType="vnd.android.cursor.item/pages" />
+              <action android:name="org.nerdcircus.android.klaxon.REPLY" />
             </intent-filter>
         </receiver>
         <receiver android:name=".Notifier" >

@@ -37,6 +37,7 @@ import org.nerdcircus.android.klaxon.Pager;
 import org.nerdcircus.android.klaxon.Pager.Pages;
 import org.nerdcircus.android.klaxon.PagerProvider;
 import org.nerdcircus.android.klaxon.pageparser.*;
+import org.nerdcircus.android.klaxon.GCMIntentService;
 
 import java.util.Map;
 import java.util.Iterator;
@@ -49,13 +50,10 @@ public class C2dmPageReceiver extends BroadcastReceiver
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(
-                "com.google.android.c2dm.intent.REGISTRATION")) {
-            return;
-        } else if (intent.getAction().equals(
-                "com.google.android.c2dm.intent.RECEIVE")) {
-            return;
-           // handleMessage(context, intent);
+        if (intent.getAction().equals(Pager.REPLY_ACTION)){
+          Log.d(TAG, "REPLYING!");
+          //GCMIntentService.onMessage(context, intent);
+          return;
         }
     }
 

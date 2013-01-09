@@ -28,6 +28,8 @@ import android.widget.Toast;
 import com.google.android.gcm.GCMBaseIntentService;
 
 import org.nerdcircus.android.klaxon.Alert;
+import org.nerdcircus.android.klaxon.GcmHelper;
+import org.nerdcircus.android.klaxon.Pager;
 import org.nerdcircus.android.klaxon.Pager.Pages;
 
 public class GCMIntentService extends GCMBaseIntentService {
@@ -63,16 +65,24 @@ public class GCMIntentService extends GCMBaseIntentService {
 
     public void onRegistered(Context context, String regId){
       //Called after the device has registered with GCM, so send the regid to our servers.
-      registerWithServer(context, regId);
+      GcmHelper gh = new GcmHelper(context);
+      gh.register(regId);
     };
     public void onUnregistered(Context context, String regId){
       // Called after device unregisters with gcm, send regid to us, so we can remove it.
-      unregisterWithServer(context, regId);
+      GcmHelper gh = new GcmHelper(context);
+      gh.unregister(regId);
     };
     public void onMessage(Context context, Intent intent){
       // Called when a message has been received. Process the received intent.
 
       Log.d(TAG, "CAUGHT AN INTENT! WHEEEE!");
+
+      if( intent.getAction().equals(Pager.REPLY_ACTION)){
+        Log.d(TAG, "Replying!");
+        //TODO: actually reply.
+        return;
+      }
 
       //check to see if we want to intercept.
       SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -85,20 +95,6 @@ public class GCMIntentService extends GCMBaseIntentService {
       if (extras == null)
         return;
 
-//      String from = extras.getString("from");
-//      if (from == null)
-//        from = "Unknown Sender";
-//
-//      String subject = extras.getString("subject");
-//      if (subject == null)
-//        subject = "subject not specified";
-//
-//      String body = extras.getString("body");
-//      if (body == null)
-//        body = "body not specifed";
-
-//      Log.d(TAG, "From: " + from);
-      //Alert incoming = new Alert(from, subject, body);
       Alert incoming = new Alert();
       if(extras.containsKey("from"))
         incoming.setFrom(extras.getString("from"));
@@ -122,165 +118,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 
     // Optional. only override to display a message to the user.
     //public boolean onRecoverableError(Context context, String errorId){};
-  
-    public static void registerWithServer(final Context context, final String deviceRegistrationID) {
-        try {
-            HttpResponse res = makeRequest(context, deviceRegistrationID, REGISTER_URL);
-            if (res == null)
-            return;
-            if (res.getStatusLine().getStatusCode() == 200) {
-                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("c2dm_token", deviceRegistrationID);
-                Log.w(TAG, "Commiting token");
-                editor.commit();
-            } else {
-                Log.w(TAG, "Registration error " + String.valueOf(res.getStatusLine()));
-            }
-        } catch (Exception e) {
-            Log.w(TAG, "Registration exception " + e.getMessage());
-        }
-    }
 
-    public static void unregisterWithServer(final Context context, final String deviceRegistrationID) {
-        CharSequence text;
-        try {
-            HttpResponse res = makeRequest(context, deviceRegistrationID, UNREGISTER_URL);
-            if (res.getStatusLine().getStatusCode() == 200) {
-                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.remove("c2dm_token");
-                editor.commit();
-                text = "Successfully unregistered.";
-            } else {
-                Log.w(TAG, "Unregistration error " +
-                        String.valueOf(res.getStatusLine()));
-                text = "Unregistration error " +
-                        String.valueOf(res.getStatusLine());
-            }
-        } catch (Exception e) {
-            Log.w(TAG, "Unregistration error " + e.getMessage());
-            text = "Unregistration error " + e.getMessage();
-        }
-        int duration = Toast.LENGTH_LONG;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
-
-    /*
-    public static HttpResponse sendReply(Context context, String reply, String messageId){
-        //TODO: write this.
-        Log.f(TAG, "REPLY NOT IMPLEMENTED.");
-        return;
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        String base_url = settings.getString("c2dm_register_url", null);
-        HttpGet getreq = new HttpGet(base_url + REPLY_URL + 
-                                     "?msg=" + messageId +
-                                     "&reply=" + URLEncoder.encode(reply));
-        return makeHttpRequest(context, getreq);
-    };
-    */
-
-
-    // Used to make a general HTTP request, and auth as needed.
-    private static HttpResponse makeHttpRequest(Context context, HttpGet req){
-        try {
-          Log.d(TAG, "Attempting to fetch: " + req.getURI().toString());
-          HttpResponse res = makeAuthenticatedRequest(context, req);
-          if(res.getStatusLine().getStatusCode() == 500){
-          Log.d(TAG, res.getStatusLine().toString());
-              return makeAuthenticatedRequest(context, req, true);
-          }
-          return res;
-        } catch (Exception e) {
-          Log.e(TAG, "http request exception!", e);
-          return null;
-        }
-    };
-
-    // convenience method for below.
-    private static HttpResponse makeAuthenticatedRequest(Context context, HttpGet req) throws Exception{
-        return makeAuthenticatedRequest(context, req, false);
-    };
-
-    // Handles the details of getting the auth token, and making the http request.
-    private static HttpResponse makeAuthenticatedRequest(Context context, HttpGet req, boolean invalidateToken) throws Exception {
-        // Make the request, and auth as needed.
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        String accountName = settings.getString("c2dm_register_account", null);
-        if (accountName == null) throw new Exception("No account");
-
-        // Get auth token for account
-        String authToken = getAuthToken(context, accountName);
-        if (invalidateToken) {
-            Log.w(TAG, "****TOKEN INVALIDATION REQUESTED. INVESTIGATE WHY****");
-            // Invalidate the cached token
-            AccountManager accountManager = AccountManager.get(context);
-            Account account = new Account(accountName, "com.google");
-            accountManager.invalidateAuthToken(account.type, authToken);
-            authToken = getAuthToken(context, accountName);
-        }
-        DefaultHttpClient client = new DefaultHttpClient();
-        HttpResponse res = client.execute(req);
-        return res;
-    };
-
-    private static HttpResponse makeRequest(Context context, String deviceRegistrationID,
-                                            String url) throws Exception {
-        HttpResponse res = makeRequestNoRetry(context, deviceRegistrationID, url,
-                false);
-        if (res.getStatusLine().getStatusCode() == 500) {
-            res = makeRequestNoRetry(context, deviceRegistrationID, url,
-                    true);
-        }
-        return res;
-    }
-    private static HttpResponse makeRequestNoRetry(Context context, String deviceRegistrationID,
-            String url, boolean requestNewToken) throws Exception {
-        // Register device with server 
-        // TODO: remove sender. no longer needed.
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        String accountName = settings.getString("c2dm_register_account", null);
-        if (accountName == null) throw new Exception("No account");
-
-        // Get auth token for account
-        String authToken = getAuthToken(context, accountName);
-
-        String sender = settings.getString("c2dm_sender", null);
-        String base_url = settings.getString("c2dm_register_url", null);
-
-        if (sender != null && base_url != null) {
-            DefaultHttpClient client = new DefaultHttpClient();
-
-            String continueURL = base_url + url + "?token=" +
-                    deviceRegistrationID + "&sender=" + sender;
-
-            URI uri = new URI(base_url + AUTH_URL + "?continue=" +
-                    URLEncoder.encode(continueURL, "UTF-8") +
-                    "&auth=" + authToken);
-
-            HttpGet method = new HttpGet(uri);
-            return makeHttpRequest(context, method);
-        }
-        return null;
-    }
-
-    private static String getAuthToken(Context context, String accountName) {
-        //TODO: validate that the account still appears in GetAccountsByType().
-        Account account = new Account(accountName, "com.google");
-
-        String authToken = null;
-        AccountManager accountManager = AccountManager.get(context);
-        try {
-            authToken = accountManager.blockingGetAuthToken(account, AUTH_TOKEN_TYPE, true);
-        } catch (OperationCanceledException e) {
-            Log.w(TAG, e.getMessage());
-        } catch (AuthenticatorException e) {
-            Log.w(TAG, e.getMessage());
-        } catch (IOException e) {
-            Log.w(TAG, e.getMessage());
-        }
-        return authToken;
-    }
 
 };
