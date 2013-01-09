@@ -87,6 +87,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
       Alert incoming = new Alert();
       if(extras.containsKey("url"))
+        //incoming.setReplyUri(extras.getString("url"));
         incoming.setFrom(extras.getString("url"));
 
       if(extras.containsKey("frm"))

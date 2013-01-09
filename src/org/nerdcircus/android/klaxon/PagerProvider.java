@@ -78,6 +78,7 @@ public class PagerProvider extends ContentProvider {
                     + ");");
             addReplyTable(db);
             addReplyShortlistField(db);
+            addReplyUriTable(db);
         }
 
         @Override
@@ -93,6 +94,9 @@ public class PagerProvider extends ContentProvider {
             if (oldVersion < 4 && newVersion >= 4){
                 addReplyShortlistField(db);
             }
+            if (oldVersion < 5 && newVersion >= 5){
+                addReplyShortlistField(db);
+            }
             //NOTE: any additions here, should also be reflected in the onCreate above.
             else {
                 Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
@@ -103,6 +107,11 @@ public class PagerProvider extends ContentProvider {
         ///////////////
         // Database Migration functions
         ///////////////
+
+        private void addReplyUriTable(SQLiteDatabase db){
+            Log.d(TAG, "adding Reply Uri column.");
+            db.execSQL("ALTER TABLE pages ADD COLUMN reply_uri TEXT;");
+        }
 
         /** create the Reply table in the database.
          * used in initial creation and/or db upgrades

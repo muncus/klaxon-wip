@@ -9,6 +9,7 @@ import java.net.URLEncoder;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.accounts.Account;
@@ -71,6 +72,8 @@ public class GcmHelper {
       mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
       //mClient = AndroidHttpClient.newInstance(USER_AGENT);
       mClient = new DefaultHttpClient();
+      //disable redirects.
+      //mClient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
     }
 
     public String getRegisterUrl(){
@@ -124,10 +127,14 @@ public class GcmHelper {
         }
     }
 
-    //TODO: implement.
     public boolean reply(String url, String reply_text){
+      Uri.Builder ub = Uri.parse(url).buildUpon();
+      ub.appendQueryParameter("reply", reply_text);
       Log.d(TAG, "Url: " + url);
-      Log.d(TAG, "NOT IMPLEMENTED");
+      HttpGet req = new HttpGet(ub.build().toString());
+      HttpResponse res = makeHttpRequest(req);
+      if(res.getStatusLine().getStatusCode() == 200)
+        return true;
       return false;
     }
 
@@ -141,15 +148,25 @@ public class GcmHelper {
           HttpResponse res = mClient.execute(req);
 
           // If we are not logged in, we will get a 302 redirect to the Login page.
-          if(res.getStatusLine().getStatusCode() == 302 && retry_auth){
-            Log.d(TAG, "302'd - Authenticating.");
-            //Authenticate, and continue to our destination.
-            String authToken = this.getAuthToken();
-            String continueURL = req.getURI().toString();
-            URI uri = new URI(getAuthUrl() + "?continue=" +
-                    URLEncoder.encode(continueURL, "UTF-8") +
-                    "&auth=" + authToken);
-            return this.makeHttpRequest(new HttpGet(uri), false);
+          if(res.getStatusLine().getStatusCode() == 302){
+            if(retry_auth){
+              Log.d(TAG, "302'd - Authenticating.");
+              //Authenticate, and continue to our destination.
+              String authToken = this.getAuthToken();
+              String continueURL = req.getURI().toString();
+              URI uri = new URI(getAuthUrl() + "?continue=" +
+                      URLEncoder.encode(continueURL, "UTF-8") +
+                      "&auth=" + authToken);
+              return this.makeHttpRequest(new HttpGet(uri), false);
+            } else {
+              Log.d(TAG, "302'd a second time. now what?");
+              // Invalidate, and try again.
+              Log.d(TAG, "*** INVALIDATING TOKEN? ***");
+              AccountManager accountManager = AccountManager.get(mContext);
+              Account account = new Account(this.getAccountName(), "com.google");
+              accountManager.invalidateAuthToken(account.type, this.getAuthToken());
+              return this.makeHttpRequest(req);
+            }
           }
           // If our token is invalid, we get a 500.
           if(res.getStatusLine().getStatusCode() == 500){

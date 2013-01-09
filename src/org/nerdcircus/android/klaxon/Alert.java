@@ -43,6 +43,10 @@ public class Alert {
         return cv.getAsString(Pages.SENDER);
     }
 
+    // Intended to be used with Intent.ACTION_SEND
+    public void setReplyUri(String uri){
+        cv.put(Pages.REPLY_URI, uri);
+    }
     // "DisplayName" analog - phone number, or email addr.
     public void setDisplayFrom(String from){
         cv.put(Pages.FROM_ADDR, from);

@@ -102,7 +102,7 @@ public class C2dmPageReceiver extends BroadcastReceiver
         Intent successIntent = new Intent("org.nerdcircus.android.klaxon.REPLY_SENT", data);
         successIntent.putExtra(Pager.EXTRA_NEW_ACK_STATUS, ack_status);
         GcmHelper gh = new GcmHelper(context);
-        if( gh.reply(cursor.getString(cursor.getColumnIndex(Pager.Pages.FROM_ADDR)), reply))
+        if( gh.reply(cursor.getString(cursor.getColumnIndex(Pager.Pages.SENDER)), reply))
           context.sendBroadcast(successIntent);
     }
 
