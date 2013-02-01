@@ -14,6 +14,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
@@ -22,6 +23,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -74,6 +76,10 @@ public class GcmHelper {
       mClient = new DefaultHttpClient();
       //disable redirects.
       //mClient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
+    }
+
+    public void setFollowRedirects(boolean follow){
+      mClient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, follow);
     }
 
     public String getRegisterUrl(){
@@ -145,10 +151,13 @@ public class GcmHelper {
     private HttpResponse makeHttpRequest(HttpGet req, boolean retry_auth){
         try {
           Log.d(TAG, "Attempting to fetch: " + req.getURI().toString());
+          // dont follow the initial 302.
+          setFollowRedirects(false);
           HttpResponse res = mClient.execute(req);
 
           // If we are not logged in, we will get a 302 redirect to the Login page.
           if(res.getStatusLine().getStatusCode() == 302){
+            res.getEntity().consumeContent(); //closes the connection.
             if(retry_auth){
               Log.d(TAG, "302'd - Authenticating.");
               //Authenticate, and continue to our destination.
@@ -157,6 +166,7 @@ public class GcmHelper {
               URI uri = new URI(getAuthUrl() + "?continue=" +
                       URLEncoder.encode(continueURL, "UTF-8") +
                       "&auth=" + authToken);
+              setFollowRedirects(true);
               return this.makeHttpRequest(new HttpGet(uri), false);
             } else {
               Log.d(TAG, "302'd a second time. now what?");
@@ -165,7 +175,7 @@ public class GcmHelper {
               AccountManager accountManager = AccountManager.get(mContext);
               Account account = new Account(this.getAccountName(), "com.google");
               accountManager.invalidateAuthToken(account.type, this.getAuthToken());
-              return this.makeHttpRequest(req);
+              return this.makeHttpRequest(req, false);
             }
           }
           // If our token is invalid, we get a 500.
@@ -179,8 +189,10 @@ public class GcmHelper {
               accountManager.invalidateAuthToken(account.type, this.getAuthToken());
               return this.makeHttpRequest(req);
           }
+          // check to see if we were redirected to the login screen.
           Log.d(TAG, "Success!?");
           Log.d(TAG, res.getStatusLine().getReasonPhrase());
+          Log.d(TAG, req.getURI().toString());
           return res;
         } catch (Exception e) {
           Log.e(TAG, "http request exception!", e);
@@ -191,17 +203,19 @@ public class GcmHelper {
     private String getAuthToken(){
       //fetch an auth token for the account we registered with.
       String accountName = mPrefs.getString(PREF_ACCOUNT, "");
-      return GcmHelper.getAuthToken(mContext, accountName);
+      return this.getAuthToken(mContext, accountName);
+      //new AsyncAuthTask(AccountManager.get(mContext)).execute(accountName);
+      //return null;
+
     }
 
-    private static String getAuthToken(Context context, String accountName) {
+    private String getAuthToken(Context context, String accountName) {
         //TODO: validate that the account still appears in GetAccountsByType().
         Account account = new Account(accountName, "com.google");
-
         String authToken = null;
-        AccountManager accountManager = AccountManager.get(context);
         try {
-            authToken = accountManager.blockingGetAuthToken(account, AUTH_TOKEN_TYPE, true);
+          AccountManager accountManager = AccountManager.get(context);
+          authToken = accountManager.blockingGetAuthToken(account, AUTH_TOKEN_TYPE, true);
         } catch (OperationCanceledException e) {
             Log.w(TAG, e.getMessage());
         } catch (AuthenticatorException e) {
@@ -210,6 +224,86 @@ public class GcmHelper {
             Log.w(TAG, e.getMessage());
         }
         return authToken;
+            /*
+            AccountManagerFuture amf = accountManager.getAuthToken(
+                account, 
+                AUTH_TOKEN_TYPE,
+                true,
+                new OnAuthToken(mContext),
+                null);
+            Log.d(TAG, "Got amf.");
+        return authToken;
+        */
     }
+
+    private class AsyncReplyTask extends AsyncTask<String, Void, Boolean>{
+      protected Boolean doInBackground(String... args){
+        String url = args[0];
+        String reply = args[1];
+
+        Uri.Builder ub = Uri.parse(url).buildUpon();
+        ub.appendQueryParameter("reply", reply);
+        Log.d(TAG, "Url: " + url);
+        HttpGet req = new HttpGet(ub.build().toString());
+        HttpResponse res = makeHttpRequest(req);
+        if(res.getStatusLine().getStatusCode() == 200)
+          return true;
+        return false;
+      }
+    }
+
+    private class AsyncAuthTask extends AsyncTask<String, Void, Void>{
+      AccountManager mAccountManager;
+      public AsyncAuthTask(AccountManager am){
+        mAccountManager = am;
+      }
+      protected Void doInBackground(String... args){
+        try {
+          String authToken = null;
+          Account account = new Account(args[0], "com.google");
+          //AccountManager accountManager = AccountManager.get(context);
+          authToken = mAccountManager.blockingGetAuthToken(account, AUTH_TOKEN_TYPE, true);
+        } catch (OperationCanceledException e) {
+            Log.w(TAG, e.getMessage());
+        } catch (AuthenticatorException e) {
+            Log.w(TAG, e.getMessage());
+        } catch (IOException e) {
+            Log.w(TAG, e.getMessage());
+        }
+        return null;
+      };
+    };
+
+    private class OnAuthToken implements AccountManagerCallback<Bundle> {
+      Context mContext;
+      public OnAuthToken(Context context){
+        mContext = context;
+      }
+      @Override
+      public void run(AccountManagerFuture<Bundle> amf) {
+        try {
+          Bundle result = amf.getResult();
+          if(result.get(AccountManager.KEY_INTENT) != null){
+            Log.d(TAG, "Key Intent received.");
+            Intent launch = (Intent) result.get(AccountManager.KEY_INTENT);
+            mContext.startActivity(launch);
+          }
+          if(result.get(AccountManager.KEY_AUTHTOKEN) != null){
+            Log.d(TAG, "Got authtoken!" + result.get(AccountManager.KEY_AUTHTOKEN).toString());
+            return;
+          }
+          else {
+            Log.d(TAG, "no idea dog.");
+          }
+        } catch (OperationCanceledException e) {
+            Log.w(TAG, e.getMessage());
+        } catch (AuthenticatorException e) {
+            Log.w(TAG, e.getMessage());
+        } catch (IOException e) {
+            Log.w(TAG, e.getMessage());
+        }
+      }
+    }
+
 
 };
