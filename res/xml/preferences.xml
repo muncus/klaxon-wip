@@ -143,6 +143,11 @@
             android:title="Test C2DM delivery."
             android:summary="Tests the sending of a push message, if supported by c2dm server."
             />
+          <Preference
+            android:key="invalidate_token"
+            android:title="Invalidate Auth Token."
+            android:summary="FIXME: bork bork bork."
+            />
       </PreferenceCategory>
      </PreferenceScreen>
     </PreferenceCategory>

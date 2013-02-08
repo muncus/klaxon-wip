@@ -53,6 +53,9 @@ public class C2dmPageReceiver extends BroadcastReceiver
         if (intent.getAction().equals(Pager.REPLY_ACTION)){
           Log.d(TAG, "REPLYING!");
 
+          GcmHelper gh = new GcmHelper(context);
+          gh.ensureAuthToken((Activity)intent.getExtra("activity_context"));
+
           //replying to a received page.
           Uri data = intent.getData();
           Bundle extras = intent.getExtras();

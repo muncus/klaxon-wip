@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.app.Activity;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
@@ -152,21 +153,22 @@ public class GcmHelper {
         try {
           Log.d(TAG, "Attempting to fetch: " + req.getURI().toString());
           // dont follow the initial 302.
-          setFollowRedirects(false);
+          //setFollowRedirects(false);
           HttpResponse res = mClient.execute(req);
 
           // If we are not logged in, we will get a 302 redirect to the Login page.
-          if(res.getStatusLine().getStatusCode() == 302){
+          if(res.getStatusLine().getStatusCode() == 401){
+            Log.d(TAG, "403'd - Authenticating.");
             res.getEntity().consumeContent(); //closes the connection.
             if(retry_auth){
-              Log.d(TAG, "302'd - Authenticating.");
+              //Log.d(TAG, "302'd - Authenticating.");
               //Authenticate, and continue to our destination.
               String authToken = this.getAuthToken();
               String continueURL = req.getURI().toString();
               URI uri = new URI(getAuthUrl() + "?continue=" +
                       URLEncoder.encode(continueURL, "UTF-8") +
                       "&auth=" + authToken);
-              setFollowRedirects(true);
+              //setFollowRedirects(true);
               return this.makeHttpRequest(new HttpGet(uri), false);
             } else {
               Log.d(TAG, "302'd a second time. now what?");
@@ -192,12 +194,32 @@ public class GcmHelper {
           // check to see if we were redirected to the login screen.
           Log.d(TAG, "Success!?");
           Log.d(TAG, res.getStatusLine().getReasonPhrase());
+          Log.d(TAG, res.getStatusLine().getStatusCode() + " ");
           Log.d(TAG, req.getURI().toString());
           return res;
         } catch (Exception e) {
           Log.e(TAG, "http request exception!", e);
           return null;
         }
+    };
+
+    public void ensureAuthToken(Activity act){
+      //ensure that we have required auth.
+      AccountManager accountManager = AccountManager.get(mContext);
+      Account account = new Account(this.getAccountName(), "com.google");
+      if (accountManager.peekAuthToken != null){
+        // we have an auth token cached. 
+        return;
+      } else {
+        // there's work to be done.
+        AccountManagerFuture amf = accountManager.getAuthToken(
+            account, 
+            AUTH_TOKEN_TYPE,
+            true,
+            act,
+            new OnAuthToken(mContext),
+            null);
+      }
     };
 
     private String getAuthToken(){
@@ -215,7 +237,11 @@ public class GcmHelper {
         String authToken = null;
         try {
           AccountManager accountManager = AccountManager.get(context);
-          authToken = accountManager.blockingGetAuthToken(account, AUTH_TOKEN_TYPE, true);
+          //authToken = accountManager.blockingGetAuthToken(account, AUTH_TOKEN_TYPE, true);
+          AccountManagerFuture amf = accountManager.getAuthToken(account, AUTH_TOKEN_TYPE, null, (Activity) context, new OnAuthToken(mContext), null);
+          Bundle result = (Bundle) amf.getResult();
+          Log.d(TAG, "auth: " + result.get(AccountManager.KEY_AUTHTOKEN).toString());
+          authToken = result.get(AccountManager.KEY_AUTHTOKEN).toString();
         } catch (OperationCanceledException e) {
             Log.w(TAG, e.getMessage());
         } catch (AuthenticatorException e) {
@@ -235,6 +261,15 @@ public class GcmHelper {
         return authToken;
         */
     }
+
+    public static void invalidateAuthToken(Context context){
+      // For debugging only.
+      AccountManager accountManager = AccountManager.get(context);
+      //String accountname = PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_ACCOUNT,"");
+      //Account account = new Account(accountname, "com.google");
+      accountManager.invalidateAuthToken("com.google", null);
+    }
+
 
     private class AsyncReplyTask extends AsyncTask<String, Void, Boolean>{
       protected Boolean doInBackground(String... args){

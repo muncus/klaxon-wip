@@ -43,6 +43,7 @@ import java.util.Vector;
 
 import org.nerdcircus.android.klaxon.Changelog;
 import org.nerdcircus.android.klaxon.ReplyList;
+import org.nerdcircus.android.klaxon.GcmHelper;
 
 public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
     
@@ -52,8 +53,8 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
     // Create runnable for posting
     final Runnable mUpdateC2dmPrefs = new Runnable() {
         public void run() {
-	      updateC2dmPrefs();
-	}
+            updateC2dmPrefs();
+        }
     };
 
     @Override
@@ -90,6 +91,13 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         i.setData(Uri.parse(base_url + "/test"));
         replylist.setIntent(i);
 
+        replylist = this.findPreference("invalidate_token");
+        replylist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference p){
+                    GcmHelper.invalidateAuthToken(p.getContext());
+                    return true;
+                }});
+
         //disable the "Consume SMS" option if the build is too low
         //NB: there's no code to act on this, since the abortBroadcast() 
         // call will not break anything when called in < 1.6
@@ -100,18 +108,18 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
             csp.setEnabled(false);
         }
 
-	ListPreference c2dm_accounts = (ListPreference) this.findPreference("c2dm_register_account");
-	Account[] accounts = AccountManager.get(getApplicationContext()).getAccountsByType("com.google");
-	Vector<CharSequence> accountNames = new Vector<CharSequence>();
-	for (Account account : accounts) {
-	   accountNames.add(account.name);
-	}
-	CharSequence[] accountNamesArray = new CharSequence[accountNames.size()];
-	accountNames.toArray(accountNamesArray);
-	c2dm_accounts.setEntries(accountNamesArray);
-	c2dm_accounts.setEntryValues(accountNamesArray);
+        ListPreference c2dm_accounts = (ListPreference) this.findPreference("c2dm_register_account");
+        Account[] accounts = AccountManager.get(getApplicationContext()).getAccountsByType("com.google");
+        Vector<CharSequence> accountNames = new Vector<CharSequence>();
+        for (Account account : accounts) {
+           accountNames.add(account.name);
+        }
+        CharSequence[] accountNamesArray = new CharSequence[accountNames.size()];
+        accountNames.toArray(accountNamesArray);
+        c2dm_accounts.setEntries(accountNamesArray);
+        c2dm_accounts.setEntryValues(accountNamesArray);
 
-	mHandler.post(mUpdateC2dmPrefs);
+        mHandler.post(mUpdateC2dmPrefs);
     }
 
     @Override
@@ -121,18 +129,18 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
     }
 
     void updateC2dmPrefs() {
-	String token = PreferenceManager
-		.getDefaultSharedPreferences(this)
-		.getString("c2dm_token", "");
-	getPreferenceScreen()
-		.findPreference("c2dm_register")
-		.setEnabled(token.equals(""));
-	getPreferenceScreen()
-		.findPreference("c2dm_unregister")
-		.setEnabled(!token.equals(""));
-	getPreferenceScreen()
-		.findPreference("c2dm_token")
-		.setSummary(token);
+        String token = PreferenceManager
+          .getDefaultSharedPreferences(this)
+          .getString("c2dm_token", "");
+        getPreferenceScreen()
+          .findPreference("c2dm_register")
+          .setEnabled(token.equals(""));
+        getPreferenceScreen()
+          .findPreference("c2dm_unregister")
+          .setEnabled(!token.equals(""));
+        getPreferenceScreen()
+          .findPreference("c2dm_token")
+          .setSummary(token);
     }
 
     @Override

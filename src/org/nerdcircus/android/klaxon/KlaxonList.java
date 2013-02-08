@@ -271,6 +271,7 @@ public class KlaxonList extends ListActivity
                     i.setData(Uri.withAppendedPath(Pages.CONTENT_URI, ""+getSelectedItemId()));
                     i.putExtra("response", response);
                     i.putExtra("new_ack_status", status);
+                    i.putExtra("activity_context", this);
                     sendBroadcast(i);
                     return true;
                 }
