@@ -157,7 +157,7 @@ public class GcmHelper {
           HttpResponse res = mClient.execute(req);
 
           // If we are not logged in, we will get a 302 redirect to the Login page.
-          if(res.getStatusLine().getStatusCode() == 401){
+          if(res.getStatusLine().getStatusCode() == 401 || res.getStatusLine().getStatusCode() == 302){
             Log.d(TAG, "403'd - Authenticating.");
             res.getEntity().consumeContent(); //closes the connection.
             if(retry_auth){
@@ -203,25 +203,6 @@ public class GcmHelper {
         }
     };
 
-    public void ensureAuthToken(Activity act){
-      //ensure that we have required auth.
-      AccountManager accountManager = AccountManager.get(mContext);
-      Account account = new Account(this.getAccountName(), "com.google");
-      if (accountManager.peekAuthToken != null){
-        // we have an auth token cached. 
-        return;
-      } else {
-        // there's work to be done.
-        AccountManagerFuture amf = accountManager.getAuthToken(
-            account, 
-            AUTH_TOKEN_TYPE,
-            true,
-            act,
-            new OnAuthToken(mContext),
-            null);
-      }
-    };
-
     private String getAuthToken(){
       //fetch an auth token for the account we registered with.
       String accountName = mPrefs.getString(PREF_ACCOUNT, "");
@@ -237,11 +218,11 @@ public class GcmHelper {
         String authToken = null;
         try {
           AccountManager accountManager = AccountManager.get(context);
-          //authToken = accountManager.blockingGetAuthToken(account, AUTH_TOKEN_TYPE, true);
-          AccountManagerFuture amf = accountManager.getAuthToken(account, AUTH_TOKEN_TYPE, null, (Activity) context, new OnAuthToken(mContext), null);
-          Bundle result = (Bundle) amf.getResult();
-          Log.d(TAG, "auth: " + result.get(AccountManager.KEY_AUTHTOKEN).toString());
-          authToken = result.get(AccountManager.KEY_AUTHTOKEN).toString();
+          authToken = accountManager.blockingGetAuthToken(account, AUTH_TOKEN_TYPE, true);
+          //AccountManagerFuture amf = accountManager.getAuthToken(account, AUTH_TOKEN_TYPE, null, (Activity) context, new OnAuthToken(mContext), null);
+          //Bundle result = (Bundle) amf.getResult();
+          //Log.d(TAG, "auth: " + result.get(AccountManager.KEY_AUTHTOKEN).toString());
+          //authToken = result.get(AccountManager.KEY_AUTHTOKEN).toString();
         } catch (OperationCanceledException e) {
             Log.w(TAG, e.getMessage());
         } catch (AuthenticatorException e) {

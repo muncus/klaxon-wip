@@ -85,12 +85,12 @@
             </intent-filter>
         </receiver>
         -->
-        <receiver android:name=".C2dmPageReceiver">
+        <service android:name=".GcmReplyService">
             <intent-filter>
               <data android:mimeType="vnd.android.cursor.item/pages" />
               <action android:name="org.nerdcircus.android.klaxon.REPLY" />
             </intent-filter>
-        </receiver>
+        </service>
         <receiver android:name=".Notifier" >
             <intent-filter>
                 <action android:name="org.nerdcircus.android.klaxon.PAGES_VIEWED" />

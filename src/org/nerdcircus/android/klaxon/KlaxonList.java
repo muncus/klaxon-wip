@@ -271,8 +271,9 @@ public class KlaxonList extends ListActivity
                     i.setData(Uri.withAppendedPath(Pages.CONTENT_URI, ""+getSelectedItemId()));
                     i.putExtra("response", response);
                     i.putExtra("new_ack_status", status);
-                    i.putExtra("activity_context", this);
+                    //TODO: we should not do both. this is an experiment in using Services instead of BroadcastReceivers.
                     sendBroadcast(i);
+                    startService(i);
                     return true;
                 }
             }
@@ -291,7 +292,8 @@ public class KlaxonList extends ListActivity
                     i.setData(Uri.withAppendedPath(Pages.CONTENT_URI, ""+itemId));
                     i.putExtra("response", response);
                     i.putExtra("new_ack_status", status);
-                    sendOrderedBroadcast(i, null);
+                    //sendOrderedBroadcast(i, null);
+                    startService(i);
                     return true;
                 }
             }

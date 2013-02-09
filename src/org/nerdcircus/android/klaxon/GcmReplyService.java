@@ -17,6 +17,7 @@
 package org.nerdcircus.android.klaxon;
 
 import android.app.Activity;
+import android.app.IntentService;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -43,34 +44,37 @@ import java.util.Map;
 import java.util.Iterator;
 import java.lang.StringBuffer;
 
-public class C2dmPageReceiver extends BroadcastReceiver
+public class GcmReplyService extends IntentService
 {
-    public static String TAG = "C2dmPageReceiver";
+    public static String TAG = "GcmReplyService";
     private static String MY_TRANSPORT = "gcm";
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(Pager.REPLY_ACTION)){
-          Log.d(TAG, "REPLYING!");
+    public GcmReplyService(){
+      super(TAG);
+    }
 
-          GcmHelper gh = new GcmHelper(context);
-          gh.ensureAuthToken((Activity)intent.getExtra("activity_context"));
+    protected void onHandleIntent(Intent intent){
+      if (intent.getAction().equals(Pager.REPLY_ACTION)){
+        Log.d(TAG, "Replying!");
 
-          //replying to a received page.
-          Uri data = intent.getData();
-          Bundle extras = intent.getExtras();
-          String response = extras.getString("response");
-          Integer new_ack_status = extras.getInt("new_ack_status");
-          if( canReply(context, data)){
-              replyTo(context, data, response, new_ack_status);
-              return;
-          }
-          else {
-              Log.d(TAG, "cannot reply to this message.");
-              return;
-          }
+        //GcmHelper gh = new GcmHelper(context);
+        //gh.ensureAuthToken((Activity)intent.getExtra("activity_context"));
 
+        //replying to a received page.
+        Uri data = intent.getData();
+        Bundle extras = intent.getExtras();
+        String response = extras.getString("response");
+        Integer new_ack_status = extras.getInt("new_ack_status");
+        if( canReply((Context)this, data)){
+            replyTo((Context)this, data, response, new_ack_status);
+            return;
         }
+        else {
+            Log.d(TAG, "cannot reply to this message.");
+            return;
+        }
+
+      }
     }
 
     boolean canReply(Context context, Uri data){
