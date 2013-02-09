@@ -64,27 +64,6 @@
         </receiver>
         <service android:name=".GCMIntentService">
         </service>
-        <!--
-        <receiver android:name=".MmsPageReceiver" >
-            <intent-filter>
-                <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED"/>
-                <data android:mimeType="application/vnd.wap.mms-message" />
-            </intent-filter>
-        </receiver>
-        -->
-        <!--
-        <receiver android:name=".GmailPageReceiver" >
-            <intent-filter>
-                <action android:name="android.intent.action.PROVIDER_CHANGED" />
-                <data android:scheme="content"
-                      android:path="gmail-ls/unread/^i" />
-            </intent-filter>
-            <intent-filter>
-                <data android:mimeType="vnd.android.cursor.item/pages" />
-                <action android:name="org.nerdcircus.android.klaxon.REPLY" />
-            </intent-filter>
-        </receiver>
-        -->
         <service android:name=".GcmReplyService">
             <intent-filter>
               <data android:mimeType="vnd.android.cursor.item/pages" />

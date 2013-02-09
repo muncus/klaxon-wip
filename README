@@ -9,9 +9,6 @@ More documentation is available on the wiki:
 http://code.google.com/p/klaxon/w/list
 
 TODO:
-* per-receiver settings that dont have to be in preferences.xml
-* email page receiver
-* xmpp page receiver.
 * refactor out PageReceiver as an interface / base class.
 
 
