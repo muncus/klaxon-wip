@@ -18,21 +18,15 @@ package org.nerdcircus.android.klaxon;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
 import org.nerdcircus.android.klaxon.Pager;
 
-import android.util.Log;
-
 public class EscAdapter extends ResourceCursorAdapter
 {
-    private String TAG = "EscAdapter";
-
     public EscAdapter(Context context, int layout, Cursor c){
         super(context, layout, c);
     }

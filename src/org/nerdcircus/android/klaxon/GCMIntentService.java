@@ -2,20 +2,6 @@
 // Handles Intents from GCM, as per developer.android.com/guide/google/gcm/gs.html
 package org.nerdcircus.android.klaxon;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URLEncoder;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.accounts.AccountManagerFuture;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,8 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
-
 import com.google.android.gcm.GCMBaseIntentService;
 
 import org.nerdcircus.android.klaxon.Alert;
@@ -42,17 +26,6 @@ public class GCMIntentService extends GCMBaseIntentService {
       super(GCM_SENDER_ID); //my project id.
     }
 
-    // This inherits from IntentService, which allows us to handle the reply action here.
-    // XXX: Can't do this, because this method is final in GCMBaseIntentService
-    //public void onHandleIntent(Intent intent){
-    //  if(Pager.REPLY_ACTION == Intent.getAction()){
-    //    Log.d(TAG, "** SHOULD REPLY HERE***");
-    //  }
-    //  else {
-    //    super(intent);
-    //  }
-    //};
-
     public void onRegistered(Context context, String regId){
       //Called after the device has registered with GCM, so send the regid to our servers.
       GcmHelper gh = new GcmHelper(context);
@@ -65,8 +38,6 @@ public class GCMIntentService extends GCMBaseIntentService {
     };
     public void onMessage(Context context, Intent intent){
       // Called when a message has been received. Process the received intent.
-
-      Log.d(TAG, "CAUGHT AN INTENT! WHEEEE!");
 
       if( intent.getAction().equals(Pager.REPLY_ACTION)){
         Log.d(TAG, "Replying!");

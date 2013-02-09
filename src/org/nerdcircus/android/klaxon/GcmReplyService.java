@@ -16,33 +16,16 @@
 
 package org.nerdcircus.android.klaxon;
 
-import android.app.Activity;
 import android.app.IntentService;
-import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.app.PendingIntent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.telephony.gsm.SmsManager;
-import android.telephony.gsm.SmsMessage;
 import android.util.Log;
-import android.widget.Toast;
-
-import org.nerdcircus.android.klaxon.Alert;
 import org.nerdcircus.android.klaxon.Pager;
-import org.nerdcircus.android.klaxon.Pager.Pages;
-import org.nerdcircus.android.klaxon.PagerProvider;
-import org.nerdcircus.android.klaxon.pageparser.*;
-import org.nerdcircus.android.klaxon.GCMIntentService;
-
-import java.util.Map;
-import java.util.Iterator;
-import java.lang.StringBuffer;
 
 public class GcmReplyService extends IntentService
 {
