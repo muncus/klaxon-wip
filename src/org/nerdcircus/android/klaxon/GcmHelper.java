@@ -212,6 +212,24 @@ public class GcmHelper {
 
     }
 
+    public static void maybePromptForPassword(Activity ac){
+      // Check for an auth token. if none exists, use the provided activity context to request one.
+      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ac);
+      String acctname = prefs.getString(PREF_ACCOUNT, "");
+      if(acctname == ""){
+        //user not registered for gcm. do nothing.
+        return;
+      }
+      Account acct = new Account(acctname, "com.google");
+      AccountManager accountManager = AccountManager.get(ac);
+      //authToken = accountManager.blockingGetAuthToken(account, AUTH_TOKEN_TYPE, true);
+
+      //AccountManagerFuture amf = accountManager.getAuthToken(acct, AUTH_TOKEN_TYPE, null, ac, new OnAuthToken(ac), null);
+      AccountManagerFuture amf = accountManager.getAuthToken(acct, AUTH_TOKEN_TYPE, null, ac, null, null);
+      //amf.getResult();
+      return;
+    }
+
     private String getAuthToken(Context context, String accountName) {
         //TODO: validate that the account still appears in GetAccountsByType().
         Account account = new Account(accountName, "com.google");

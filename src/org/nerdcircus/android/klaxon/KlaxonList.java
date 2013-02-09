@@ -48,6 +48,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.R.drawable;
 
+import org.nerdcircus.android.klaxon.GcmHelper;
 import org.nerdcircus.android.klaxon.Pager;
 import org.nerdcircus.android.klaxon.Pager.*;
 
@@ -122,6 +123,8 @@ public class KlaxonList extends ListActivity
         //if they're active, cancel any alarms and notifications.
         Intent i = new Intent(Pager.SILENCE_ACTION);
         sendBroadcast(i);
+
+        GcmHelper.maybePromptForPassword(this);
 
     }
 
