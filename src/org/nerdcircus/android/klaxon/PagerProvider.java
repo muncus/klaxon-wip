@@ -227,7 +227,6 @@ public class PagerProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri url, ContentValues initialValues) {
-        long rowID;
         ContentValues values;
         if (initialValues != null) {
             values = new ContentValues(initialValues);

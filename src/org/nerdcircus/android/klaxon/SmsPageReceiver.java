@@ -16,7 +16,6 @@
 
 package org.nerdcircus.android.klaxon;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -34,10 +33,7 @@ import android.util.Log;
 import org.nerdcircus.android.klaxon.Alert;
 import org.nerdcircus.android.klaxon.Pager;
 import org.nerdcircus.android.klaxon.Pager.Pages;
-import org.nerdcircus.android.klaxon.PagerProvider;
 import org.nerdcircus.android.klaxon.pageparser.*;
-
-import java.util.Map;
 
 public class SmsPageReceiver extends BroadcastReceiver
 {

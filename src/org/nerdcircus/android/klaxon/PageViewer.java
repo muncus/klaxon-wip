@@ -17,28 +17,19 @@
 package org.nerdcircus.android.klaxon;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
-import android.widget.ImageView;
-import android.content.SharedPreferences;
-
 import org.nerdcircus.android.klaxon.Pager;
 import org.nerdcircus.android.klaxon.Pager.Replies;
 
 import android.util.Log;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Arrays;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -47,7 +38,6 @@ public class PageViewer extends Activity
     private String TAG = "PageViewer";
     private static int REQUEST_PICK_REPLY = 1;
 
-    private SharedPreferences mResponses;
 
     private Uri mContentURI;
     private Cursor mCursor;
@@ -55,13 +45,10 @@ public class PageViewer extends Activity
     private TextView mBodyView;
     private TextView mDateView;
     private TextView mSenderView;
-    private ImageView mIconView;
-
     @Override
     public void onCreate(Bundle icicle)
     {
         super.onCreate(icicle);
-        mResponses = getSharedPreferences("responses", 0);
 
         setContentView(R.layout.escview);
 
@@ -114,7 +101,7 @@ public class PageViewer extends Activity
         }
         menu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.other);
         //make delete be last
-        MenuItem delete_item = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.delete);
+        menu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.delete);
 
         return true;
     }

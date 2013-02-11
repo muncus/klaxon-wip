@@ -16,8 +16,6 @@
 
 package org.nerdcircus.android.klaxon;
 
-import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -26,16 +24,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-
 import org.nerdcircus.android.klaxon.Pager.Replies;
 
 import android.util.Log;

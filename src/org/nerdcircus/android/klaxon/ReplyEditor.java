@@ -59,7 +59,7 @@ public class ReplyEditor extends Activity
     private CheckBox mCheckBox;
     private Spinner mAckStatusSpinner;
 
-    private ArrayList mAckStatusList = new ArrayList();
+    private ArrayList<Integer> mAckStatusList = new ArrayList<Integer>();
 
     @Override
     public void onCreate(Bundle icicle)

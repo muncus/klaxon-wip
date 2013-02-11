@@ -16,38 +16,24 @@
 
 package org.nerdcircus.android.klaxon;
 
-import android.accounts.AccountManager;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.R.drawable;
-
 import org.nerdcircus.android.klaxon.GcmHelper;
 import org.nerdcircus.android.klaxon.Pager;
 import org.nerdcircus.android.klaxon.Pager.*;
@@ -68,8 +54,6 @@ public class KlaxonList extends ListActivity
     private int REQUEST_PICK_REPLY = 1;
 
     private Cursor mCursor;
-    private Boolean mPendingAuth = false;
-
     protected Dialog onCreateDialog(int id){
         if(id == DIALOG_DELETE_ALL_CONFIRMATION){
             //Confirm deletion.
