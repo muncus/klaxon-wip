@@ -21,6 +21,9 @@
      them to be changed based on the locale and options. -->
 
 <resources>
+    <!-- Defaults -->
+    <string name="default_gcm_sender">100533447903</string>
+    <string name="default_gcm_url">https://pagepusher.appspot.com</string>
     <!-- window and activity names -->
     <string name="app_name">Klaxon</string>
     <string name="prefs_activity">Preferences</string>

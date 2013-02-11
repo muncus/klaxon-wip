@@ -121,11 +121,11 @@
         android:summary="@string/pref_c2dmsettings_summary" >
           <EditTextPreference android:key="c2dm_sender"
             android:title="@string/pref_c2dm_sender"
-            android:defaultValue="100533447903"
+            android:defaultValue="@string/default_gcm_sender"
             android:inputType="number" />
           <EditTextPreference android:key="c2dm_register_url"
             android:title="@string/pref_c2dm_register_url"
-            android:defaultValue="https://pagepusher.appspot.com"
+            android:defaultValue="@string/default_gcm_url"
             android:inputType="textUri" />
           <ListPreference android:key="c2dm_register_account"
             android:title="@string/pref_c2dm_register_account"

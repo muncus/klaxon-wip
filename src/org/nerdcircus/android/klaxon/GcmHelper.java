@@ -38,8 +38,6 @@ public class GcmHelper {
 
     public static String TAG = "GcmHelper";
     public static String USER_AGENT = "Klaxon-GCM/1.0";
-
-    public static String GCM_SENDER_ID = "100533447903";
     public static String MY_TRANSPORT = "gcm";
 
     // Appengine authentication
@@ -55,6 +53,7 @@ public class GcmHelper {
     // Preference Names.
     public static final String PREF_URL = "c2dm_register_url";
     public static final String PREF_ACCOUNT = "c2dm_register_account";
+    public static final String PREF_TOKEN = "c2dm_token";
 
     // Desired Interface
     // getRegisterUrl: base_url + /register
@@ -216,14 +215,14 @@ public class GcmHelper {
       // Check for an auth token. if none exists, use the provided activity context to request one.
       SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ac);
       String acctname = prefs.getString(PREF_ACCOUNT, "");
-      if(acctname == ""){
+      String token  = prefs.getString(PREF_TOKEN, "");
+      if(acctname.length() == 0 || token.length() == 0){
         //user not registered for gcm. do nothing.
         return;
       }
       Account acct = new Account(acctname, "com.google");
       AccountManager accountManager = AccountManager.get(ac);
       //authToken = accountManager.blockingGetAuthToken(account, AUTH_TOKEN_TYPE, true);
-
       //AccountManagerFuture amf = accountManager.getAuthToken(acct, AUTH_TOKEN_TYPE, null, ac, new OnAuthToken(ac), null);
       AccountManagerFuture amf = accountManager.getAuthToken(acct, AUTH_TOKEN_TYPE, null, ac, null, null);
       //amf.getResult();

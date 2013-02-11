@@ -34,6 +34,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 import org.nerdcircus.android.klaxon.GcmHelper;
 import org.nerdcircus.android.klaxon.Pager;
 import org.nerdcircus.android.klaxon.Pager.*;
@@ -301,17 +302,7 @@ public class KlaxonList extends ListActivity
             //prefs.edit().putString("alert_sound", "content://media/internal/audio/media/2").commit();
         }
 
-        //preload some default responses
-        prefs = getSharedPreferences("responses", 0);
-        Editor e = prefs.edit();
-        if( prefs.getAll().isEmpty() ){
-            Log.d(TAG, "creating initial responses");
-            //FIXME: these should be taken from resources.
-            e.putString(this.getString(R.string.yes), this.getString(R.string.yes));
-            e.putString(this.getString(R.string.no), this.getString(R.string.no));
-            e.commit();
-        }
-
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     }
 }
 
