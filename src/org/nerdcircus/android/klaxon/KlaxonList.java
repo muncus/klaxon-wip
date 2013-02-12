@@ -36,6 +36,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import org.nerdcircus.android.klaxon.GcmHelper;
+import org.nerdcircus.android.klaxon.ReplyMenuUtils;
 import org.nerdcircus.android.klaxon.Pager;
 import org.nerdcircus.android.klaxon.Pager.*;
 
@@ -129,11 +130,15 @@ public class KlaxonList extends ListActivity
                     "show_in_menu == 1", null, null);
         c.moveToFirst();
         while ( ! c.isAfterLast() ){
-            addReplyMenuItem(menu,
-                             c.getString(c.getColumnIndex(Replies.NAME)),
-                             c.getString(c.getColumnIndex(Replies.BODY)),
-                             c.getInt(c.getColumnIndex(Replies.ACK_STATUS))
-                             );
+            ReplyMenuUtils.addMenuItem(
+                    this,
+                    menu,
+                    c.getString(c.getColumnIndex(Replies.NAME)),
+                    c.getString(c.getColumnIndex(Replies.BODY)),
+                    c.getInt(c.getColumnIndex(Replies.ACK_STATUS)),
+                    Uri.withAppendedPath(Pager.Pages.CONTENT_URI,
+                         c.getString(c.getColumnIndex(Replies._ID)))
+                    );
             c.moveToNext();
         }
         Intent i = new Intent(Intent.ACTION_PICK, Replies.CONTENT_URI);
@@ -193,12 +198,15 @@ public class KlaxonList extends ListActivity
                     "show_in_menu == 1", null, null);
         c.moveToFirst();
         while ( ! c.isAfterLast() ){
-            MenuItem mi = addContextMenuItem(menu,
-                             c.getString(c.getColumnIndex(Replies.NAME)),
-                             c.getString(c.getColumnIndex(Replies.BODY)),
-                             c.getInt(c.getColumnIndex(Replies.ACK_STATUS)),
-                             getListAdapter().getItemId(((AdapterView.AdapterContextMenuInfo)menuInfo).position)
-                             );
+            MenuItem mi = ReplyMenuUtils.addMenuItem(
+                    this,
+                    menu,
+                    c.getString(c.getColumnIndex(Replies.NAME)),
+                    c.getString(c.getColumnIndex(Replies.BODY)),
+                    c.getInt(c.getColumnIndex(Replies.ACK_STATUS)),
+                    Uri.withAppendedPath(Pager.Pages.CONTENT_URI,
+                                         ""+getListAdapter().getItemId(((AdapterView.AdapterContextMenuInfo)menuInfo).position))
+                    );
             c.moveToNext();
         }
         // Add the "Other" menu option.
@@ -247,46 +255,6 @@ public class KlaxonList extends ListActivity
            }
            else { return; }
         }
-    }
-
-    private Menu addReplyMenuItem(Menu menu, String label, final String response, final int status){
-        //NOTE: these cannot be done with MenuItem.setIntent(), because those
-        //intents are called with Context.startActivity()
-        menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, label).setOnMenuItemClickListener(
-            new MenuItem.OnMenuItemClickListener(){
-                public boolean onMenuItemClick(MenuItem item){
-                    Intent i = new Intent(Pager.REPLY_ACTION);
-                    i.setData(Uri.withAppendedPath(Pages.CONTENT_URI, ""+getSelectedItemId()));
-                    i.putExtra("response", response);
-                    i.putExtra("new_ack_status", status);
-                    //TODO: we should not do both. this is an experiment in using Services instead of BroadcastReceivers.
-                    sendBroadcast(i);
-                    startService(i);
-                    return true;
-                }
-            }
-        );
-        return menu;
-    }
-
-    private MenuItem addContextMenuItem(Menu menu, String label, final String response, final int status, final long itemId){
-        //NOTE: these cannot be done with MenuItem.setIntent(), because those
-        //intents are called with Context.startActivity()
-        MenuItem mi = menu.add(MENU_ACTIONS_GROUP, Menu.NONE, Menu.NONE, label);
-        mi.setOnMenuItemClickListener(
-            new MenuItem.OnMenuItemClickListener(){
-                public boolean onMenuItemClick(MenuItem item){
-                    Intent i = new Intent(Pager.REPLY_ACTION);
-                    i.setData(Uri.withAppendedPath(Pages.CONTENT_URI, ""+itemId));
-                    i.putExtra("response", response);
-                    i.putExtra("new_ack_status", status);
-                    //sendOrderedBroadcast(i, null);
-                    startService(i);
-                    return true;
-                }
-            }
-        );
-        return mi;
     }
 
     /** Create default preferences..

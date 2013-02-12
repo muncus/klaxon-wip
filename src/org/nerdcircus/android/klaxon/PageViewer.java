@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import org.nerdcircus.android.klaxon.Pager;
 import org.nerdcircus.android.klaxon.Pager.Replies;
+import org.nerdcircus.android.klaxon.ReplyMenuUtils;
 
 import android.util.Log;
 
@@ -53,8 +54,6 @@ public class PageViewer extends Activity
         setContentView(R.layout.escview);
 
         mSubjectView = (TextView) findViewById(R.id.view_subject);
-        //mSubjectView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-        //mSubjectView.setTextSize((float)(mSubjectView.getTextSize() * 1.25));
 
         mBodyView = (TextView) findViewById(R.id.view_body);
         mDateView = (TextView) findViewById(R.id.datestamp);
@@ -92,11 +91,13 @@ public class PageViewer extends Activity
                     "show_in_menu == 1", null, null);
         c.moveToFirst();
         while ( ! c.isAfterLast() ){
-            addReplyMenuItem(menu,
-                             c.getString(c.getColumnIndex(Replies.NAME)),
-                             c.getString(c.getColumnIndex(Replies.BODY)),
-                             c.getInt(c.getColumnIndex(Replies.ACK_STATUS))
-                             );
+            ReplyMenuUtils.addMenuItem(
+                this,
+                menu,
+                c.getString(c.getColumnIndex(Replies.NAME)),
+                c.getString(c.getColumnIndex(Replies.BODY)),
+                c.getInt(c.getColumnIndex(Replies.ACK_STATUS)),
+                mContentURI);
             c.moveToNext();
         }
         menu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.other);
@@ -104,24 +105,6 @@ public class PageViewer extends Activity
         menu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.delete);
 
         return true;
-    }
-
-    private Menu addReplyMenuItem(Menu menu, String label, final String response, final int status){
-        //NOTE: these cannot be done with MenuItem.setIntent(), because those
-        //intents are called with Context.startActivity()
-        menu.add(Menu.NONE, 0, 0, label).setOnMenuItemClickListener(
-            new MenuItem.OnMenuItemClickListener(){
-                public boolean onMenuItemClick(MenuItem item){
-                    Intent i = new Intent(Pager.REPLY_ACTION, mContentURI);
-                    i.putExtra("response", response);
-                    i.putExtra("new_ack_status", status);
-                    Log.d(TAG, "ack status for "+response+"should be: "+status);
-                    sendBroadcast(i);
-                    return true;
-                }
-            }
-        );
-        return menu;
     }
 
     @Override
