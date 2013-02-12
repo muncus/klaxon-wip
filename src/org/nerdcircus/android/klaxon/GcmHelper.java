@@ -54,6 +54,7 @@ public class GcmHelper {
     public static final String PREF_URL = "c2dm_register_url";
     public static final String PREF_ACCOUNT = "c2dm_register_account";
     public static final String PREF_TOKEN = "c2dm_token";
+    public static final String PREF_SENDER = "c2dm_sender";
 
     // Desired Interface
     // getRegisterUrl: base_url + /register

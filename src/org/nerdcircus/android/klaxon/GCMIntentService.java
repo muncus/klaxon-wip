@@ -19,11 +19,15 @@ import org.nerdcircus.android.klaxon.Pager.Pages;
 public class GCMIntentService extends GCMBaseIntentService {
 
     public static String TAG = "GCMIntentService";
-    public static String GCM_SENDER_ID = "100533447903";
     public static String MY_TRANSPORT = "gcm";
 
     public GCMIntentService(){
-      super(GCM_SENDER_ID); //my project id.
+      super();
+    }
+
+    public String[] getSenderIds(Context context){
+      SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
+      return new String[] { p.getString(GcmHelper.PREF_SENDER, "") };
     }
 
     public void onRegistered(Context context, String regId){
