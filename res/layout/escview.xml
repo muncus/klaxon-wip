@@ -31,6 +31,7 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
+        android:autoLink="web|email|phone"
         />
     
     <TextView android:id="@+id/datestamp"
