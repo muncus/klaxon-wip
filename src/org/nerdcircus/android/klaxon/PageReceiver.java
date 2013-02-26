@@ -23,12 +23,18 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 /** Partial implementation of a PageReceiver.
  * covers some of the basics, like ensuring that the user is currently oncall
  */
 public abstract class PageReceiver extends IntentService
 {
+    private static String TAG = "PageReceiver";
+
+    public PageReceiver(){
+      super(TAG);
+    }
 
     // Returns a string identifying which pages this service receives.
     public abstract String getTransport();
@@ -50,7 +56,7 @@ public abstract class PageReceiver extends IntentService
      */
     protected void onHandleIntent(Intent intent){
       if(intent.getAction().equals(Pager.REPLY_ACTION)){
-        if( this.canReply(intent.getContext(), intent.getData())){
+        if( this.canReply(intent.getData())){
           //Call the reply method.
           this.onReplyIntent(intent);
           return;
@@ -59,23 +65,23 @@ public abstract class PageReceiver extends IntentService
         }
         return;
       }
-      if(isOnCall(intent.getContext())){
+      if(isOnCall()){
         this.onAlertReceived(intent);
       }
     }
 
     /** Determine if the user is on call, based on our preference.
      */
-    public boolean isOnCall(Context context){
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("is_oncall", true);
+    public boolean isOnCall(){
+        return PreferenceManager.getDefaultSharedPreferences(this).getBoolean("is_oncall", true);
     }
 
     /** check if we can reply to this page.
      * this is typically done by checking the transport mechanism, as stored in
      * the PagerProvider
      */
-    public boolean canReply(Context context, Uri data){
-        Cursor cursor = context.getContentResolver().query(data,
+    public boolean canReply(Uri data){
+        Cursor cursor = this.getContentResolver().query(data,
                 new String[] {Pager.Pages.TRANSPORT, Pager.Pages._ID},
                 null,
                 null,
