@@ -16,7 +16,7 @@
 
 package org.nerdcircus.android.klaxon;
 
-import android.content.BroadcastReceiver;
+import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -27,24 +27,46 @@ import android.preference.PreferenceManager;
 /** Partial implementation of a PageReceiver.
  * covers some of the basics, like ensuring that the user is currently oncall
  */
- //TODO: import comments from IPageReceiver.
-public abstract class PageReceiver extends BroadcastReceiver
+public abstract class PageReceiver extends IntentService
 {
 
-    //XXX: use getter/setter here?
-    public static String MY_TRANSPORT;
+    // Returns a string identifying which pages this service receives.
+    public abstract String getTransport();
+
+    /** Called when a reply should be sent.
+     * intent contains the reply string, and the new ack status as extras.
+     */
+    public abstract void onReplyIntent(Intent intent);
+
+    /** When a page arrives, it should be inserted into the PageProvider, and alert.
+     * any non-reply action is considered to be an alert, and this will only be called if the user is oncall.
+     */
+    public abstract void onAlertReceived(Intent intent);
 
     /** called when the registered intent is received.
      * this method should handle extracting the relevant data from the
      * transport mechanism, and turning into the appropriate form and insert
      * into the PagerProvider
      */
-    public abstract void onReceive(Context context, Intent intent);
+    protected void onHandleIntent(Intent intent){
+      if(intent.getAction().equals(Pager.REPLY_ACTION)){
+        if( this.canReply(intent.getContext(), intent.getData())){
+          //Call the reply method.
+          this.onReplyIntent(intent);
+          return;
+        } else {
+          Log.d(TAG, "could not reply to message: " + intent.getDataString());
+        }
+        return;
+      }
+      if(isOnCall(intent.getContext())){
+        this.onAlertReceived(intent);
+      }
+    }
 
-    /** Determine if the recevied message meets the user's criteria for a page.
-     * this usually involves checking preferences.
+    /** Determine if the user is on call, based on our preference.
      */
-    public boolean isPage(ContentValues cv, Context context){
+    public boolean isOnCall(Context context){
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("is_oncall", true);
     }
 
@@ -61,7 +83,7 @@ public abstract class PageReceiver extends BroadcastReceiver
         cursor.moveToFirst();
 
         String transport = cursor.getString(cursor.getColumnIndex(Pager.Pages.TRANSPORT));
-        if (transport.equals(MY_TRANSPORT)){
+        if (transport.equals(getTransport())){
             return true;
         }
         else {
@@ -72,7 +94,7 @@ public abstract class PageReceiver extends BroadcastReceiver
     /** replies to a particular message, specified by Uri.
      * this must be overridden by PageReceiver subclasses.
      */
-    public abstract void replyTo(Context context, Uri data, String reply, int ack_status);
+    //public abstract void replyTo(Context context, Uri data, String reply, int ack_status);
 
 }
 
