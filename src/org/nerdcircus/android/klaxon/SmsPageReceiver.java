@@ -32,6 +32,7 @@ import android.util.Log;
 
 import org.nerdcircus.android.klaxon.Alert;
 import org.nerdcircus.android.klaxon.Pager;
+import org.nerdcircus.android.klaxon.PageReceiver;
 import org.nerdcircus.android.klaxon.Pager.Pages;
 import org.nerdcircus.android.klaxon.pageparser.*;
 
@@ -40,104 +41,104 @@ public class SmsPageReceiver extends BroadcastReceiver
     public static String TAG = "SmsPageReceiver";
     private static String MY_TRANSPORT = "sms";
 
-    public void queryAndLog(Context context, Uri u){
-        Log.d(TAG, "querying: "+u.toString());
-        Cursor c = context.getContentResolver().query(u, null, null, null, null);
-        c.moveToFirst();
-        for(int i=0; i<c.getColumnCount(); i++){
-            Log.d(TAG, c.getColumnName(i)+" : "+c.getString(i));
-        }
+    private Context mContext;
+
+    public String getTransport(){
+      return MY_TRANSPORT;
     }
     
-    @Override
-    public void onReceive(Context context, Intent intent)
-    {
+    // Duplicate the flow currently present in PageReceiver, since we cannot use an IntentService here.
+    public void onReceive(Context context, Intent intent){
+      //save this, so we can present the same interface as PageReceiver.
+      mContext = context;
+      if(intent.getAction().equals(Pager.REPLY_ACTION)){
+        onReplyIntent(intent);
+      }
+      else {
+        onAlertReceived(intent);
+      }
+    }
 
-        //check to see if we want to intercept.
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if( ! prefs.getBoolean("is_oncall", true) ){
-            Log.d(TAG, "not oncall. not bothering with incoming sms.");
-            return;
-        }
+    public void onAlertReceived(Intent intent){
+      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+      Log.d(TAG, "fetching messages...");
+      SmsMessage[] msgs = {};
+      try{
+          //assemble messages from raw pdus.
+          if(! intent.getExtras().isEmpty()){
+              Object[] pduObjs = (Object[]) intent.getExtras().get("pdus");
+              msgs = new SmsMessage[pduObjs.length];
+              for (int i=0;i<pduObjs.length;i++){
+                  msgs[i] = SmsMessage.createFromPdu((byte[])pduObjs[i]);
+              }
+          }
+      }
+      //XXX: this probably shouldnt throw an NPE.
+      catch(NullPointerException e){
+          Log.e(TAG, "No data associated with new sms intent!");
+      }
 
-        if( intent.getAction().equals(Pager.REPLY_ACTION) ){
-            //replying to a received page.
-            Uri data = intent.getData();
-            Bundle extras = intent.getExtras();
-            String response = extras.getString("response");
-            Integer new_ack_status = extras.getInt("new_ack_status");
-            if( canReply(context, data)){
-                replyTo(context, data, response, new_ack_status);
-                return;
-            }
-            else {
-                Log.d(TAG, "cannot reply to this message.");
-                return;
-            }
-        }
+      Alert incoming = null;
+      String parser = prefs.getString("pageparser", "Standard");
+      if(parser.equals("Standard")){
+          Log.d(TAG, "using Standard pageparser");
+          incoming = (new Standard()).parse(msgs);
+      }
+      else if (parser.equals("Go2Mobile")){
+          Log.d(TAG, "using go2mobile pageparser");
+          incoming = (new Go2Mobile()).parse(msgs);
+      }
+      else if (parser.equals("Labeled Fields")){
+          Log.d(TAG, "using labeled pageparser");
+          incoming = (new LabeledFields()).parse(msgs);
+      }
+      else {
+          Log.e(TAG, "unknown page parser:" + parser);
+      }
 
-        Log.d(TAG, "fetching messages...");
-        SmsMessage[] msgs = {};
-        try{
-            //assemble messages from raw pdus.
-            if(! intent.getExtras().isEmpty()){
-                Object[] pduObjs = (Object[]) intent.getExtras().get("pdus");
-                msgs = new SmsMessage[pduObjs.length];
-                for (int i=0;i<pduObjs.length;i++){
-                    msgs[i] = SmsMessage.createFromPdu((byte[])pduObjs[i]);
-                }
-            }
-        }
-        //XXX: this probably shouldnt throw an NPE.
-        catch(NullPointerException e){
-            Log.e(TAG, "No data associated with new sms intent!");
-        }
+      // note that this page was received via sms.
+      incoming.setTransport(MY_TRANSPORT);
 
-        Alert incoming = null;
-        String parser = prefs.getString("pageparser", "Standard");
-        if(parser.equals("Standard")){
-            Log.d(TAG, "using Standard pageparser");
-            incoming = (new Standard()).parse(msgs);
-        }
-        else if (parser.equals("Go2Mobile")){
-            Log.d(TAG, "using go2mobile pageparser");
-            incoming = (new Go2Mobile()).parse(msgs);
-        }
-        else if (parser.equals("Labeled Fields")){
-            Log.d(TAG, "using labeled pageparser");
-            incoming = (new LabeledFields()).parse(msgs);
-        }
-        else {
-            Log.e(TAG, "unknown page parser:" + parser);
-        }
+      //Log some bits.
+      Log.d(TAG, "from: " + incoming.getFrom());
+      Log.d(TAG, "display from: " + incoming.getDisplayFrom());
+      Log.d(TAG, "subject: " + incoming.getSubject());
+      Log.d(TAG, "body: " + incoming.getBody());
 
-        // note that this page was received via sms.
-        incoming.setTransport(MY_TRANSPORT);
+      if( ! isPage(incoming.asContentValues(), mContext) ) {
+          Log.d(TAG, "message doesnt appear to be a page. skipping");
+          return;
+      }
 
-        //Log some bits.
-        Log.d(TAG, "from: " + incoming.getFrom());
-        Log.d(TAG, "display from: " + incoming.getDisplayFrom());
-        Log.d(TAG, "subject: " + incoming.getSubject());
-        Log.d(TAG, "body: " + incoming.getBody());
+      Uri newpage = mContext.getContentResolver().insert(Pages.CONTENT_URI, incoming.asContentValues());
+      Log.d(TAG, "new message inserted.");
+      Intent annoy = new Intent(Pager.PAGE_RECEIVED);
+      annoy.setData(newpage);
+      mContext.sendBroadcast(annoy);
+      Log.d(TAG, "sent intent " + annoy.toString() );
+      //NOTE: as of 1.6, this broadcast can be aborted.
+      if (prefs.getBoolean("consume_sms_message", false)){
+          //FIXME: this breaks if we no longer use a BroadcastReceiver.
+          abortBroadcast();
+          Log.d(TAG, "sms broadcast aborted.");
+      }
+    }
 
-        if( ! isPage(incoming.asContentValues(), context) ) {
-            Log.d(TAG, "message doesnt appear to be a page. skipping");
-            return;
-        }
+    public void onReplyIntent(Intent intent){
 
-        Uri newpage = context.getContentResolver().insert(Pages.CONTENT_URI, incoming.asContentValues());
-        Log.d(TAG, "new message inserted.");
-        Intent annoy = new Intent(Pager.PAGE_RECEIVED);
-        annoy.setData(newpage);
-        context.sendBroadcast(annoy);
-        Log.d(TAG, "sent intent " + annoy.toString() );
-        //NOTE: as of 1.6, this broadcast can be aborted.
-        if (prefs.getBoolean("consume_sms_message", false)){
-            abortBroadcast();
-            Log.d(TAG, "sms broadcast aborted.");
-        }
-
-        
+      //replying to a received page.
+      Uri data = intent.getData();
+      Bundle extras = intent.getExtras();
+      String response = extras.getString("response");
+      Integer new_ack_status = extras.getInt("new_ack_status");
+      if( canReply(data)){
+          replyTo(intent);
+          return;
+      }
+      else {
+          Log.d(TAG, "cannot reply to this message.");
+          return;
+      }
     }
 
     /** Determine if we care about a particular SMS message.
@@ -172,9 +173,9 @@ public class SmsPageReceiver extends BroadcastReceiver
 
     /** check if we can reply to this page.
      */
-    boolean canReply(Context context, Uri data){
+    boolean canReply(Uri data){
         Log.d(TAG, "attempting to reply to: " + data);
-        Cursor cursor = context.getContentResolver().query(data,
+        Cursor cursor = mContext.getContentResolver().query(data,
                 new String[] {Pager.Pages.TRANSPORT, Pager.Pages._ID},
                 null,
                 null,
@@ -182,7 +183,7 @@ public class SmsPageReceiver extends BroadcastReceiver
         cursor.moveToFirst();
 
         String transport = cursor.getString(cursor.getColumnIndex(Pager.Pages.TRANSPORT));
-        if (transport.equals(MY_TRANSPORT)){
+        if (transport.equals(getTransport())){
             return true;
         }
         else {
@@ -193,6 +194,13 @@ public class SmsPageReceiver extends BroadcastReceiver
     /** replyTo: Uri, string, int
      * replies to a particular message, specified by Uri.
      */
+    void replyTo(Intent intent){
+      replyTo(
+          mContext,
+          intent.getData(),
+          intent.getExtras().getString("reply"),
+          intent.getExtras().getInt("new_ack_status"));
+    }
     void replyTo(Context context, Uri data, String reply, int ack_status){
         Log.d(TAG, "replying from smspagereceiver!");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
