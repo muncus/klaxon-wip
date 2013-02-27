@@ -19,11 +19,9 @@ package org.nerdcircus.android.klaxon;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import org.nerdcircus.android.klaxon.Pager;
 
@@ -81,7 +79,6 @@ public class GcmReplyService extends IntentService
      */
     void replyTo(Context context, Uri data, String reply, int ack_status){
         Log.d(TAG, "replying from C2dmPageReceiver!");
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         Cursor cursor = context.getContentResolver().query(data,
                 new String[] {Pager.Pages.SENDER, Pager.Pages.SERVICE_CENTER, Pager.Pages._ID, Pager.Pages.FROM_ADDR, Pager.Pages.SUBJECT},
                 null,

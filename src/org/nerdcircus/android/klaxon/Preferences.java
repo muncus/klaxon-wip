@@ -47,7 +47,6 @@ import org.nerdcircus.android.klaxon.GcmHelper;
 
 public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
     
-    private static final Uri CHANGELOG_URI = Uri.parse("http://code.google.com/p/klaxon/wiki/ChangeLog");
     final Handler mHandler = new Handler();
 
     // Create runnable for posting

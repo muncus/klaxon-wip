@@ -33,7 +33,6 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import org.nerdcircus.android.klaxon.GcmHelper;
 import org.nerdcircus.android.klaxon.ReplyMenuUtils;
