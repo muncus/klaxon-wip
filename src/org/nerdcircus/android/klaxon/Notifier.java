@@ -71,8 +71,7 @@ public class Notifier extends BroadcastReceiver
                                           PendingIntent.FLAG_CANCEL_CURRENT
                                         );
             
-            //TODO: is this the right way to get a PreferenceManager?
-            SharedPreferences prefs = context.getSharedPreferences("org.nerdcircus.android.klaxon_preferences", 0);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
             Log.d(TAG, "notifcation interval: " + prefs.getString("notification_interval", "unknown"));
             long repeat_interval_ms = new Integer(prefs.getString("notification_interval", "20000")).longValue();

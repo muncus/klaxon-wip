@@ -1,29 +1,11 @@
 package org.nerdcircus.android.klaxon;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ListActivity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
-import org.nerdcircus.android.klaxon.GcmHelper;
 import org.nerdcircus.android.klaxon.Pager;
-import org.nerdcircus.android.klaxon.Pager.*;
-
-import android.util.Log;
 
 public class ReplyMenuUtils {
     //menu constants.

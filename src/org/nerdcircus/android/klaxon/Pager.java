@@ -21,8 +21,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import android.R.drawable;
-
 public final class Pager
 {
     public static final int[] statusIcons = {

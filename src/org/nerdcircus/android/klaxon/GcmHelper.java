@@ -8,7 +8,6 @@ import java.net.URLEncoder;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 
@@ -23,16 +22,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
-
-import org.nerdcircus.android.klaxon.Alert;
-import org.nerdcircus.android.klaxon.Pager;
-import org.nerdcircus.android.klaxon.Pager.Pages;
 
 public class GcmHelper {
 
@@ -47,7 +40,6 @@ public class GcmHelper {
     // GCM gateway urls.
     private static final String REGISTER_URL = "/register";
     private static final String UNREGISTER_URL = "/unregister";
-    private static final String REPLY_URL = "/reply";
     private static final String TEST_URL = "/test";
 
     // Preference Names.
@@ -128,7 +120,7 @@ public class GcmHelper {
             editor.commit();
             // Try to notify the server to drop it, too.
             HttpGet req = new HttpGet(getUnregisterUrl() + "?token=" + deviceRegistrationID);
-            HttpResponse res = this.makeHttpRequest(req);
+            this.makeHttpRequest(req);
         } catch (Exception e) {
             Log.w(TAG, "Oh well, de-registration failed. no big deal.", e);
         }
@@ -225,7 +217,7 @@ public class GcmHelper {
       AccountManager accountManager = AccountManager.get(ac);
       //authToken = accountManager.blockingGetAuthToken(account, AUTH_TOKEN_TYPE, true);
       //AccountManagerFuture amf = accountManager.getAuthToken(acct, AUTH_TOKEN_TYPE, null, ac, new OnAuthToken(ac), null);
-      AccountManagerFuture amf = accountManager.getAuthToken(acct, AUTH_TOKEN_TYPE, null, ac, null, null);
+      AccountManagerFuture<Bundle> amf = accountManager.getAuthToken(acct, AUTH_TOKEN_TYPE, null, ac, null, null);
       //amf.getResult();
       return;
     }
