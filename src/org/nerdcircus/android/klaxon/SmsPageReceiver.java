@@ -198,7 +198,7 @@ public class SmsPageReceiver extends BroadcastReceiver
       replyTo(
           mContext,
           intent.getData(),
-          intent.getExtras().getString("reply"),
+          intent.getExtras().getString("response"),
           intent.getExtras().getInt("new_ack_status"));
     }
     void replyTo(Context context, Uri data, String reply, int ack_status){
