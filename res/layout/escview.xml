@@ -12,7 +12,7 @@
     <TextView android:id="@+id/view_subject"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="no subject"
+        android:text="@string/alert_no_subject"
         android:lines="2"
         android:minHeight="48dp"
         android:paddingLeft="8dp"

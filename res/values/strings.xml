@@ -32,7 +32,7 @@
     <string name="notify_page">You have been paged</string>
     <string name="sms_ok">Response Sent.</string>
     <string name="sms_failed">Response Failed. Please try again.</string>
-    <string name="esclist_empty">No pages... yet.</string>
+    <string name="esclist_empty">No pages… yet.</string>
 
     <!-- replying and deleting -->
     <string name="delete_all">Delete All</string>
