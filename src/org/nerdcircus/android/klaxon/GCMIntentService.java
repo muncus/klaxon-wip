@@ -11,7 +11,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
 
-import org.nerdcircus.android.klaxon.Alert;
 import org.nerdcircus.android.klaxon.GcmHelper;
 import org.nerdcircus.android.klaxon.Pager;
 import org.nerdcircus.android.klaxon.Pager.Pages;
@@ -34,12 +33,14 @@ public class GCMIntentService extends GCMBaseIntentService {
       //Called after the device has registered with GCM, so send the regid to our servers.
       GcmHelper gh = new GcmHelper(context);
       gh.register(regId);
-    };
+    }
+
     public void onUnregistered(Context context, String regId){
       // Called after device unregisters with gcm, send regid to us, so we can remove it.
       GcmHelper gh = new GcmHelper(context);
       gh.unregister(regId);
-    };
+    }
+
     public void onMessage(Context context, Intent intent){
       // Called when a message has been received. Process the received intent.
 
@@ -82,14 +83,14 @@ public class GCMIntentService extends GCMBaseIntentService {
       annoy.setData(newpage);
       context.sendBroadcast(annoy);
       Log.d(TAG, "sent intent " + annoy.toString() );
-    };
+    }
 
     public void onError(Context context, String errorId){
       Log.e(TAG, "Encountered a GCM Error: " + errorId);
-    };
+    }
 
     // Optional. only override to display a message to the user.
     //public boolean onRecoverableError(Context context, String errorId){};
 
 
-};
+}
