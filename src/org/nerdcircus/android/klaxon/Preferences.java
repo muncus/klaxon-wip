@@ -214,7 +214,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
                 context.getPackageName(), 0);
             version = info.versionName;
         }
-        catch(Exception e){};
+        catch(Exception e){}
         return version;
     }
     public static String getDebugMessageBody(Context context){

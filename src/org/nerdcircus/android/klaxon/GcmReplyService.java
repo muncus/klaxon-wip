@@ -43,17 +43,14 @@ public class GcmReplyService extends PageReceiver
       //replying to a received page.
       if( canReply(intent.getData())){
           replyTo(intent);
-          return;
       }
       else {
           Log.d(TAG, "cannot reply to this message.");
-          return;
       }
     }
 
     // This service doesnt receive alerts via intent. see GCMIntentService.java
     public void onAlertReceived(Intent i){
-      return;
     }
 
     /** replyTo: Uri, string, int

@@ -250,9 +250,9 @@ public class KlaxonList extends ListActivity
                i.putExtra("response", c.getString(c.getColumnIndex(Replies.BODY)));
                i.putExtra("new_ack_status", c.getInt(c.getColumnIndex(Replies.ACK_STATUS)));
                sendBroadcast(i);
-               return;
            }
-           else { return; }
+           else {
+           }
         }
     }
 

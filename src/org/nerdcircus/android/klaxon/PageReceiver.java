@@ -89,12 +89,7 @@ public abstract class PageReceiver extends IntentService
         cursor.moveToFirst();
 
         String transport = cursor.getString(cursor.getColumnIndex(Pager.Pages.TRANSPORT));
-        if (transport.equals(getTransport())){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return transport.equals(getTransport());
     }
 
     /** replies to a particular message, specified by Uri.

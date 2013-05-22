@@ -133,11 +133,9 @@ public class SmsPageReceiver extends BroadcastReceiver
       Integer new_ack_status = extras.getInt("new_ack_status");
       if( canReply(data)){
           replyTo(intent);
-          return;
       }
       else {
           Log.d(TAG, "cannot reply to this message.");
-          return;
       }
     }
 
@@ -183,12 +181,7 @@ public class SmsPageReceiver extends BroadcastReceiver
         cursor.moveToFirst();
 
         String transport = cursor.getString(cursor.getColumnIndex(Pager.Pages.TRANSPORT));
-        if (transport.equals(getTransport())){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return transport.equals(getTransport());
     }
 
     /** replyTo: Uri, string, int

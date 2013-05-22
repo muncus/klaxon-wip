@@ -104,11 +104,9 @@ public class Notifier extends BroadcastReceiver
                 Log.d(TAG, "reply successful. updating ack status..");
                 //result was sent. update state.
                 updateAckStatus(context, intent.getData(), intent.getIntExtra(Pager.EXTRA_NEW_ACK_STATUS, 0));
-                return;
             }
             else {
                 Log.e(TAG, "reply failed!!! doing nothing.");
-                return;
             }
         }
         else {

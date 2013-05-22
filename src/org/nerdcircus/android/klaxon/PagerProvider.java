@@ -148,7 +148,7 @@ public class PagerProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         mDbHelper = new DatabaseHelper(getContext());
-        return (mDbHelper == null) ? false : true;
+        return (mDbHelper != null);
     }
 
     @Override

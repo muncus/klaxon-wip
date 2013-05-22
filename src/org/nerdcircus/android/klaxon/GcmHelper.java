@@ -193,7 +193,7 @@ public class GcmHelper {
           Log.e(TAG, "http request exception!", e);
           return null;
         }
-    };
+    }
 
     private String getAuthToken(){
       //fetch an auth token for the account we registered with.
@@ -219,7 +219,6 @@ public class GcmHelper {
       //AccountManagerFuture amf = accountManager.getAuthToken(acct, AUTH_TOKEN_TYPE, null, ac, new OnAuthToken(ac), null);
       AccountManagerFuture<Bundle> amf = accountManager.getAuthToken(acct, AUTH_TOKEN_TYPE, null, ac, null, null);
       //amf.getResult();
-      return;
     }
 
     private String getAuthToken(Context context, String accountName) {
@@ -272,9 +271,7 @@ public class GcmHelper {
         Log.d(TAG, "Url: " + url);
         HttpGet req = new HttpGet(ub.build().toString());
         HttpResponse res = makeHttpRequest(req);
-        if(res.getStatusLine().getStatusCode() == 200)
-          return true;
-        return false;
+          return res.getStatusLine().getStatusCode() == 200;
       }
     }
 
@@ -297,8 +294,8 @@ public class GcmHelper {
             Log.w(TAG, e.getMessage());
         }
         return null;
-      };
-    };
+      }
+    }
 
     private class OnAuthToken implements AccountManagerCallback<Bundle> {
       Context mContext;
@@ -316,7 +313,6 @@ public class GcmHelper {
           }
           if(result.get(AccountManager.KEY_AUTHTOKEN) != null){
             Log.d(TAG, "Got authtoken!" + result.get(AccountManager.KEY_AUTHTOKEN).toString());
-            return;
           }
           else {
             Log.d(TAG, "no idea dog.");
@@ -332,4 +328,4 @@ public class GcmHelper {
     }
 
 
-};
+}
