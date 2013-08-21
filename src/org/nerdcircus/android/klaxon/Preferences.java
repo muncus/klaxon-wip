@@ -219,15 +219,13 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
     }
     public static String getDebugMessageBody(Context context){
         //Put some useful debug data in here.
-        String body = "\n" + 
+        return "\n" +
             "** System Info:\n" + 
             "Android Version: " + Build.VERSION.RELEASE + "\n" + 
             "Device: " + Build.MODEL + "\n" + 
             "Build Info: " + Build.FINGERPRINT + "\n" + 
             "** App Info:\n" + 
             "App Version: " + getAppVersion(context) + "\n";
-
-        return body;
     }
 
 }

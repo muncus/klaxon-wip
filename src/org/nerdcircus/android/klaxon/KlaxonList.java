@@ -54,6 +54,7 @@ public class KlaxonList extends ListActivity
 
     private int REQUEST_PICK_REPLY = 1;
 
+    private GcmHelper mGcmHelper;
     private Cursor mCursor;
     protected Dialog onCreateDialog(int id){
         if(id == DIALOG_DELETE_ALL_CONFIRMATION){
@@ -101,6 +102,8 @@ public class KlaxonList extends ListActivity
 
         Log.d(TAG, "oncreate done.");
         registerForContextMenu(getListView());
+        mGcmHelper = new GcmHelper(this);
+        mGcmHelper.maybePromptForLoginPermission();
     }
 
     public void onResume(){
@@ -108,8 +111,8 @@ public class KlaxonList extends ListActivity
         //if they're active, cancel any alarms and notifications.
         Intent i = new Intent(Pager.SILENCE_ACTION);
         sendBroadcast(i);
+        mGcmHelper.checkForPlayServices();
 
-        GcmHelper.maybePromptForPassword(this);
 
     }
 

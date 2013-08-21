@@ -146,6 +146,7 @@ public class PageViewer extends Activity
                 sendBroadcast(i);
             }
             else {
+                // TODO: add some error checking.
             }
          }
      }
