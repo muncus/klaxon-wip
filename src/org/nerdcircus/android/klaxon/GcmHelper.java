@@ -105,6 +105,34 @@ public class GcmHelper {
     public String getAccountName(){
       return mPrefs.getString(PREF_ACCOUNT,"");
     }
+    
+    /** Request a URL, authenticating as needed. 
+     * this method uses HttpURLConnection. */
+    private HttpURLConnection HttpRequest(URL requrl){
+      HttpURLConnection conn = null;
+      try {
+        conn = (HttpURLConnection)requrl.openConnection();
+        Log.d(TAG, "url: " + conn.getURL());
+        Log.d(TAG, "Response: " + conn.getResponseCode());
+        if(conn.getURL().getHost() != mPrefs.getString(PREF_URL, "")){
+            Log.d(TAG, "looks like we were redirected. Auth.");
+            conn.disconnect();
+            // Get the auth token, and use it.
+            String authToken = this.getAuthToken();
+            URL authurl = new URL(getAuthUrl() + "?continue=" +
+                    URLEncoder.encode(requrl.toString(), "UTF-8") +
+                    "&auth=" + authToken);
+            conn = (HttpURLConnection)authurl.openConnection();
+            conn.getInputStream(); // Dont care what we get back. metadata is enough.
+            Log.d(TAG, "url: " + conn.getURL());
+            Log.d(TAG, "Response: " + conn.getResponseCode());
+        }
+        return conn;
+      } catch (Exception e) {
+          Log.w(TAG, "HTTP Request exception!", e);
+      }
+      return conn;
+    }
       
     // Device has registered with GCM, now send the registration info to our server, and save it.
     public void register(String deviceRegistrationID) {
@@ -113,28 +141,12 @@ public class GcmHelper {
             URL requrl = new URL(getRegisterUrl() + "?token=" + deviceRegistrationID);
 
             //make httpurlconnection request
-            HttpURLConnection conn = (HttpURLConnection)requrl.openConnection();
-            conn.getInputStream(); // Dont care what we get back. metadata is enough.
-            Log.d(TAG, "url: " + conn.getURL());
-            Log.d(TAG, "Response: " + conn.getResponseCode());
-            if(conn.getURL().getHost() != mPrefs.getString(PREF_URL, "")){
-                Log.d(TAG, "looks like we were redirected. Auth.");
-                conn.disconnect();
-                // Get the auth token, and use it.
-                String authToken = this.getAuthToken();
-                URL authurl = new URL(getAuthUrl() + "?continue=" +
-                        URLEncoder.encode(requrl.toString(), "UTF-8") +
-                        "&auth=" + authToken);
-                conn = (HttpURLConnection)authurl.openConnection();
-                conn.getInputStream(); // Dont care what we get back. metadata is enough.
-                Log.d(TAG, "url: " + conn.getURL());
-                Log.d(TAG, "Response: " + conn.getResponseCode());
-                if(conn.getResponseCode() == 200){
-                    SharedPreferences.Editor editor = mPrefs.edit();
-                    editor.putString("c2dm_token", deviceRegistrationID);
-                    Log.w(TAG, "Commiting token");
-                    editor.commit();
-                }
+            HttpURLConnection conn = HttpRequest(requrl);
+            if(conn.getResponseCode() == 200){
+                SharedPreferences.Editor editor = mPrefs.edit();
+                editor.putString("c2dm_token", deviceRegistrationID);
+                Log.w(TAG, "Commiting token");
+                editor.commit();
             }
         } catch (Exception e) {
             Log.w(TAG, "Registration exception!",e);
@@ -149,8 +161,8 @@ public class GcmHelper {
             editor.remove("c2dm_token");
             editor.commit();
             // Try to notify the server to drop it, too.
-            HttpGet req = new HttpGet(getUnregisterUrl() + "?token=" + deviceRegistrationID);
-            this.makeHttpRequest(req);
+            URL req = new URL(getUnregisterUrl() + "?token=" + deviceRegistrationID);
+            HttpRequest(req);
         } catch (Exception e) {
             Log.w(TAG, "Oh well, de-registration failed. no big deal.", e);
         }
@@ -160,67 +172,15 @@ public class GcmHelper {
       Uri.Builder ub = Uri.parse(url).buildUpon();
       ub.appendQueryParameter("reply", reply_text);
       Log.d(TAG, "Url: " + url);
-      HttpGet req = new HttpGet(ub.build().toString());
-      HttpResponse res = makeHttpRequest(req);
-      if(res.getStatusLine().getStatusCode() == 200)
-        return true;
+      try {
+        URL req = new URL(ub.build().toString());
+        HttpURLConnection res = HttpRequest(req);
+        if(res.getResponseCode() == 200)
+          return true;
+      } catch (Exception e) {
+        Log.e(TAG, "something is wrong with reply: " + e.getMessage(), e);
+      }
       return false;
-    }
-
-    private HttpResponse makeHttpRequest(HttpGet req){
-      return makeHttpRequest(req, true);
-    }
-    // Used to make a general HTTP request, and auth as needed.
-    private HttpResponse makeHttpRequest(HttpGet req, boolean retry_auth){
-        try {
-          Log.d(TAG, "Attempting to fetch: " + req.getURI().toString());
-          // dont follow the initial 302.
-          HttpResponse res = mClient.execute(req);
-
-          // If we are not logged in, we will get a 302 redirect to the Login page.
-          if(res.getStatusLine().getStatusCode() == 401 || res.getStatusLine().getStatusCode() == 302){
-            Log.d(TAG, "Error - Authenticating. " + res.getStatusLine().getStatusCode());
-            res.getEntity().consumeContent(); //closes the connection.
-            if(retry_auth){
-              //Log.d(TAG, "302'd - Authenticating.");
-              //Authenticate, and continue to our destination.
-              String authToken = this.getAuthToken();
-              String continueURL = req.getURI().toString();
-              URI uri = new URI(getAuthUrl() + "?continue=" +
-                      URLEncoder.encode(continueURL, "UTF-8") +
-                      "&auth=" + authToken);
-              return this.makeHttpRequest(new HttpGet(uri), false);
-            } else {
-              Log.d(TAG, "302'd a second time. just try again??");
-              // Invalidate, and try again.
-              //Log.d(TAG, "*** INVALIDATING TOKEN? ***");
-              //AccountManager accountManager = AccountManager.get(mContext);
-              //Account account = new Account(this.getAccountName(), "com.google");
-              //accountManager.invalidateAuthToken(account.type, this.getAuthToken());
-              return this.makeHttpRequest(req, true);
-            }
-          }
-          // If our token is invalid, we get a 500.
-          if(res.getStatusLine().getStatusCode() == 500){
-            Log.d(TAG, "500'd - Invalidate token and try again.");
-            Log.d(TAG, res.getStatusLine().toString());
-              // Invalidate, and try again.
-              Log.d(TAG, "*** INVALIDATING TOKEN ***");
-              AccountManager accountManager = AccountManager.get(mContext);
-              Account account = new Account(this.getAccountName(), "com.google");
-              accountManager.invalidateAuthToken(account.type, this.getAuthToken());
-              return this.makeHttpRequest(req);
-          }
-          // check to see if we were redirected to the login screen.
-          Log.d(TAG, "Success!?");
-          Log.d(TAG, res.getStatusLine().getReasonPhrase());
-          Log.d(TAG, res.getStatusLine().getStatusCode() + " ");
-          Log.d(TAG, req.getURI().toString());
-          return res;
-        } catch (Exception e) {
-          Log.e(TAG, "http request exception!", e);
-          return null;
-        }
     }
 
     private String getAuthToken(){
