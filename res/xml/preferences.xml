@@ -127,7 +127,7 @@
             android:title="@string/pref_c2dm_register_url"
             android:defaultValue="@string/default_gcm_url"
             android:inputType="textUri" />
-          <ListPreference android:key="c2dm_register_account"
+          <Preference android:key="c2dm_register_account"
             android:title="@string/pref_c2dm_register_account"
             android:defaultValue="" />
           <Preference

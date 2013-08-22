@@ -18,6 +18,7 @@ package org.nerdcircus.android.klaxon;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.Intent;
@@ -46,11 +47,13 @@ import org.nerdcircus.android.klaxon.ReplyList;
 import org.nerdcircus.android.klaxon.GcmHelper;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.common.AccountPicker;
 
 public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
     
     final Handler mHandler = new Handler();
     private final String TAG = "KlaxonPreferences";
+    private final int RC_ACCOUNTPICKER = 1;
 
     private GcmHelper mHelper;
 
@@ -60,6 +63,22 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
             updateC2dmPrefs();
         }
     };
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+      if(requestCode == RC_ACCOUNTPICKER){
+        if(resultCode == Activity.RESULT_OK){
+          String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+          SharedPreferences.Editor ed =  PreferenceManager.getDefaultSharedPreferences(this).edit();
+          Log.d(TAG, "setting pref to " + accountName);
+          ed.putString("c2dm_register_account", accountName);
+          ed.commit();
+        } else if (resultCode == Activity.RESULT_CANCELED){
+          Log.d(TAG, "account picking cancelled.");
+          SharedPreferences.Editor ed =  PreferenceManager.getDefaultSharedPreferences(this).edit();
+          ed.putString("c2dm_register_account", "");
+        }
+      }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,17 +133,15 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
             csp.setEnabled(false);
         }
 
-        ListPreference c2dm_accounts = (ListPreference) this.findPreference("c2dm_register_account");
-        Account[] accounts = AccountManager.get(getApplicationContext()).getAccountsByType("com.google");
-        Vector<CharSequence> accountNames = new Vector<CharSequence>();
-        for (Account account : accounts) {
-           accountNames.add(account.name);
-        }
-        CharSequence[] accountNamesArray = new CharSequence[accountNames.size()];
-        accountNames.toArray(accountNamesArray);
-        c2dm_accounts.setEntries(accountNamesArray);
-        c2dm_accounts.setEntryValues(accountNamesArray);
-
+        Preference accounts = this.findPreference("c2dm_register_account");
+        accounts.setOnPreferenceClickListener( new Preference.OnPreferenceClickListener() {
+          public boolean onPreferenceClick(Preference p){
+            Intent acctpicker = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"},
+                     false, null, null, null, null);
+            ((Activity)p.getContext()).startActivityForResult(acctpicker, RC_ACCOUNTPICKER);
+            return true;
+          }
+        });
         mHandler.post(mUpdateC2dmPrefs);
     }
 
