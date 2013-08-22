@@ -184,18 +184,17 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
     }
 
     public void c2dmSendToken(View v) {
-	final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-      	
-	SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-      	String c2dmToken = settings.getString("c2dm_token", "");
-	Account[] accounts = AccountManager.get(this).getAccounts();
-	if (accounts.length > 0 && c2dmToken != "") {
-		emailIntent .setType("plain/text");
-		emailIntent .putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{accounts[0].name});
-		emailIntent .putExtra(android.content.Intent.EXTRA_SUBJECT, "My C2DM token");
-		emailIntent .putExtra(android.content.Intent.EXTRA_TEXT, c2dmToken);
-		this.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-	}
+      final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+      SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+      String c2dmToken = settings.getString("c2dm_token", "");
+      Account[] accounts = AccountManager.get(this).getAccounts();
+      if (accounts.length > 0 && c2dmToken != "") {
+        emailIntent .setType("plain/text");
+        emailIntent .putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{accounts[0].name});
+        emailIntent .putExtra(android.content.Intent.EXTRA_SUBJECT, "My C2DM token");
+        emailIntent .putExtra(android.content.Intent.EXTRA_TEXT, c2dmToken);
+        this.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+      }
     }
 
     /** Fires the intent to send an email with some debugging info.
