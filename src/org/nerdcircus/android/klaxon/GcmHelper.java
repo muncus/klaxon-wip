@@ -10,11 +10,6 @@ import java.net.URLEncoder;
 import java.net.CookieManager;
 import java.net.CookieHandler;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.accounts.Account;
@@ -38,6 +33,7 @@ import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class GcmHelper {
 
@@ -55,6 +51,7 @@ public class GcmHelper {
     private static final String TEST_URL = "/test";
 
     // Preference Names.
+    // TODO: pull these from Resources instead.
     public static final String PREF_URL = "c2dm_register_url";
     public static final String PREF_ACCOUNT = "c2dm_register_account";
     public static final String PREF_TOKEN = "c2dm_token";
@@ -75,16 +72,11 @@ public class GcmHelper {
     // Members.
     private Context mContext;
     private SharedPreferences mPrefs;
-    private DefaultHttpClient mClient;
     
     public GcmHelper(Context context) {
       Log.d(TAG, "initializing new GcmHelper");
       mContext = context;
       mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-      //mClient = AndroidHttpClient.newInstance(USER_AGENT);
-      mClient = new DefaultHttpClient();
-      //disable redirects.
-      //mClient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
       //use cookies.
       CookieHandler.setDefault(new CookieManager());
     }
@@ -224,6 +216,24 @@ public class GcmHelper {
         return token;
       }
       return null;
+    }
+
+    void registerWithGcmAsync(String... senders){
+      //TODO: figure out why <Void,Void,Void> throws ClassCastException
+      AsyncTask task = new AsyncTask<String,Object,Boolean>() {
+        @Override
+        protected Boolean doInBackground(String... params){
+          GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(mContext);
+          try {
+            gcm.register(params);
+            return true;
+          } catch(IOException e){
+            Log.e(TAG, "registration failed: " + e.getMessage(), e);
+            return false;
+          }
+        }
+      };
+      task.execute(senders);
     }
 
     void maybePromptForLoginPermission(){

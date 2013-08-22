@@ -45,9 +45,14 @@ import org.nerdcircus.android.klaxon.Changelog;
 import org.nerdcircus.android.klaxon.ReplyList;
 import org.nerdcircus.android.klaxon.GcmHelper;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
     
     final Handler mHandler = new Handler();
+    private final String TAG = "KlaxonPreferences";
+
+    private GcmHelper mHelper;
 
     // Create runnable for posting
     final Runnable mUpdateC2dmPrefs = new Runnable() {
@@ -59,6 +64,8 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mHelper = new GcmHelper(this);
         
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
@@ -144,12 +151,12 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 
     @Override
     protected void onResume() {
-	super.onResume();
-	// Setup the initial values
-	// Set up a listener whenever a key changes            
-	getPreferenceScreen()
-		.getSharedPreferences()
-		.registerOnSharedPreferenceChangeListener(this);
+        super.onResume();
+        // Setup the initial values
+        // Set up a listener whenever a key changes            
+        getPreferenceScreen()
+          .getSharedPreferences()
+          .registerOnSharedPreferenceChangeListener(this);
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -158,21 +165,18 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
     }
 
 
+    // Performs the actual registration
     public void c2dmRegister(View v) {
-      Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
-      registrationIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0)); // boilerplate
-      SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-      String c2dmSender = settings.getString("c2dm_sender", "");
-      if (c2dmSender.equals("")) {
-	    CharSequence text = "Set sender email address first.";
-	    int duration = Toast.LENGTH_LONG;
-	    Toast toast = Toast.makeText(getApplicationContext(), text,
-			    duration);
-	    toast.show();
-	    return;
-      }
-      registrationIntent.putExtra("sender", c2dmSender);
-      startService(registrationIntent);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        String c2dmSender = settings.getString("c2dm_sender", "");
+        if (c2dmSender.equals("")) {
+            CharSequence text = "Set sender email address first.";
+            int duration = Toast.LENGTH_LONG;
+            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+            toast.show();
+            return;
+        }
+        mHelper.registerWithGcmAsync(c2dmSender);
     }
 
     public void c2dmUnregister(View v) {
