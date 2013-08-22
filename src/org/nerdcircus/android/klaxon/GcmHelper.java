@@ -72,6 +72,7 @@ public class GcmHelper {
     // Members.
     private Context mContext;
     private SharedPreferences mPrefs;
+    private Boolean mHaveAnnoyedAboutPlayServices = false;
     
     public GcmHelper(Context context) {
       Log.d(TAG, "initializing new GcmHelper");
@@ -189,7 +190,7 @@ public class GcmHelper {
         Dialog alert = GooglePlayServicesUtil.getErrorDialog(
             playEx.getConnectionStatusCode(),
             (Activity)mContext,
-            RC_AUTH_NEEDED);
+            GcmHelper.RC_NOPLAY);
         alert.show();
         return null;
       } catch (UserRecoverableAuthException userAuthEx) {
@@ -311,14 +312,17 @@ public class GcmHelper {
     }
 
     /** Check for the availability of play services. */
-    public boolean checkForPlayServices(){
+    public boolean checkForPlayServices(boolean haveShownDialog){
       int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mContext);
       if(status==ConnectionResult.SUCCESS){
+        Log.d(TAG, "play services succeeded.");
         return true;
-      } else {
+      } else if(!haveShownDialog){
+        Log.d(TAG, "trying to show dialog..");
         GooglePlayServicesUtil.getErrorDialog(status, (Activity)mContext, RC_NOPLAY).show();
-        return false;
       }
+      Log.d(TAG, "play services FAILED..");
+      return false;
     }
 
 }

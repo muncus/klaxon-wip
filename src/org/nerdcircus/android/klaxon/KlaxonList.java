@@ -54,6 +54,8 @@ public class KlaxonList extends ListActivity
 
     private int REQUEST_PICK_REPLY = 1;
 
+    private boolean mPlayServicesMessageShown = false;
+
     private GcmHelper mGcmHelper;
     private Cursor mCursor;
     protected Dialog onCreateDialog(int id){
@@ -103,17 +105,19 @@ public class KlaxonList extends ListActivity
         Log.d(TAG, "oncreate done.");
         registerForContextMenu(getListView());
         mGcmHelper = new GcmHelper(this);
-        mGcmHelper.maybePromptForLoginPermission();
     }
 
     public void onResume(){
+        if(mGcmHelper.checkForPlayServices(mPlayServicesMessageShown)){
+          Log.d(TAG, "play services found.");
+          mGcmHelper.maybePromptForLoginPermission();
+        } else {
+          Log.d(TAG, "play services not found.");
+        }
         super.onResume();
         //if they're active, cancel any alarms and notifications.
         Intent i = new Intent(Pager.SILENCE_ACTION);
         sendBroadcast(i);
-        mGcmHelper.checkForPlayServices();
-
-
     }
 
     public void onListItemClick(ListView parent, View v, int position, long id){
@@ -253,8 +257,13 @@ public class KlaxonList extends ListActivity
                i.putExtra("response", c.getString(c.getColumnIndex(Replies.BODY)));
                i.putExtra("new_ack_status", c.getInt(c.getColumnIndex(Replies.ACK_STATUS)));
                sendBroadcast(i);
-           }
-           else {
+               return;
+           } else if (requestCode == GcmHelper.RC_NOPLAY){
+              mPlayServicesMessageShown = true;
+              if(resultCode == RESULT_CANCELED){
+                  Log.d(TAG, "play install cancelled. some things may not work.");
+              }
+              return;
            }
         }
     }
