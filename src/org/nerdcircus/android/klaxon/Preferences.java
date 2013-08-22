@@ -46,7 +46,6 @@ import org.nerdcircus.android.klaxon.Changelog;
 import org.nerdcircus.android.klaxon.ReplyList;
 import org.nerdcircus.android.klaxon.GcmHelper;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.common.AccountPicker;
 
 public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
@@ -177,9 +176,9 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-	if (key.equals("c2dm_token"))
-	    mHandler.post(mUpdateC2dmPrefs);
-    }
+      if (key.equals("c2dm_token"))
+        mHandler.post(mUpdateC2dmPrefs);
+      }
 
 
     // Performs the actual registration
@@ -187,7 +186,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         String c2dmSender = settings.getString("c2dm_sender", "");
         if (c2dmSender.equals("")) {
-            CharSequence text = "Set sender email address first.";
+            CharSequence text = "Set sender id first.";
             int duration = Toast.LENGTH_LONG;
             Toast toast = Toast.makeText(getApplicationContext(), text, duration);
             toast.show();
@@ -204,10 +203,8 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
       final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
       SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
       String c2dmToken = settings.getString("c2dm_token", "");
-      Account[] accounts = AccountManager.get(this).getAccounts();
-      if (accounts.length > 0 && c2dmToken != "") {
+      if (c2dmToken != "") {
         emailIntent .setType("plain/text");
-        emailIntent .putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{accounts[0].name});
         emailIntent .putExtra(android.content.Intent.EXTRA_SUBJECT, "My C2DM token");
         emailIntent .putExtra(android.content.Intent.EXTRA_TEXT, c2dmToken);
         this.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
