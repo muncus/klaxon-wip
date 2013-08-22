@@ -233,7 +233,24 @@ public class GcmHelper {
           }
         }
       };
-      task.execute(senders);
+      task.execute((Object[])senders);
+    }
+
+    void unregisterWithGcmAsync(String... senders){
+      //TODO: figure out why <Void,Void,Void> throws ClassCastException
+      AsyncTask task = new AsyncTask<Object,Object,Void>() {
+        @Override
+        protected Void doInBackground(Object... params){
+          GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(mContext);
+          try {
+            gcm.unregister();
+          } catch(IOException e){
+            Log.e(TAG, "registration failed: " + e.getMessage(), e);
+          }
+          return null;
+        }
+      };
+      task.execute((Object[])null);
     }
 
     void maybePromptForLoginPermission(){

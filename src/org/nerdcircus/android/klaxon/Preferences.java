@@ -180,9 +180,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
     }
 
     public void c2dmUnregister(View v) {
-	Intent unregIntent = new Intent("com.google.android.c2dm.intent.UNREGISTER");
-	unregIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0));
-	startService(unregIntent);
+        mHelper.unregisterWithGcmAsync();
     }
 
     public void c2dmSendToken(View v) {
