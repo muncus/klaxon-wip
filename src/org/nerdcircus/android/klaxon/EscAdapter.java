@@ -39,7 +39,9 @@ public class EscAdapter extends ResourceCursorAdapter
     public void bindView(View view, Context context, Cursor cursor){
         TextView subject = (TextView) view.findViewById(R.id.subject);
 
-        subject.setText(cursor.getString(cursor.getColumnIndex(Pager.Pages.SUBJECT)));
+        if(cursor.getString(cursor.getColumnIndex(Pager.Pages.SUBJECT)) != null){
+          subject.setText(cursor.getString(cursor.getColumnIndex(Pager.Pages.SUBJECT)));
+        }
 
         int status = cursor.getInt(cursor.getColumnIndex(Pager.Pages.ACK_STATUS));
 

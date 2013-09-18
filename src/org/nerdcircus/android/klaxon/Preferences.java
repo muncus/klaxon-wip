@@ -64,6 +64,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
     };
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
+      super.onActivityResult(requestCode, resultCode, data);
       if(requestCode == RC_ACCOUNTPICKER){
         if(resultCode == Activity.RESULT_OK){
           String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
