@@ -94,6 +94,18 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity android:name=".PushMessageSetup" android:style="@android:style/Theme.Dialog"
+          android:label="Klaxon push message setup" >
+            <intent-filter>
+                <!-- Receive a special intent for push-message setup -->
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="intent"
+                    android:host="org.nerdcircus.android.klaxon"
+                    android:path="/gcmsetup" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".Changelog" android:label="Changelog">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
