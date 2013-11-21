@@ -16,36 +16,25 @@
 
 package org.nerdcircus.android.klaxon;
 
-import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.Intent;
-import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.os.Build;
-import android.app.PendingIntent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
-import android.util.Log;
-
-import java.util.Vector;
-
-import org.nerdcircus.android.klaxon.Changelog;
-import org.nerdcircus.android.klaxon.ReplyList;
-import org.nerdcircus.android.klaxon.GcmHelper;
-
 import com.google.android.gms.common.AccountPicker;
 
 public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
@@ -76,6 +65,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
           Log.d(TAG, "account picking cancelled.");
           SharedPreferences.Editor ed =  PreferenceManager.getDefaultSharedPreferences(this).edit();
           ed.putString("c2dm_register_account", "");
+          ed.commit();
         }
       }
     }
@@ -90,15 +80,26 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         addPreferencesFromResource(R.xml.preferences);
 
         Preference replylist = this.findPreference("edit_replies");
-        Intent i = new Intent(Intent.ACTION_MAIN);
-        i.setClass(this, ReplyList.class);
-        replylist.setIntent(i);
+        if(replylist != null){
+          Intent i = new Intent(Intent.ACTION_MAIN);
+          i.setClass(this, ReplyList.class);
+         replylist.setIntent(i);
+        }
 
         // rig up the Changelog
         replylist = this.findPreference("changelog");
-        i = new Intent(Intent.ACTION_MAIN);
-        i.setClass(this, Changelog.class);
-        replylist.setIntent(i);
+        if(replylist != null){
+            Intent i = new Intent(Intent.ACTION_MAIN);
+            i.setClass(this, Changelog.class);
+           replylist.setIntent(i);
+        }
+
+        replylist = this.findPreference("gcm_prefs");
+        if(replylist != null){
+            Intent i = new Intent(Intent.ACTION_MAIN);
+            i.setClass(this, PushMessageSetup.class);
+          replylist.setIntent(i);
+        }
 
         replylist = this.findPreference("version");
         replylist.setSummary(getAppVersion(this));
@@ -107,19 +108,6 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         replylist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference p){
                     Preferences.sendDebugEmail(p.getContext());
-                    return true;
-                }});
-
-        replylist = this.findPreference("send_test_message");
-        i = new Intent(Intent.ACTION_VIEW);
-        String base_url = PreferenceManager.getDefaultSharedPreferences(this).getString("c2dm_register_url", "");
-        i.setData(Uri.parse(base_url + "/test"));
-        replylist.setIntent(i);
-
-        replylist = this.findPreference("invalidate_token");
-        replylist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference p){
-                    GcmHelper.invalidateAuthToken(p.getContext());
                     return true;
                 }});
 
@@ -132,17 +120,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
             csp.setChecked(false);
             csp.setEnabled(false);
         }
-
-        Preference accounts = this.findPreference("c2dm_register_account");
-        accounts.setOnPreferenceClickListener( new Preference.OnPreferenceClickListener() {
-          public boolean onPreferenceClick(Preference p){
-            Intent acctpicker = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"},
-                     false, null, null, null, null);
-            ((Activity)p.getContext()).startActivityForResult(acctpicker, RC_ACCOUNTPICKER);
-            return true;
-          }
-        });
-        mHandler.post(mUpdateC2dmPrefs);
+        //mHandler.post(mUpdateC2dmPrefs);
     }
 
     @Override

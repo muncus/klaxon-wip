@@ -16,6 +16,7 @@
       android:title="@string/pref_sms_sender"
       android:defaultValue=""
       android:summary="@string/pref_sms_sender_summary"
+      android:capitalize="none"
       />
     <PreferenceScreen
       android:key="message_prefs"
@@ -115,42 +116,11 @@
       android:title="Experimental Settings"
       android:summary="Unfinished features, potentially dangerous."
       >
-      <PreferenceCategory
-        android:key="c2dm_prefs"
+      <Preference
+        android:key="gcm_prefs"
         android:title="@string/pref_c2dmsettings"
         android:summary="@string/pref_c2dmsettings_summary" >
-          <EditTextPreference android:key="c2dm_sender"
-            android:title="@string/pref_c2dm_sender"
-            android:defaultValue="@string/default_gcm_sender"
-            android:inputType="number" />
-          <EditTextPreference android:key="c2dm_register_url"
-            android:title="@string/pref_c2dm_register_url"
-            android:defaultValue="@string/default_gcm_url"
-            android:inputType="textUri" />
-          <Preference android:key="c2dm_register_account"
-            android:title="@string/pref_c2dm_register_account"
-            android:defaultValue="" />
-          <Preference
-            android:key="c2dm_register"
-            android:layout="@layout/c2dm_register_widget"
-            android:enabled="false" />
-          <EditTextPreference android:key="c2dm_token"
-            android:title="Token" />
-          <Preference
-            android:key="c2dm_unregister"
-            android:layout="@layout/c2dm_unregister_widget"
-            android:enabled="false" />
-          <Preference
-            android:key="send_test_message"
-            android:title="Test C2DM delivery."
-            android:summary="Tests the sending of a push message, if supported by c2dm server."
-            />
-          <Preference
-            android:key="invalidate_token"
-            android:title="Invalidate Auth Token."
-            android:summary="For Testing Only."
-            />
-      </PreferenceCategory>
+      </Preference>
      </PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>
