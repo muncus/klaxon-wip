@@ -105,6 +105,7 @@ public class GcmHelper {
       HttpURLConnection conn = null;
       try {
         conn = (HttpURLConnection)requrl.openConnection();
+        conn.setRequestProperty("User-Agent", "Klaxon");
         Log.d(TAG, "url: " + conn.getURL());
         Log.d(TAG, "Response: " + conn.getResponseCode());
         if(conn.getURL().getHost() != mPrefs.getString(PREF_URL, "")){

@@ -83,17 +83,21 @@ public class PushMessageSetup extends PreferenceActivity implements OnSharedPref
             // Set up the gcm prefs, based on the URI params.
             String sender_id = i.getData().getQueryParameter("sender");
             String url = i.getData().getQueryParameter("url");
-            Log.d(TAG, "This should be where magic happens.");
+            String user = i.getData().getQueryParameter("user");
+
+              Log.d(TAG, "This should be where magic happens.");
             // Set the sender and url preferences here.
             SharedPreferences.Editor ed =  PreferenceManager.getDefaultSharedPreferences(this).edit();
             ed.putString("c2dm_sender", sender_id);
             ed.putString("c2dm_register_url", url);
-            // We are registering, so clear any existing token.
+            ed.putString("c2dm_register_account", user);
+
+              // We are registering, so clear any existing token.
             ed.putString("c2dm_token", "");
             ed.commit();
             Toast.makeText(
                     this.getApplicationContext(),
-                    "Set account, then register!",
+                    "Push the register button!",
                     Toast.LENGTH_LONG).show();
 
           }
