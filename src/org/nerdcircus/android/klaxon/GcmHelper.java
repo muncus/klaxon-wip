@@ -214,10 +214,31 @@ public class GcmHelper {
             return null;
       }
       if(token != null){
-        Log.d(TAG, "holy shit we got an auth token!");
+        Log.d(TAG, "we got an auth token!");
         return token;
       }
       return null;
+    }
+    /* Register both legs of GCM registration - GCM, and our own server */
+    void registerBothLegsBlocking(String sender){
+        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(mContext);
+        try{
+            String registrationid = gcm.register(sender);
+            this.register(registrationid);
+        } catch(IOException e){
+            Log.e(TAG, "registration failed: " + e.getMessage(), e);
+        }
+    }
+
+    /* UnRegister both legs of GCM registration - GCM, and our own server */
+    void unregisterBothLegsBlocking(String registrationId){
+        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(mContext);
+        try{
+            gcm.unregister();
+            this.unregister(registrationId);
+        } catch(IOException e){
+            Log.e(TAG, "registration failed: " + e.getMessage(), e);
+        }
     }
 
     void registerWithGcmAsync(String... senders){

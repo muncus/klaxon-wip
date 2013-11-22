@@ -18,6 +18,7 @@ package org.nerdcircus.android.klaxon;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +26,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,6 +48,7 @@ public class PushMessageSetup extends PreferenceActivity implements OnSharedPref
 
     private GcmHelper mHelper;
     private Handler mHandler;
+    private Context mContext;
 
     final Runnable mUpdateC2dmPrefs = new Runnable() {
         public void run() {
@@ -75,6 +78,7 @@ public class PushMessageSetup extends PreferenceActivity implements OnSharedPref
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = (Context)this;
         mHandler = new Handler();
         Intent i = this.getIntent();
         if( i.getData() != null){
@@ -146,18 +150,24 @@ public class PushMessageSetup extends PreferenceActivity implements OnSharedPref
     public void c2dmRegister(View v) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         String c2dmSender = settings.getString("c2dm_sender", "");
+        final Context context = getApplicationContext();
+        final ProgressDialog pd;
         if (c2dmSender.equals("")) {
             CharSequence text = "Set sender id first.";
             int duration = Toast.LENGTH_LONG;
-            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+            Toast toast = Toast.makeText(context, text, duration);
             toast.show();
             return;
         }
-        mHelper.registerWithGcmAsync(c2dmSender);
+        new RegisterWithDialogAsyncTask(this).execute(c2dmSender, "");
     }
 
     public void c2dmUnregister(View v) {
-        mHelper.unregisterWithGcmAsync();
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        String regId = settings.getString("c2dm_token", "");
+        if(!regId.isEmpty()){
+            new UnregisterWithDialogAsyncTask(this).execute(regId);
+        }
     }
 
     public void c2dmSendToken(View v) {
@@ -191,6 +201,72 @@ public class PushMessageSetup extends PreferenceActivity implements OnSharedPref
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals("c2dm_token"))
             mHandler.post(mUpdateC2dmPrefs);
+    }
+
+    // Helper class for Registering with GCM and push messaging server, with progress dialog.
+    class RegisterWithDialogAsyncTask extends AsyncTask<String, Void, Boolean> {
+        ProgressDialog pd;
+        Context context;
+
+        public RegisterWithDialogAsyncTask(Context ct){
+            context = ct;
+        }
+
+        @Override
+        protected void onPreExecute(){
+            //create progress dialog.
+            pd = new ProgressDialog(mContext);
+            pd.setTitle("Registering...");
+            pd.setCancelable(false);
+            pd.setIndeterminate(true);
+            pd.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... args){
+            mHelper.registerBothLegsBlocking(args[0]);
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean arg){
+            if(pd!=null){
+                pd.dismiss();
+            }
+        }
+    }
+
+    // Helper AsyncTask to unregister. Arg must be a GCM Registration ID.
+    class UnregisterWithDialogAsyncTask extends AsyncTask<String, Void, Boolean> {
+        ProgressDialog pd;
+        Context context;
+
+        public UnregisterWithDialogAsyncTask(Context ct){
+            context = ct;
+        }
+
+        @Override
+        protected void onPreExecute(){
+            //create progress dialog.
+            pd = new ProgressDialog(mContext);
+            pd.setTitle("Un-Registering...");
+            pd.setCancelable(false);
+            pd.setIndeterminate(true);
+            pd.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... args){
+            mHelper.unregisterBothLegsBlocking(args[0]);
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean arg){
+            if(pd!=null){
+                pd.dismiss();
+            }
+        }
     }
 
 }
