@@ -1,7 +1,10 @@
 .*.swp
 /*.apk
-/bin
-/gen
+*.iml
+/bin/*
+/gen/*
+/build
+/out
 default.properties
 local.properties
 .classpath
