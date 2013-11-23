@@ -80,6 +80,8 @@ public class PushMessageSetup extends PreferenceActivity implements OnSharedPref
         super.onCreate(savedInstanceState);
         mContext = (Context)this;
         mHandler = new Handler();
+        mHelper = new GcmHelper(this);
+
         Intent i = this.getIntent();
         if( i.getData() != null){
           Log.d(TAG, i.getData().toString());
@@ -97,20 +99,17 @@ public class PushMessageSetup extends PreferenceActivity implements OnSharedPref
             ed.putString("c2dm_register_account", user);
 
               // We are registering, so clear any existing token.
-            ed.putString("c2dm_token", "");
+            //ed.putString("c2dm_token", "");
             ed.commit();
-            Toast.makeText(
-                    this.getApplicationContext(),
-                    "Push the register button!",
-                    Toast.LENGTH_LONG).show();
 
+            // Now, start registration!
+            this.c2dmRegister(null);
           }
         }
 
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 
-        mHelper = new GcmHelper(this);
-        
+
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.gcmsetup);
 
