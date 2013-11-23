@@ -5,6 +5,8 @@
 /gen/*
 /build
 /out
+.gradle/*
+.idea/*
 default.properties
 local.properties
 .classpath
