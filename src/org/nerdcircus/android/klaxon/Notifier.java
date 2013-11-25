@@ -30,6 +30,7 @@ import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -125,37 +126,28 @@ public class Notifier extends BroadcastReceiver
         listIntent.setType("vnd.android.cursor.dir/pages");
         Intent cancelIntent = new Intent(Pager.SILENCE_ACTION);
 
+        NotificationCompat.Builder nb = new NotificationCompat.Builder(context);
+        nb.setSmallIcon(R.drawable.bar_icon);
+        nb.setPriority(NotificationCompat.PRIORITY_MAX);
+        nb.setLights(R.color.red, 1000, 100);
 
-        Notification n = new Notification(
-            R.drawable.bar_icon,
-            "This will be overridden below.", //TODO: make this be "n pages waiting"
-            System.currentTimeMillis()
-        );
-        n.ledARGB=R.color.red;
-        n.ledOnMS=1000;
-        n.ledOffMS=100;
-        n.sound = alertsound;
-        n.flags = Notification.FLAG_AUTO_CANCEL | 
-                  Notification.FLAG_SHOW_LIGHTS;
-        n.contentIntent = PendingIntent.getActivity(context, 0, listIntent, 0);
-        n.deleteIntent = PendingIntent.getBroadcast(context, 0, cancelIntent, 0);
+        int streamtype = Notification.STREAM_DEFAULT;
+        if(prefs.getBoolean("use_alarm_stream", false)){
+            streamtype = AudioManager.STREAM_ALARM;
+        }
+        nb.setSound(alertsound, streamtype);
+        nb.setContentTitle(subject);
+        nb.setContentIntent(PendingIntent.getActivity(context, 0, listIntent, 0));
+        nb.setDeleteIntent(PendingIntent.getBroadcast(context, 0, cancelIntent, 0));
+        nb.setAutoCancel(true);
 
-        n.tickerText = subject;
-        n.contentView = new RemoteViews(context.getPackageName(), R.layout.notification);
-
-        n.contentView.setTextViewText(R.id.text, subject);
 
         //vibrate!
         if (prefs.getBoolean("vibrate", true)){
-            n.vibrate = new long[] {0, 800, 500, 800};
+            nb.setVibrate(new long[] {0, 800, 500, 800});
         }
 
-        // default is RING. this will override.
-        if (prefs.getBoolean("use_alarm_stream", false)){
-            n.audioStreamType = AudioManager.STREAM_ALARM;
-        }
-
-        return n;
+        return nb.build();
     }
 
     private void updateAckStatus(Context c, Uri data, int ack_status){
