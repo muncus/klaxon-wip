@@ -102,6 +102,9 @@ public class PushMessageSetup extends PreferenceActivity implements OnSharedPref
             //ed.putString("c2dm_token", "");
             ed.commit();
 
+            // Ensure we have been granted permission to use credentials
+            mHelper.maybePromptForLoginPermission();
+
             // Now, start registration!
             this.c2dmRegister(null);
           }
