@@ -41,8 +41,7 @@ import org.nerdcircus.android.klaxon.Pager.*;
 
 import android.util.Log;
 
-public class KlaxonList extends ListActivity
-{
+public class KlaxonList extends ListActivity {
     private String TAG = "KlaxonList";
     public static final String AUTH_PERMISSION_ACTION = "org.nerdcircus.android.klaxon.AUTH_PERMISSION";
 
@@ -82,8 +81,7 @@ public class KlaxonList extends ListActivity
     }
 
     @Override
-    public void onCreate(Bundle icicle)
-    {
+    public void onCreate(Bundle icicle){
         super.onCreate(icicle);
 
         createDefaultPreferences();
