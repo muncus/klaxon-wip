@@ -167,7 +167,7 @@ public class PushMessageSetup extends PreferenceActivity implements OnSharedPref
     public void c2dmUnregister(View v) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         String regId = settings.getString("c2dm_token", "");
-        if(!regId.isEmpty()){
+        if(! regId.equals("")){
             new UnregisterWithDialogAsyncTask(this).execute(regId);
         }
     }
