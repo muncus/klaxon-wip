@@ -9,14 +9,15 @@ buildscript {
     }
 }
 apply plugin: 'android'
+
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
     // Google Play Services
     compile 'com.google.android.gms:play-services:4.0.30'
 
     // Support Libraries
-    //compile 'com.android.support:support-v4:19.0.0'
-    //compile 'com.android.support:appcompat-v7:19.0.0'
+    compile 'com.android.support:support-v4:19.0.0'
+    compile 'com.android.support:appcompat-v7:19.0.0'
     //compile 'com.android.support:gridlayout-v7:19.0.0'
     //compile 'com.android.support:support-v7-mediarouter:19.0.0'
     //compile 'com.android.support:support-v13:19.0.0'
@@ -51,5 +52,23 @@ android {
         // by a similar customization.
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
+    }
+
+    Properties localprops = new Properties();
+    localprops.load(new FileInputStream(file("local.properties")))
+    signingConfigs {
+        release {
+            storeFile file(localprops["key.store"])
+            storePassword localprops["store.pass"]
+            keyAlias localprops["key.alias"]
+            keyPassword localprops["key.pass"]
+
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
     }
 }
