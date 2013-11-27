@@ -30,6 +30,7 @@ import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -120,7 +121,11 @@ public class Notifier extends BroadcastReceiver
      */
     Notification getNotification(Context context, String subject) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        Uri alertsound = Uri.parse(prefs.getString("alert_sound", ""));
+        Uri alertsound = Uri.parse(prefs.getString("alert_sound",""));
+        if( alertsound.toString().equals("")){
+            //no setting. use default.
+            alertsound = Settings.System.DEFAULT_NOTIFICATION_URI;
+        }
 
         Intent listIntent = new Intent(Intent.ACTION_VIEW);
         listIntent.setType("vnd.android.cursor.dir/pages");

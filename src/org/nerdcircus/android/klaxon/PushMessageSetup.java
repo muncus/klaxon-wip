@@ -16,6 +16,7 @@
 
 package org.nerdcircus.android.klaxon;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -45,6 +46,8 @@ public class PushMessageSetup extends PreferenceActivity implements OnSharedPref
     
     private final String TAG = "GCMSetup";
     private final int RC_ACCOUNTPICKER = 1;
+
+    private final String ACCOUNT_TYPE = "com.google";
 
     private GcmHelper mHelper;
     private Handler mHandler;
@@ -138,8 +141,13 @@ public class PushMessageSetup extends PreferenceActivity implements OnSharedPref
         if(accounts != null){
            accounts.setOnPreferenceClickListener( new Preference.OnPreferenceClickListener() {
              public boolean onPreferenceClick(Preference p){
-                Intent acctpicker = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"},
-                            false, null, null, null, null);
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                Account selected = null;
+                if(!prefs.getString("c2dm_register_account", "").equals("")){
+                    selected = new Account(prefs.getString("c2dm_register_account", ""), ACCOUNT_TYPE);
+                }
+                Intent acctpicker = AccountPicker.newChooseAccountIntent(
+                        selected, null, new String[]{ACCOUNT_TYPE}, true, null, null, null, null);
                    ((Activity)p.getContext()).startActivityForResult(acctpicker, RC_ACCOUNTPICKER);
                   return true;
                     }
