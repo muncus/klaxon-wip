@@ -72,7 +72,7 @@ public class SmsPageReceiver extends BroadcastReceiver
           Log.e(TAG, "No data associated with new sms intent!");
       }
 
-      Alert incoming = null;
+      Alert incoming = new Alert();
       String parser = prefs.getString("pageparser", "Standard");
       if(parser.equals("Standard")){
           Log.d(TAG, "using Standard pageparser");
@@ -111,6 +111,7 @@ public class SmsPageReceiver extends BroadcastReceiver
       mContext.sendBroadcast(annoy);
       Log.d(TAG, "sent intent " + annoy.toString() );
       //NOTE: as of 1.6, this broadcast can be aborted.
+      //NOTE: in 4.4, this broadcast can no longer be aborted. :(
       if (prefs.getBoolean("consume_sms_message", false)){
           //FIXME: this breaks if we no longer use a BroadcastReceiver.
           abortBroadcast();
@@ -123,8 +124,10 @@ public class SmsPageReceiver extends BroadcastReceiver
       //replying to a received page.
       Uri data = intent.getData();
       Bundle extras = intent.getExtras();
-      String response = extras.getString("response");
-      Integer new_ack_status = extras.getInt("new_ack_status");
+      if(extras == null){
+          //No extras specified, no action can be taken.
+          return;
+      }
       if( canReply(data)){
           replyTo(intent);
       }
