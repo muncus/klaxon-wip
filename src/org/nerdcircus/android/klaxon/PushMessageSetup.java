@@ -24,14 +24,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -39,8 +35,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import com.google.android.gms.common.AccountPicker;
-
-import java.util.prefs.PreferenceChangeListener;
 
 public class PushMessageSetup extends PreferenceActivity implements OnSharedPreferenceChangeListener {
     

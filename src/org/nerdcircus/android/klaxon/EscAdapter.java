@@ -23,8 +23,6 @@ import android.view.View;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
-import org.nerdcircus.android.klaxon.Pager;
-
 public class EscAdapter extends ResourceCursorAdapter
 {
     public EscAdapter(Context context, int layout, Cursor c){

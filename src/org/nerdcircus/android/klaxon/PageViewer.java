@@ -22,17 +22,14 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import org.nerdcircus.android.klaxon.Pager;
 import org.nerdcircus.android.klaxon.Pager.Replies;
-import org.nerdcircus.android.klaxon.ReplyMenuUtils;
 
-import android.util.Log;
-
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class PageViewer extends Activity
 {

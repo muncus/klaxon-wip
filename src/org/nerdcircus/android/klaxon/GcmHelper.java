@@ -2,38 +2,28 @@
 // Centralized class for the logic and settings of GCM within Klaxon.
 package org.nerdcircus.android.klaxon;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.net.CookieManager;
-import java.net.CookieHandler;
-
-import android.app.Activity;
-import android.app.Dialog;
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
-import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+import java.io.IOException;
+import java.net.*;
 
 public class GcmHelper {
 
@@ -105,7 +95,7 @@ public class GcmHelper {
       HttpURLConnection conn = null;
       try {
         conn = (HttpURLConnection)requrl.openConnection();
-        conn.setRequestProperty("User-Agent", "Klaxon");
+        conn.setRequestProperty("User-Agent", USER_AGENT);
         Log.d(TAG, "url: " + conn.getURL());
         Log.d(TAG, "Response: " + conn.getResponseCode());
         if(conn.getURL().getHost() != mPrefs.getString(PREF_URL, "")){

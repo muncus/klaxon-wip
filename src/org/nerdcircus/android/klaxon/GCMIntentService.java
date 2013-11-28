@@ -10,9 +10,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
-
-import org.nerdcircus.android.klaxon.GcmHelper;
-import org.nerdcircus.android.klaxon.Pager;
 import org.nerdcircus.android.klaxon.Pager.Pages;
 
 public class GCMIntentService extends GCMBaseIntentService {

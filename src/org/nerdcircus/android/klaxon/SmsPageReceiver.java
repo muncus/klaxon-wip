@@ -16,12 +16,8 @@
 
 package org.nerdcircus.android.klaxon;
 
-import android.content.BroadcastReceiver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
 import android.app.PendingIntent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,12 +25,10 @@ import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
-
-import org.nerdcircus.android.klaxon.Alert;
-import org.nerdcircus.android.klaxon.Pager;
-import org.nerdcircus.android.klaxon.PageReceiver;
 import org.nerdcircus.android.klaxon.Pager.Pages;
-import org.nerdcircus.android.klaxon.pageparser.*;
+import org.nerdcircus.android.klaxon.pageparser.Go2Mobile;
+import org.nerdcircus.android.klaxon.pageparser.LabeledFields;
+import org.nerdcircus.android.klaxon.pageparser.Standard;
 
 public class SmsPageReceiver extends BroadcastReceiver
 {

@@ -25,8 +25,6 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import org.nerdcircus.android.klaxon.Pager;
-
 /* class to represent the various ack statuses to be show in a spinner.*/
 public class AckStatusAdapter extends ArrayAdapter {
 

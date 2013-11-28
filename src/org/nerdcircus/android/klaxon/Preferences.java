@@ -16,38 +16,25 @@
 
 package org.nerdcircus.android.klaxon;
 
-import android.accounts.AccountManager;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-import com.google.android.gms.common.AccountPicker;
 
 public class Preferences extends PreferenceActivity {
     
     private final String TAG = "KlaxonPreferences";
-    private GcmHelper mHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mHelper = new GcmHelper(this);
-        
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
@@ -86,11 +73,15 @@ public class Preferences extends PreferenceActivity {
         //disable the "Consume SMS" option if the build is too low
         //NB: there's no code to act on this, since the abortBroadcast() 
         // call will not break anything when called in < 1.6
-        Log.d("BUILDVERSION", Build.VERSION.SDK);
-        if(Integer.valueOf(Build.VERSION.SDK) <= Integer.valueOf(3)){
+        // It will also fail to have any effect with KitKat and above.
+        Log.d("BUILDVERSION", Build.VERSION.CODENAME);
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.DONUT ||
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
             CheckBoxPreference csp = (CheckBoxPreference) this.findPreference("consume_sms_message");
-            csp.setChecked(false);
-            csp.setEnabled(false);
+            if(csp != null){
+                csp.setChecked(false);
+                csp.setEnabled(false);
+            }
         }
     }
 

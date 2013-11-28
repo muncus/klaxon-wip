@@ -22,9 +22,12 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,14 +35,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import org.nerdcircus.android.klaxon.GcmHelper;
-import org.nerdcircus.android.klaxon.ReplyMenuUtils;
-import org.nerdcircus.android.klaxon.Pager;
-import org.nerdcircus.android.klaxon.Pager.*;
-
-import android.util.Log;
+import org.nerdcircus.android.klaxon.Pager.Pages;
+import org.nerdcircus.android.klaxon.Pager.Replies;
 
 public class KlaxonList extends ListActivity {
     private String TAG = "KlaxonList";

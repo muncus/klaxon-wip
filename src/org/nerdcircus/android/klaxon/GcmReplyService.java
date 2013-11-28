@@ -16,8 +16,6 @@
 
 package org.nerdcircus.android.klaxon;
 
-import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -25,8 +23,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import org.nerdcircus.android.klaxon.Pager;
-import org.nerdcircus.android.klaxon.PageReceiver;
 
 public class GcmReplyService extends PageReceiver
 {
