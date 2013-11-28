@@ -22,8 +22,8 @@
 
 <resources>
     <!-- Defaults -->
-    <string name="default_gcm_sender">100533447903</string>
-    <string name="default_gcm_url">https://pagepusher.appspot.com</string>
+    <string name="default_gcm_sender"></string>
+    <string name="default_gcm_url"></string>
     <!-- window and activity names -->
     <string name="app_name">Klaxon</string>
     <string name="prefs_activity">Preferences</string>
