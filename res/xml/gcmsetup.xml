@@ -31,8 +31,8 @@
           android:enabled="false" />
         <Preference
           android:key="send_test_message"
-          android:title="Test C2DM delivery."
-          android:summary="Tests the sending of a push message, if supported by c2dm server."
+          android:title="Test Push Message Delivery."
+          android:summary="Tests the sending of a push message, if supported by GCM server."
           />
         <Preference
           android:key="invalidate_token"
