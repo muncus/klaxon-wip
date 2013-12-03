@@ -46,6 +46,12 @@ public class EscAdapter extends ResourceCursorAdapter
         Drawable icon = context.getResources().getDrawable(Pager.getStatusResId(status));
         subject.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
 
+        TextView subtext = (TextView) view.findViewById(R.id.subtext);
+        if(subtext != null && cursor.getString(cursor.getColumnIndex(Pager.Pages.FROM_ADDR)) != null){
+            subtext.setText(cursor.getString(cursor.getColumnIndex(Pager.Pages.FROM_ADDR)));
+        }
+
+
     }
 
     
