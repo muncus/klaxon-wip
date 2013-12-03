@@ -85,7 +85,11 @@ public class KlaxonList extends ListActivity {
 
         setContentView(R.layout.esclist);
         
-        String[] cols = new String[] {Pager.Pages._ID, Pager.Pages.SUBJECT, Pager.Pages.SENDER, Pager.Pages.SERVICE_CENTER, Pager.Pages.ACK_STATUS };
+        String[] cols = new String[] {Pager.Pages._ID,
+                                      Pager.Pages.SUBJECT,
+                                      Pager.Pages.FROM_ADDR,
+                                      Pager.Pages.SERVICE_CENTER,
+                                      Pager.Pages.ACK_STATUS };
         Log.d(TAG, "querying");
         mCursor = Pager.Pages.query(this.getContentResolver(), cols);
         startManagingCursor(mCursor);
