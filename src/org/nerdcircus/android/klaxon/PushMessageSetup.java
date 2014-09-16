@@ -126,7 +126,7 @@ public class PushMessageSetup extends PreferenceActivity implements OnSharedPref
         if(p != null){
           p.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref){
-                       GcmHelper.invalidateAuthToken(pref.getContext());
+                       mHelper.invalidateAuthToken(pref.getContext());
                        return true;
                     }});
         }

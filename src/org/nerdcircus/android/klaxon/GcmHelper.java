@@ -96,9 +96,10 @@ public class GcmHelper {
       try {
         conn = (HttpURLConnection)requrl.openConnection();
         conn.setRequestProperty("User-Agent", USER_AGENT);
-        Log.d(TAG, "url: " + conn.getURL());
+        Log.d(TAG, "req url: " + requrl.toString());
+        Log.d(TAG, "response url: " + conn.getURL());
         Log.d(TAG, "Response: " + conn.getResponseCode());
-        if(conn.getURL().getHost() != mPrefs.getString(PREF_URL, "")){
+        if(! requrl.getHost().equals(conn.getURL().getHost())){
             Log.d(TAG, "looks like we were redirected. Auth.");
             conn.disconnect();
             // Get the auth token, and use it.
@@ -106,9 +107,10 @@ public class GcmHelper {
             URL authurl = new URL(getAuthUrl() + "?continue=" +
                     URLEncoder.encode(requrl.toString(), "UTF-8") +
                     "&auth=" + authToken);
+            Log.d(TAG, "Auth url: " + authurl.toString());
             conn = (HttpURLConnection)authurl.openConnection();
-            conn.getInputStream(); // Dont care what we get back. metadata is enough.
-            Log.d(TAG, "url: " + conn.getURL());
+            conn.getInputStream(); // Don't care what we get back. metadata is enough.
+            Log.d(TAG, "response url: " + conn.getURL());
             Log.d(TAG, "Response: " + conn.getResponseCode());
         }
         return conn;
@@ -315,12 +317,14 @@ public class GcmHelper {
         */
     }
 
-    public static void invalidateAuthToken(Context context){
+    public void invalidateAuthToken(Context context){
+      Log.d(TAG, "invalidating token.");
       // For debugging only.
       AccountManager accountManager = AccountManager.get(context);
       //String accountname = PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_ACCOUNT,"");
       //Account account = new Account(accountname, "com.google");
       accountManager.invalidateAuthToken("com.google", null);
+      GoogleAuthUtil.invalidateToken(mContext, this.getAuthToken());
     }
 
     /** Check for the availability of play services. */

@@ -77,6 +77,8 @@ public class PageViewer extends Activity
         int status = mCursor.getInt(mCursor.getColumnIndex(Pager.Pages.ACK_STATUS));
         Drawable icon = getResources().getDrawable(Pager.getStatusResId(status));
         mSubjectView.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+
+        //TODO: define drawableStateChanged(), to update the icon when ack_status changes.
     }
 
     @Override
