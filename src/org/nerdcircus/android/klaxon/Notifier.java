@@ -110,8 +110,8 @@ public class Notifier extends BroadcastReceiver
      */
     Notification getNotification(Context context, String subject) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        Uri alertsound = Uri.parse(prefs.getString("alert_sound",""));
-        if( alertsound.toString().equals("")){
+        Uri alertsound = Uri.parse(prefs.getString("alert_sound","DEFAULT"));
+        if( alertsound.toString().equals("DEFAULT")){
             //no setting. use default.
             alertsound = Settings.System.DEFAULT_NOTIFICATION_URI;
         }

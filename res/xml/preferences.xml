@@ -77,7 +77,6 @@
         android:showDefault="true"
         android:showSilent="true"
         android:title="@string/pref_alertsound"
-        android:defaultValue=""
         />
       <CheckBoxPreference android:key="use_alarm_stream" 
         android:title="@string/pref_alarmstream"
