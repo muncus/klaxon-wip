@@ -8,7 +8,7 @@
     <EditText android:id="@+id/subject"
         android:layout_width="fill_parent"
         android:layout_height="48dp"
-        android:text="reply title"
+        android:hint="reply title"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:imeOptions="actionNext"
