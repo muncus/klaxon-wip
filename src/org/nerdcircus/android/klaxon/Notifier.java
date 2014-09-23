@@ -65,7 +65,7 @@ public class Notifier extends BroadcastReceiver
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
             Log.d(TAG, "notifcation interval: " + prefs.getString("notification_interval", "unknown"));
-            long repeat_interval_ms = new Integer(prefs.getString("notification_interval", "20000")).longValue();
+            long repeat_interval_ms = Integer.valueOf(prefs.getString("notification_interval", "20000")).longValue();
             Log.d(TAG, "notifcation interval: " + repeat_interval_ms);
 
             // 500 ms delay, to prevent the regular text message noise from stomping on us.
@@ -147,7 +147,7 @@ public class Notifier extends BroadcastReceiver
     private void updateAckStatus(Context c, Uri data, int ack_status){
         Log.d(TAG, "updating acks status for "+data.toString()+" to "+ ack_status);
         ContentValues cv = new ContentValues();
-        cv.put(Pager.Pages.ACK_STATUS, new Integer(ack_status));
+        cv.put(Pager.Pages.ACK_STATUS, Integer.valueOf(ack_status));
         int rows = c.getContentResolver().update(data, cv, null, null);
         Log.d(TAG, "Updated rows: "+rows);
         Toast.makeText(c, R.string.reply_ok, Toast.LENGTH_LONG);
