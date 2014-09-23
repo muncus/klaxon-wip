@@ -16,6 +16,8 @@
 
 package org.nerdcircus.android.klaxon;
 
+import java.util.Locale;
+
 import android.app.PendingIntent;
 import android.content.*;
 import android.database.Cursor;
@@ -140,10 +142,10 @@ public class SmsPageReceiver extends BroadcastReceiver
      */
     boolean isPage(ContentValues cv, Context context){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String trigger_string = prefs.getString("sender_match", "").toLowerCase().trim();
+        String trigger_string = prefs.getString("sender_match", "").toLowerCase(Locale.getDefault()).trim();
         Log.d(TAG, "Trigger: " + trigger_string);
-        Log.d(TAG, "sender: " + cv.getAsString(Pages.SENDER).toLowerCase());
-        Log.d(TAG, "from_addr: " + cv.getAsString(Pages.FROM_ADDR).toLowerCase());
+        Log.d(TAG, "sender: " + cv.getAsString(Pages.SENDER).toLowerCase(Locale.getDefault()));
+        Log.d(TAG, "from_addr: " + cv.getAsString(Pages.FROM_ADDR).toLowerCase(Locale.getDefault()));
         return matchesPageCriteria(cv, trigger_string, prefs.getBoolean("also_match_body", false));
     }
 
@@ -152,14 +154,14 @@ public class SmsPageReceiver extends BroadcastReceiver
         //split on commas, with optional spaces.
         for( String trigger : trigger_string.split("[ ]*,[ ]*")){
           trigger = trigger.trim(); // Remove leading/trailing whitespace.
-          if( cv.getAsString(Pages.SENDER).toLowerCase().contains(trigger) )
+          if( cv.getAsString(Pages.SENDER).toLowerCase(Locale.getDefault()).contains(trigger) )
               return true;
-          if( cv.getAsString(Pages.FROM_ADDR).toLowerCase().contains(trigger) )
+          if( cv.getAsString(Pages.FROM_ADDR).toLowerCase(Locale.getDefault()).contains(trigger) )
               return true;
           if ( match_body ){
-              if( cv.getAsString(Pages.SUBJECT).toLowerCase().contains(trigger) )
+              if( cv.getAsString(Pages.SUBJECT).toLowerCase(Locale.getDefault()).contains(trigger) )
                   return true;
-              if( cv.getAsString(Pages.BODY).toLowerCase().contains(trigger) )
+              if( cv.getAsString(Pages.BODY).toLowerCase(Locale.getDefault()).contains(trigger) )
                   return true;
           }
         }

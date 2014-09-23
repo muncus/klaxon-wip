@@ -1,5 +1,7 @@
 package org.nerdcircus.android.klaxon.pageparser;
 
+import java.util.Locale;
+
 import android.content.ContentValues;
 import android.telephony.SmsMessage;
 import org.nerdcircus.android.klaxon.Alert;
@@ -47,7 +49,7 @@ public class LabeledFields extends Standard {
             cv.put(Pages.SUBJECT, val);
         }
         //Body can contain newlines. so always get the rest.
-        int start = body.toLowerCase().indexOf("msg:");
+        int start = body.toLowerCase(Locale.getDefault()).indexOf("msg:");
         if(start > -1){
             //increment to exclude the label
             start += 4;
@@ -57,14 +59,14 @@ public class LabeledFields extends Standard {
     }
 
     private String getLabeledValue(String label, String body){
-        int start = body.toLowerCase().indexOf(label);
+        int start = body.toLowerCase(Locale.getDefault()).indexOf(label);
         if(start == -1){
             return null; // not found
         }
         //increment to exclude the label
         start += label.length();
 
-        int end = body.toLowerCase().indexOf("\n", start);
+        int end = body.toLowerCase(Locale.getDefault()).indexOf("\n", start);
         if(end == -1){
             return body.substring(start);
         } 
