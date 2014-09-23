@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    >
+    <EditText android:id="@+id/subject"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:text="reply title"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:imeOptions="actionNext"
+        />
+    <EditText android:id="@+id/body"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:hint="reply text"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:imeOptions="actionNext"
+        />
+    <CheckBox android:id="@+id/show_in_menu"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:text="Show this item in the menu?"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"    
+    />
+    <Spinner android:id="@+id/ack_status_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"       
+    />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <Button android:id="@+id/cancel_button"
+            android:text="Cancel"
+            android:layout_height="fill_parent"
+            android:layout_width="wrap_content"
+            />
+        <Button android:id="@+id/save_button"
+            android:text="Save"
+            android:layout_height="fill_parent"
+            android:layout_width="wrap_content"
+            />
+        <Button android:id="@+id/delete_button"
+            android:text="Delete"
+            android:layout_height="fill_parent"
+            android:layout_width="wrap_content"
+            />
+    </LinearLayout>
+</LinearLayout>
+
