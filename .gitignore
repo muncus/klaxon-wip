@@ -8,7 +8,6 @@
 .gradle/*
 .idea/*
 default.properties
-local.properties
 .classpath
 .project
 .settings
