@@ -44,13 +44,6 @@ android {
         versionCode 33
         versionName "0.33"
     }
-    buildTypes {
-        release {
-            runProguard true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), \
-            'proguard-project.txt'
-        }
-    }
     signingConfigs {
         release {
             storeFile file(localprops["key.store"])
@@ -58,6 +51,14 @@ android {
             keyAlias localprops["key.alias"]
             keyPassword localprops["key.pass"]
 
+        }
+    }
+    buildTypes {
+        release {
+            runProguard true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), \
+            'proguard-project.txt'
+            signingConfig signingConfigs.release
         }
     }
 }
