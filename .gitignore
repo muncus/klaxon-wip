@@ -1,14 +1,9 @@
 .*.swp
 /*.apk
 *.iml
-/bin/*
-/gen/*
 /build
-/out
 .gradle/*
 .idea/*
-default.properties
 .classpath
 .project
 .settings
-
