@@ -12,7 +12,7 @@ Properties localprops = new Properties();
 localprops.load(new FileInputStream(file("local.properties")))
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 22
     buildToolsVersion "20"
     sourceSets {
         main {
@@ -40,9 +40,9 @@ android {
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 19
-        versionCode 33
-        versionName "0.33"
+        targetSdkVersion 22
+        versionCode 34
+        versionName "0.34"
     }
     signingConfigs {
         release {
@@ -71,6 +71,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:4.0.30'
 
     // Support Libraries
-    compile 'com.android.support:support-v4:19.0.0'
-    compile 'com.android.support:appcompat-v7:19.0.0'
+    compile 'com.android.support:support-v4:22.1.0'
+    compile 'com.android.support:appcompat-v7:22.1.0'
 }
