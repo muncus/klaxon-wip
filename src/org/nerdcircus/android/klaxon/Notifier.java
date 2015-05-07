@@ -124,10 +124,12 @@ public class Notifier extends BroadcastReceiver
         nb.setSmallIcon(R.drawable.bar_icon);
         nb.setPriority(NotificationCompat.PRIORITY_MAX);
         nb.setLights(R.color.red, 1000, 100);
+        nb.setColor(R.color.red);
 
         int streamtype = Notification.STREAM_DEFAULT;
         if(prefs.getBoolean("use_alarm_stream", false)){
             streamtype = AudioManager.STREAM_ALARM;
+            nb.setCategory(NotificationCompat.CATEGORY_ALARM);
         }
         nb.setSound(alertsound, streamtype);
         nb.setContentTitle(subject);
